@@ -3,15 +3,17 @@ using System;
 using GreentableApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GreentableApi.Migrations
 {
     [DbContext(typeof(GreentableContext))]
-    partial class GreentableContextModelSnapshot : ModelSnapshot
+    [Migration("20210331144247_Initial-0.2")]
+    partial class Initial02
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

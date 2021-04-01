@@ -3,15 +3,17 @@ using System;
 using GreentableApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GreentableApi.Migrations
 {
     [DbContext(typeof(GreentableContext))]
-    partial class GreentableContextModelSnapshot : ModelSnapshot
+    [Migration("20210331062455_Initial-0.1")]
+    partial class Initial01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,54 +21,12 @@ namespace GreentableApi.Migrations
                 .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("GreentableApi.Models.Profile", b =>
-                {
-                    b.Property<long>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("contactnumber")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("createdAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("createdBy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("firstname")
-                        .HasColumnType("text");
-
-                    b.Property<string>("lastname")
-                        .HasColumnType("text");
-
-                    b.Property<string>("meta")
-                        .HasColumnType("jsonb");
-
-                    b.Property<DateTime>("updatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("updatedBy")
-                        .HasColumnType("text");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Profile");
-                });
-
             modelBuilder.Entity("GreentableApi.Models.Users", b =>
                 {
                     b.Property<long>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("appleid")
-                        .HasColumnType("text");
 
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("timestamp without time zone");
@@ -85,9 +45,6 @@ namespace GreentableApi.Migrations
 
                     b.Property<string>("name")
                         .HasColumnType("text");
-
-                    b.Property<long>("profileid")
-                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("updatedAt")
                         .HasColumnType("timestamp without time zone");

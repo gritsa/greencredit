@@ -36,17 +36,26 @@ namespace GreentableApi.Controllers
 
             try
             {
-                var newUser = _repo.Users.FirstOrDefault(u => u.email == user.email);
+                var newUser = _repo.Users.FirstOrDefault(u => u.googleuid == user.googleuid && u.email == user.email);
                 if (newUser == null)
                 {
+                    var profile = new Profile();
                     var now = DateTime.UtcNow;
+                    //new row entry in profile 
+                    profile.createdAt = now;
+                    profile.updatedAt = now;
+                    _repo.Add(profile);
+                    _repo.SaveChanges();
+
                     user.createdAt = now;
                     user.updatedAt = now;
                     user.createdBy = user.email;
                     user.updatedBy = user.email;
+                    user.googleuid = user.googleuid;
+                    user.profileid = profile.id;
                     _repo.Add(user);
                     _repo.SaveChanges();
-                     Authresponse response = new Authresponse();
+                    Authresponse response = new Authresponse();
                     response.User = user;
                     response.Token = AuthwithJwt.GenerateJsonWebToken(user);
                     response.Success = "Success!!";
