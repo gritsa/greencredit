@@ -5,6 +5,7 @@ using GreentableApi.Helpers;
 using GreentableApi.Models;
 using GreentableApi.Models.Response;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 namespace GreentableApi.Controllers
 {
@@ -36,40 +37,51 @@ namespace GreentableApi.Controllers
 
             try
             {
-                var newUser = _repo.Users.FirstOrDefault(u => u.googleuid == user.googleuid && u.email == user.email);
-                if (newUser == null)
+                dynamic metavlue = JObject.Parse(user.meta);
+                if (metavlue != null)
                 {
-                    var profile = new Profile();
-                    var now = DateTime.UtcNow;
-                    //new row entry in profile 
-                    profile.createdAt = now;
-                    profile.updatedAt = now;
-                    _repo.Add(profile);
-                    _repo.SaveChanges();
+                    string firstname = metavlue.firstname;
+                    string lastname = metavlue.lastname;
+                    string profilemedia = metavlue.profilemedia;
+                    var newUser = _repo.Users.FirstOrDefault(u => u.googleuid == user.googleuid && u.email == user.email);
+                    if (newUser == null)
+                    {
+                        //new row entry in profile 
 
-                    user.createdAt = now;
-                    user.updatedAt = now;
-                    user.createdBy = user.email;
-                    user.updatedBy = user.email;
-                    user.googleuid = user.googleuid;
-                    user.profileid = profile.id;
-                    _repo.Add(user);
-                    _repo.SaveChanges();
-                    Authresponse response = new Authresponse();
-                    response.User = user;
-                    response.Token = AuthwithJwt.GenerateJsonWebToken(user);
-                    response.Success = "Success!!";
-                    return Ok(response);
+                        var profile = new Profile();
+                        var now = DateTime.UtcNow;
+                        profile.createdAt = now;
+                        profile.updatedAt = now;
+                        profile.firstname = firstname;
+                        profile.lastname = lastname;
+                        profile.profilemedia = profilemedia;
+                        _repo.Add(profile);
+                        _repo.SaveChanges();
+
+                        user.createdAt = now;
+                        user.updatedAt = now;
+                        user.createdBy = user.email;
+                        user.updatedBy = user.email;
+                        user.googleuid = user.googleuid;
+                        user.profileid = profile.id;
+                        _repo.Add(user);
+                        _repo.SaveChanges();
+                        Authresponse response = new Authresponse();
+                        response.User = user;
+                        response.Token = AuthwithJwt.GenerateJsonWebToken(user);
+                        response.Success = "Success!!";
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        var now = DateTime.UtcNow;
+                        newUser.updatedAt = now;
+                        newUser.meta = user.meta;
+                        _repo.Users.Update(newUser);
+                        _repo.SaveChanges();
+                    }
                 }
-                else
-                {
-                    var now = DateTime.UtcNow;
-                    newUser.updatedAt = now;
-                    newUser.name = user.name;
-                    newUser.meta = user.meta;
-                    _repo.Users.Update(newUser);
-                    _repo.SaveChanges();
-                }
+
 
             }
             catch (Exception ex)

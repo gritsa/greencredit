@@ -7,7 +7,6 @@ namespace GreentableApi.Models
     public class Users
     {
         public long id { get; set; }
-        public string name { get; set; }
         public string email { get; set; }
         // The JSON column
         [Column(TypeName = "jsonb")]

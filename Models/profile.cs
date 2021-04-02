@@ -9,10 +9,7 @@ namespace GreentableApi.Models
         public long id { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
-
-         public string description { get; set; }
-
-          public string contactnumber { get; set; }
+         public string profilemedia { get; set; }
         // The JSON column
         [Column(TypeName = "jsonb")]
         public string meta { get; set; }
