@@ -22,11 +22,13 @@ namespace GreentableApi.Models
         public DateTime updatedAt { get; set; }
         public string updatedBy { get; set; }
 
-        public string likes { get; set; }
+        public string likes { get; set; } //bol
 
-         public string comments { get; set; }
-          public string share { get; set; }
+         public string comments { get; set; } 
+          public string share { get; set; } //number
         public string url { get; set; }
+
+        //chna
 
 
     }
