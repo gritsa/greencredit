@@ -4,6 +4,7 @@ using System.Linq;
 using GreentableApi.Helpers;
 using GreentableApi.Models;
 using GreentableApi.Models.Response;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -28,6 +29,7 @@ namespace GreentableApi.Controllers
 
         [Route("")]
         [HttpPost]
+        [EnableCors("AllowOrigins")]
         public ActionResult PostnewUser(Users user)
         {
             if (!ModelState.IsValid)

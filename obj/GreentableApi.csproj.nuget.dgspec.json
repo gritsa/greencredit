@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Raj Seth\\GreentableApi\\GreentableApi.csproj": {}
+    "E:\\Sample\\greenapi\\GreenTable\\GreentableApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Raj Seth\\GreentableApi\\GreentableApi.csproj": {
+    "E:\\Sample\\greenapi\\GreenTable\\GreentableApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Raj Seth\\GreentableApi\\GreentableApi.csproj",
+        "projectUniqueName": "E:\\Sample\\greenapi\\GreenTable\\GreentableApi.csproj",
         "projectName": "GreentableApi",
-        "projectPath": "C:\\Users\\Raj Seth\\GreentableApi\\GreentableApi.csproj",
-        "packagesPath": "C:\\Users\\Raj Seth\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Raj Seth\\GreentableApi\\obj\\",
+        "projectPath": "E:\\Sample\\greenapi\\GreenTable\\GreentableApi.csproj",
+        "packagesPath": "C:\\Users\\MY HP\\.nuget\\packages\\",
+        "outputPath": "E:\\Sample\\greenapi\\GreenTable\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Raj Seth\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\MY HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
