@@ -10,12 +10,12 @@ using Newtonsoft.Json.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 namespace GreentableApi.Controllers
 {
-    [Route("api/users")]
     [ApiController]
-    public class userContoller : ControllerBase
+    [Route("api/[controller]")]
+    public class userController : ControllerBase
     {
         private GreentableContext _repo;
-        public userContoller(GreentableContext repo)
+        public userController(GreentableContext repo)
         {
             _repo = repo;
         }
@@ -27,9 +27,7 @@ namespace GreentableApi.Controllers
             return Ok(_repo.Users.ToList());
         }
 
-        [Route("")]
         [HttpPost]
-        [EnableCors("AllowOrigins")]
         public ActionResult PostnewUser(Users user)
         {
             if (!ModelState.IsValid)

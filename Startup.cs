@@ -82,7 +82,7 @@ namespace GreentableApi
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors(AllowOrigins);
-            app.UseAuth();
+            // app.UseAuth();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
