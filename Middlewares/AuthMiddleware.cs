@@ -74,7 +74,7 @@ namespace coreapi.Middlewares
                 //     await this._next.Invoke(context);
                 // }
             // }
-            if (context.Request.Path.StartsWithSegments(new PathString("/api/users")))
+            if (context.Request.Path.StartsWithSegments(new PathString("/api/user")))
             {
                  await _next(context);
             }

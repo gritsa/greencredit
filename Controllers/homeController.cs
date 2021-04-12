@@ -9,8 +9,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace GreentableApi.Controllers
 {
-    [Route("api/homecontent")]
     [ApiController]
+    [Route("api/[controller]")]
     public class homeController : ControllerBase
     {
         private GreentableContext _repo;
