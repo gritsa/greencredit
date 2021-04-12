@@ -6,5 +6,7 @@ namespace GreentableApi.Models.Response
 
         public string Token { get; set; }
         public string Success { get; set; }
+
+        //  public string profileid { get; set; }
     }
 }

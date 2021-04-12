@@ -1,8 +1,15 @@
 using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using GreentableApi.Helpers;
+using GreentableApi.Models.Response;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 
 /// <summary>
 /// Middlewares Namespace
@@ -67,10 +74,56 @@ namespace coreapi.Middlewares
                 //     await this._next.Invoke(context);
                 // }
             // }
-            // else
+            if (context.Request.Path.StartsWithSegments(new PathString("/api/users")))
+            {
+                 await _next(context);
+            }
+           else if(context.Request.Headers.ContainsKey("Authorization") && context.Request.Headers["Authorization"].ToString().StartsWith("Bearer")) 
+            {
+               var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer", "");
+                // var id = SecurityHelper.readToken(token);
+                //  Authresponse response = new Authresponse();
+                //  response.profileid = SecurityHelper.readToken(token);
+                // await this._next.Invoke(context);
+                if(token != null)
+                {
+                   attachUserToContext(token);
+                }
+                 await _next(context);
+            }
+            else
+
             {
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsync("Unauthorized");
+            }
+        }
+        
+        private void attachUserToContext(string token)
+        {
+            try
+            {
+
+                  var handler = new JwtSecurityTokenHandler();
+            var decodedValue = handler.ReadJwtToken(token);
+            //  var identity = User.Identity as ClaimsIdentity;  
+            IEnumerable<Claim> claims = decodedValue.Claims;
+            var id = claims.FirstOrDefault(p => p.Type == "profileid")?.Value;
+            
+
+                // attach user to context on successful jwt validation
+                // context.Items["User"] = userContoller.GetuserById(userId);
+        //            context = controller.HttpContext;
+        //    var currentser = context.Items.ContainsKey("User") ? (Users)context.Items["User"] : null;
+        //     if (currentser == null)
+        //     {
+        //         throw new Exception("Security Context initialized without a logged in user");
+        //     }
+            }
+            catch
+            {
+                // do nothing if jwt validation fails
+                // user is not attached to context so request won't have access to secure routes
             }
         }
     }
@@ -90,4 +143,6 @@ namespace coreapi.Middlewares
             return builder.UseMiddleware<AuthMiddleware>();
         }
     }
+
+    
 }

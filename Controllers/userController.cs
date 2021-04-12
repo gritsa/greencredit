@@ -81,6 +81,11 @@ namespace GreentableApi.Controllers
                         newUser.meta = user.meta;
                         _repo.Users.Update(newUser);
                         _repo.SaveChanges();
+                         Authresponse response = new Authresponse();
+                        response.User = newUser;
+                        response.Token = AuthwithJwt.GenerateJsonWebToken(newUser);
+                        response.Success = "Success!!";
+                         return Ok(response); 
                     }
                 }
 
