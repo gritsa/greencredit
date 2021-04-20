@@ -69,27 +69,39 @@ namespace coreapi.Middlewares
             //         context.Response.StatusCode = 401;
             //         await context.Response.WriteAsync("Unauthorized");
             //     }
-                // else
-                // {
-                //     await this._next.Invoke(context);
-                // }
+            // else
+            // {
+            //     await this._next.Invoke(context);
+            // }
             // }
             if (context.Request.Path.StartsWithSegments(new PathString("/api/user")))
             {
-                 await _next(context);
+                await _next(context);
             }
-           else if(context.Request.Headers.ContainsKey("Authorization") && context.Request.Headers["Authorization"].ToString().StartsWith("Bearer")) 
+            else if (context.Request.Headers.ContainsKey("Authorization") && context.Request.Headers["Authorization"].ToString().StartsWith("Bearer"))
             {
-               var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer", "");
-                // var id = SecurityHelper.readToken(token);
-                //  Authresponse response = new Authresponse();
-                //  response.profileid = SecurityHelper.readToken(token);
-                // await this._next.Invoke(context);
-                if(token != null)
+                var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer", "");
+                var handler = new JwtSecurityTokenHandler();
+                var id = SecurityHelper.ValidateToken(token);
+                //    var decodedValue = handler.ReadJwtToken(token); 
+                //    IEnumerable<Claim> claims = decodedValue.Claims;
+                //    var id =  claims.FirstOrDefault(p => p.Type == "profileid")?.Value;
+                if (id == null)
                 {
-                   attachUserToContext(token);
+                    context.Response.StatusCode = 401;
+                    await context.Response.WriteAsync("Token Invalid");
                 }
-                 await _next(context);
+                else
+                {
+                    context.Items["User"] = id;
+                    var data = context.Items["User"];
+                    if (token != null)
+                    {
+                        attachUserToContext(token);
+                    }
+                    await _next(context);
+                }
+
             }
             else
 
@@ -98,27 +110,17 @@ namespace coreapi.Middlewares
                 await context.Response.WriteAsync("Unauthorized");
             }
         }
-        
+
         private void attachUserToContext(string token)
         {
             try
             {
 
-                  var handler = new JwtSecurityTokenHandler();
-            var decodedValue = handler.ReadJwtToken(token);
-            //  var identity = User.Identity as ClaimsIdentity;  
-            IEnumerable<Claim> claims = decodedValue.Claims;
-            var id = claims.FirstOrDefault(p => p.Type == "profileid")?.Value;
-            
-
-                // attach user to context on successful jwt validation
-                // context.Items["User"] = userContoller.GetuserById(userId);
-        //            context = controller.HttpContext;
-        //    var currentser = context.Items.ContainsKey("User") ? (Users)context.Items["User"] : null;
-        //     if (currentser == null)
-        //     {
-        //         throw new Exception("Security Context initialized without a logged in user");
-        //     }
+                var handler = new JwtSecurityTokenHandler();
+                var decodedValue = handler.ReadJwtToken(token);
+                //  var identity = User.Identity as ClaimsIdentity;  
+                IEnumerable<Claim> claims = decodedValue.Claims;
+                var id = claims.FirstOrDefault(p => p.Type == "profileid")?.Value;
             }
             catch
             {
@@ -144,5 +146,5 @@ namespace coreapi.Middlewares
         }
     }
 
-    
+
 }

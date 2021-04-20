@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.OpenApi.Models;
 
 namespace GreentableApi
 {
@@ -41,15 +41,53 @@ namespace GreentableApi
 
             services.AddControllers();
             services.AddEntityFrameworkNpgsql().AddDbContext<GreentableContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("greentableConection")));
+            //     services.AddSwaggerGen(options =>
+            //   {
+            //       options.SwaggerDoc(name: "v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            //       {
+            //           Title = "Greentable API",
+            //           Version = "v1",
+            //           Description = "Greentable API",
+            //       });
+            //   });
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(options =>
-          {
-              options.SwaggerDoc(name: "v1", new Microsoft.OpenApi.Models.OpenApiInfo
-              {
-                  Title = "Greentable API",
-                  Version = "v1",
-                  Description = "Greentable API",
-              });
-          });
+            {
+                options.SwaggerDoc(name: "v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "Greentable API",
+                    Version = "v1",
+                    Description = "Greentable API",
+                });
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    // Description = "JWT Authorization header using the Bearer scheme."
+                });
+
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+{
+new OpenApiSecurityScheme
+{
+Reference = new OpenApiReference
+{
+Type = ReferenceType.SecurityScheme,
+Id = "Bearer"
+}
+},
+new string[] {}
+
+}
+            });
+            });
 
         }
 

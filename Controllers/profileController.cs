@@ -8,8 +8,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace GreentableApi.Controllers
 {
-    [Route("api/profile")]
     [ApiController]
+    [Route("api/[controller]")]
     public class profileContoller : ControllerBase
     {
         private GreentableContext _repo;

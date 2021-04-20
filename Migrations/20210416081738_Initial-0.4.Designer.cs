@@ -3,15 +3,17 @@ using System;
 using GreentableApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GreentableApi.Migrations
 {
     [DbContext(typeof(GreentableContext))]
-    partial class GreentableContextModelSnapshot : ModelSnapshot
+    [Migration("20210416081738_Initial-0.4")]
+    partial class Initial04
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,9 +111,6 @@ namespace GreentableApi.Migrations
 
                     b.Property<string>("createdBy")
                         .HasColumnType("text");
-
-                    b.Property<string>("likes")
-                        .HasColumnType("jsonb");
 
                     b.Property<string>("meta")
                         .HasColumnType("jsonb");

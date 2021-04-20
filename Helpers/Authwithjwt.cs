@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
 using GreentableApi.Models.Response;
+using System.Collections.Generic;
 
 namespace GreentableApi.Helpers
 {
@@ -25,13 +26,15 @@ namespace GreentableApi.Helpers
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Secret);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]{
                    new Claim(JwtRegisteredClaimNames.Sub, user.email),
                     new Claim(JwtRegisteredClaimNames.Email, user.email),
+                    new Claim("profileid", user.profileid.ToString(), ClaimValueTypes.Integer64),
                }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
