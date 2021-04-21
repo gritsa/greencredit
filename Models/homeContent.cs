@@ -26,14 +26,15 @@ namespace GreentableApi.Models
         public string updatedBy { get; set; }
 
         // public string likes { get; set; } //bol
-         [Column(TypeName = "jsonb")]
+        [Column(TypeName = "jsonb")]
         public string likes { get; set; }
 
+        [Column(TypeName = "jsonb")]
         public string comments { get; set; }
         public string share { get; set; } //number
         public string url { get; set; } //change the url to name with the extension
-        // [NotMapped]
-        //  public IFormFile Image { get; set; }
+        [NotMapped]
+        public List<Likes> likedata { get; set; }
 
         //chna
 

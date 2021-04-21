@@ -3,15 +3,17 @@ using System;
 using GreentableApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GreentableApi.Migrations
 {
     [DbContext(typeof(GreentableContext))]
-    partial class GreentableContextModelSnapshot : ModelSnapshot
+    [Migration("20210421104258_Initial-0.6")]
+    partial class Initial06
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,9 +102,6 @@ namespace GreentableApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("comments")
-                        .HasColumnType("jsonb");
 
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("timestamp without time zone");

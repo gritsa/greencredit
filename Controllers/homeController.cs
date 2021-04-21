@@ -47,13 +47,6 @@ namespace GreentableApi.Controllers
 
             try
             {
-                // // var data = this.Request.Form.Files[0];
-                // using (var stream = new MemoryStream())
-
-                // {
-                //     file.CopyTo(stream);
-
-                // }
                 var imageResponse = await AmazonS3Service.UploadObject(file);
                 JsonResult response = new JsonResult(new Object());
                 // Authresponse response = new Authresponse();

@@ -43,37 +43,6 @@ namespace coreapi.Middlewares
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-            // if (context.Request.Path.StartsWithSegments(new PathString("/api/Auth")) ||
-            // context.Request.Path.StartsWithSegments(new PathString("/swagger")) ||
-            // context.Request.Path.StartsWithSegments(new PathString("/api/devexpressdashboard")))
-            // {
-            //     // If an authorization header was sent to the Auth API, validate it into a User object. This is needed for switching client tokens.
-            //     if (context.Request.Headers.ContainsKey("Authorization") && context.Request.Headers["Authorization"].ToString().StartsWith("Bearer "))
-            //     {
-            //         var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            //         context.Items["User"] = SecurityHelper.ValidateToken(token);
-            //     }
-
-            //     await this._next.Invoke(context);
-            // }
-            // else if (context.Request.Headers.ContainsKey("Authorization") && context.Request.Headers["Authorization"].ToString().StartsWith("Bearer ") &&
-            // context.Request.Headers.ContainsKey("EntityId") && context.Request.Headers.ContainsKey("TimePeriodId"))
-            // {
-            //     var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            //     context.Items["User"] = SecurityHelper.ValidateToken(token);
-            //     context.Items["Entity"] = context.Request.Headers["EntityId"];
-            //     context.Items["TimePeriodId"] = context.Request.Headers["TimePeriodId"];
-
-            //     if (context.Items["User"] == null)
-            //     {
-            //         context.Response.StatusCode = 401;
-            //         await context.Response.WriteAsync("Unauthorized");
-            //     }
-            // else
-            // {
-            //     await this._next.Invoke(context);
-            // }
-            // }
             if (context.Request.Path.StartsWithSegments(new PathString("/api/user")))
             {
                 await _next(context);

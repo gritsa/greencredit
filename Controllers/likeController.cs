@@ -5,6 +5,7 @@ using System.Net;
 using GreentableApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -30,79 +31,68 @@ namespace GreentableApi.Controllers
                 {
                     foreach (homeContent c in homecontent)
                     {
-                        // List<Likes> like;
-                        // like = new List<Likes>();
-                        var like = new Likes();
+                        List<Likes> like;
+                        like = new List<Likes>();
                         if (likes.postid == c.id)
                         {
-                            // if(c.likes != null)
-                            // {}
-                            // like.Add(new Likes()
-                            // {
-                            like.ownerid = likes.ownerid;
-                            like.postid = likes.postid;
+                            like.Add(new Likes()
+                            {
+                                ownerid = likes.ownerid,
+                                postid = likes.postid
 
 
-                            // });
+                            });
 
                             if (c.likes != null)
                             {
-                                // var json = JsonConvert.SerializeObject(like[0]);
-                                // var h = like[0];
-                                // string[] myArray = new string[] { json };
-                                // var tempList = myArray.ToList();
-                                // tempList.Add(c.likes);
-                                // myArray = tempList.ToArray();
-                                // var test = JsonConvert.SerializeObject(myArray);
+                                List<Likes> secondlike;
+                                secondlike = new List<Likes>();
+                                var newpush = JsonConvert.SerializeObject(like[0]);
+                                dynamic newdata = JsonConvert.DeserializeObject<dynamic>(newpush);
+                                dynamic olddata = JsonConvert.DeserializeObject<dynamic>(c.likes);
+                                for (var i = 0; i < olddata.Count; i++)
+                                {
+
+                                    secondlike.Add(new Likes()
+                                    {
+                                        ownerid = olddata[i].ownerid,
+                                        postid = olddata[i].postid
+                                    });
+
+                                    if (olddata[i].ownerid == newdata.ownerid)
+                                    {
+                                        secondlike.RemoveAt(i);
+                                    }
+
+
+                                }
+                                if (olddata.Count == secondlike.Count)
+                                {
+                                    secondlike.Add(new Likes()
+                                    {
+                                        ownerid = newdata.ownerid,
+                                        postid = newdata.postid
+                                    });
+                                }
+
+
+                                var finalLikeData = JsonConvert.SerializeObject(secondlike);
+                                c.likes = finalLikeData;
                                 var now = DateTime.UtcNow;
                                 c.updatedAt = now;
-                                // string st = String.Concat(json, c.likes);
-                                // c.likes.Append(mediaInfo);
-                                // var hh = JsonConvert.SerializeObject(st);
-                                var likedata = JsonConvert.SerializeObject(like);
-                                // likedata.ToArray();
-                                // c.likes = likedata;
-                                var myList = new List<string>();
-                                myList.Add(c.likes);
-                                myList.Add(likedata);
-                                 var fut = JsonConvert.SerializeObject(myList);
-                                c.likes = fut;
                                 _repo.homeContent.Update(c);
                                 _repo.SaveChanges();
-
                             }
                             else
                             {
-                                // var json = JsonConvert.SerializeObject(like[0]);
-                                var likedata = JsonConvert.SerializeObject(like);
-                                c.likes = likedata;
+                                var likeData = JsonConvert.SerializeObject(like);
+                                c.likes = likeData;
                                 var now = DateTime.UtcNow;
                                 c.updatedAt = now;
-                                // c.likes.Append(mediaInfo);
-                                // c.likes = json;
-
                                 _repo.homeContent.Update(c);
                                 _repo.SaveChanges();
 
                             }
-
-
-                            //    dynamic mediaInfo = new JArray(json);
-                            //    mediaInfo = json;
-                            // if (like.Count() > 0)
-                            // {
-                            //     var now = DateTime.UtcNow;
-                            //     c.updatedAt = now;
-                            //     // c.likes.Append(mediaInfo);
-                            //     c.likes = test;
-
-                            //     _repo.homeContent.Update(c);
-                            //     _repo.SaveChanges();
-                            // }
-                            // else
-                            // {
-                            //     c.likes = null;
-                            // }
                         }
 
 
@@ -115,8 +105,6 @@ namespace GreentableApi.Controllers
             {
                 return BadRequest(ex);
             }
-
-            // return Ok();
         }
     }
 }
