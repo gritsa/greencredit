@@ -4,20 +4,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GreentableApi.Models
 {
-    public class Profile
+    public class greenCoins
     {
         public long id { get; set; }
-        public string firstname { get; set; }
-         public string profilemedia { get; set; }
+        public long profileid { get; set; }
+         public double coins { get; set; }
         // The JSON column
         [Column(TypeName = "jsonb")]
         public string meta { get; set; }
         public DateTime createdAt { get; set; }
         public string createdBy { get; set; }
-        public DateTime updatedAt { get; set; }
-        public string updatedBy { get; set; }
-
-
-        //for making forgein ket relation 
     }
 }

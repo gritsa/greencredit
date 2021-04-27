@@ -52,9 +52,6 @@ namespace coreapi.Middlewares
                 var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer", "");
                 var handler = new JwtSecurityTokenHandler();
                 var id = SecurityHelper.ValidateToken(token);
-                //    var decodedValue = handler.ReadJwtToken(token); 
-                //    IEnumerable<Claim> claims = decodedValue.Claims;
-                //    var id =  claims.FirstOrDefault(p => p.Type == "profileid")?.Value;
                 if (id == null)
                 {
                     context.Response.StatusCode = 401;
@@ -64,10 +61,6 @@ namespace coreapi.Middlewares
                 {
                     context.Items["User"] = id;
                     var data = context.Items["User"];
-                    if (token != null)
-                    {
-                        attachUserToContext(token);
-                    }
                     await _next(context);
                 }
 
@@ -77,24 +70,6 @@ namespace coreapi.Middlewares
             {
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsync("Unauthorized");
-            }
-        }
-
-        private void attachUserToContext(string token)
-        {
-            try
-            {
-
-                var handler = new JwtSecurityTokenHandler();
-                var decodedValue = handler.ReadJwtToken(token);
-                //  var identity = User.Identity as ClaimsIdentity;  
-                IEnumerable<Claim> claims = decodedValue.Claims;
-                var id = claims.FirstOrDefault(p => p.Type == "profileid")?.Value;
-            }
-            catch
-            {
-                // do nothing if jwt validation fails
-                // user is not attached to context so request won't have access to secure routes
             }
         }
     }

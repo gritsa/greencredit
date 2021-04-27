@@ -36,6 +36,9 @@ namespace GreentableApi.Models
         [NotMapped]
         public List<Likes> likedata { get; set; }
 
+         public double greenCoin { get; set; } 
+        //use float for greemcoin
+
         //chna
 
 

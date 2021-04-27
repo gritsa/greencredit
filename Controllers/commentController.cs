@@ -26,6 +26,9 @@ namespace GreentableApi.Controllers
         {
             try
             {
+                var data = this.HttpContext.Items["User"].ToString();
+                long id = long.Parse(data);
+                var newUser = _repo.Profile.FirstOrDefault(u => u.id == id);
                 var homecontent = this._repo.homeContent.ToList();
                 if (homecontent.Count() > 0)
                 {
@@ -37,11 +40,11 @@ namespace GreentableApi.Controllers
                         {
                             comment.Add(new Comments()
                             {
-                                ownerid = comments.ownerid,
+                                ownerid = newUser.id,
                                 postid = comments.postid,
                                 commentText = comments.commentText,
-                                ownername = comments.ownername,
-                                ownermedia = comments.ownermedia
+                                ownername = newUser.firstname,
+                                ownermedia = newUser.profilemedia
 
 
                             });

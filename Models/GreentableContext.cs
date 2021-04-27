@@ -8,7 +8,9 @@ namespace GreentableApi.Models
         public DbSet<Users> Users { get; set; }
         public DbSet<homeContent> homeContent { get; set; }
 
-          public DbSet<Profile> Profile { get; set; }
+        public DbSet<Profile> Profile { get; set; }
+
+        public DbSet<greenCoins> GreenCoins { get; set; }
 
     }
 }

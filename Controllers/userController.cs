@@ -40,9 +40,9 @@ namespace GreentableApi.Controllers
                 dynamic metavlue = JObject.Parse(user.meta);
                 if (metavlue != null)
                 {
-                    string firstname = metavlue.firstname;
-                    string lastname = metavlue.lastname;
-                    string profilemedia = metavlue.profilemedia;
+                    string displayname = metavlue.displayName;
+                    // string lastname = metavlue.lastname;
+                    string profilemedia = metavlue.photoURL;
                     var newUser = _repo.Users.FirstOrDefault(u => u.googleuid == user.googleuid && u.email == user.email);
                     if (newUser == null)
                     {
@@ -52,8 +52,7 @@ namespace GreentableApi.Controllers
                         var now = DateTime.UtcNow;
                         profile.createdAt = now;
                         profile.updatedAt = now;
-                        profile.firstname = firstname;
-                        profile.lastname = lastname;
+                        profile.firstname = displayname;
                         profile.profilemedia = profilemedia;
                         _repo.Add(profile);
                         _repo.SaveChanges();

@@ -35,11 +35,11 @@ namespace GreentableApi.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> PostnewUser(IFormFile file, [FromForm]string jsonData)
+        public async Task<IActionResult> PostnewUser(IFormFile file, [FromForm] string jsonData)
         {
             // var content = new homeContent();
             // List<homeContent> content = 
-             homeContent content = JsonConvert.DeserializeObject<homeContent>(jsonData);
+            homeContent content = JsonConvert.DeserializeObject<homeContent>(jsonData);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -47,13 +47,10 @@ namespace GreentableApi.Controllers
 
             try
             {
+                var coinData = new greenCoins();
                 var imageResponse = await AmazonS3Service.UploadObject(file);
-                JsonResult response = new JsonResult(new Object());
-                // Authresponse response = new Authresponse();
                 var data = this.HttpContext.Items["User"].ToString();
                 long id = long.Parse(data);
-                //    var id =  data.FirstOrDefault(p => p.Type == "profileid")?.Value;
-                //  var imageResponse = AmazonS3Service.UploadObject(); 
                 var now = DateTime.UtcNow;
                 content.profileid = id;
                 content.createdAt = now;
@@ -61,9 +58,18 @@ namespace GreentableApi.Controllers
                 content.createdBy = content.profilename;
                 content.updatedBy = content.profilename;
                 content.url = imageResponse.FileName;
+
                 _repo.Add(content);
                 _repo.SaveChanges();
-                return Ok(content);
+
+                coinData.profileid = id;
+                coinData.createdAt = now;
+                coinData.createdBy = content.profilename;
+                coinData.coins = 10; //make it random 1-10
+                _repo.Add(coinData);
+                _repo.SaveChanges();
+
+                return Ok(coinData);
             }
             catch (Exception ex)
             {

@@ -8,6 +8,7 @@ using GreentableApi.Models;
 using GreentableApi.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace GreentableApi.Helpers
 {
@@ -21,16 +22,25 @@ namespace GreentableApi.Helpers
 
         private const string Secret = "db3OIsj+BXE9NZDy0t8W3TcNekrF+2d/1sFnWG4HnV8TZY30iTOdtVWJG8abWvB1GlOgJuQZdcF2Luqm/hccMw==";
 
-        public static string readToken(String token)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var decodedValue = handler.ReadJwtToken(token);
-            //  var identity = User.Identity as ClaimsIdentity;  
-            IEnumerable<Claim> claims = decodedValue.Claims;
-            var id = claims.FirstOrDefault(p => p.Type == "profileid")?.Value;
+        // public static string getProfiledata(String data)
+        // {
+        //     dynamic newdata = JsonConvert.DeserializeObject<dynamic>(data);
+        //     IEnumerable<dynamic> profileData = newdata;
+        //     var id = profileData.FirstOrDefault(p => p.Type == "profileid")?.Value;
+        //     var email = profileData.FirstOrDefault(p => p.Type == "email")?.Value;
+        //     List<profileResponse> listitem;
+        //     listitem = new List<profileResponse>();
+        //     listitem.Add(new profileResponse()
+        //     {
+        //         profileid = id,
+        //         profilemail = email
 
-            return id;
-        }
+
+        //     });
+        //     var newpush = JsonConvert.SerializeObject(listitem[0]);
+
+        //     return newpush;
+        // }
 
         public static string ValidateToken(string token)
         {

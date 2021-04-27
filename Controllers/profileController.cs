@@ -44,7 +44,6 @@ namespace GreentableApi.Controllers
                 {
                     var now = DateTime.UtcNow;
                     newData.firstname = profile.firstname;
-                    newData.lastname = profile.lastname;
                     newData.profilemedia = profile.profilemedia;
                     newData.createdAt = now;
                     newData.updatedAt = now;

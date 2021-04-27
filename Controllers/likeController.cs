@@ -26,6 +26,9 @@ namespace GreentableApi.Controllers
         {
             try
             {
+                var data = this.HttpContext.Items["User"].ToString();
+                long id = long.Parse(data);
+                var newUser = _repo.Profile.FirstOrDefault(u => u.id == id);
                 var homecontent = this._repo.homeContent.ToList();
                 if (homecontent.Count() > 0)
                 {
@@ -37,8 +40,10 @@ namespace GreentableApi.Controllers
                         {
                             like.Add(new Likes()
                             {
-                                ownerid = likes.ownerid,
-                                postid = likes.postid
+                                ownerid = newUser.id,
+                                postid = likes.postid,
+                                displayName = newUser.firstname,
+                                profilemedia = newUser.profilemedia
 
 
                             });
@@ -56,7 +61,10 @@ namespace GreentableApi.Controllers
                                     secondlike.Add(new Likes()
                                     {
                                         ownerid = olddata[i].ownerid,
-                                        postid = olddata[i].postid
+                                        postid = olddata[i].postid,
+                                        displayName = olddata[i].displayName,
+                                        profilemedia = olddata[i].profilemedia
+
                                     });
 
                                     if (olddata[i].ownerid == newdata.ownerid)
@@ -71,7 +79,9 @@ namespace GreentableApi.Controllers
                                     secondlike.Add(new Likes()
                                     {
                                         ownerid = newdata.ownerid,
-                                        postid = newdata.postid
+                                        postid = newdata.postid,
+                                        displayName = newdata.displayName,
+                                        profilemedia = newdata.profilemedia
                                     });
                                 }
 
