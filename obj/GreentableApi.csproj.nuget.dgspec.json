@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Sample\\greenapi\\GreenTable\\GreentableApi.csproj": {}
+    "C:\\Users\\Raj Seth\\api\\GreenTable\\GreentableApi.csproj": {}
   },
   "projects": {
-    "E:\\Sample\\greenapi\\GreenTable\\GreentableApi.csproj": {
+    "C:\\Users\\Raj Seth\\api\\GreenTable\\GreentableApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Sample\\greenapi\\GreenTable\\GreentableApi.csproj",
+        "projectUniqueName": "C:\\Users\\Raj Seth\\api\\GreenTable\\GreentableApi.csproj",
         "projectName": "GreentableApi",
-        "projectPath": "E:\\Sample\\greenapi\\GreenTable\\GreentableApi.csproj",
-        "packagesPath": "C:\\Users\\MY HP\\.nuget\\packages\\",
-        "outputPath": "E:\\Sample\\greenapi\\GreenTable\\obj\\",
+        "projectPath": "C:\\Users\\Raj Seth\\api\\GreenTable\\GreentableApi.csproj",
+        "packagesPath": "C:\\Users\\Raj Seth\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Raj Seth\\api\\GreenTable\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\MY HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Raj Seth\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -39,9 +36,9 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
-            "AWSSDK.Extensions.NETCore.Setup": {
+            "AWSSDK.S3": {
               "target": "Package",
-              "version": "[3.3.101, )"
+              "version": "[3.7.0.11, )"
             },
             "BCrypt.Net-Next": {
               "target": "Package",

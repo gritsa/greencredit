@@ -2,28 +2,25 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "AWSSDK.Core/3.3.100": {
+      "AWSSDK.Core/3.7.0.11": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.0/AWSSDK.Core.dll": {}
+          "lib/netcoreapp3.1/AWSSDK.Core.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/AWSSDK.Core.dll": {}
+          "lib/netcoreapp3.1/AWSSDK.Core.dll": {}
         }
       },
-      "AWSSDK.Extensions.NETCore.Setup/3.3.101": {
+      "AWSSDK.S3/3.7.0.11": {
         "type": "package",
         "dependencies": {
-          "AWSSDK.Core": "[3.3.100, 3.6.0)",
-          "Microsoft.Extensions.Configuration.Abstractions": "2.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "2.0.0"
+          "AWSSDK.Core": "[3.7.0.11, 3.8.0)"
         },
         "compile": {
-          "lib/netstandard2.0/AWSSDK.Extensions.NETCore.Setup.dll": {}
+          "lib/netcoreapp3.1/AWSSDK.S3.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/AWSSDK.Extensions.NETCore.Setup.dll": {}
+          "lib/netcoreapp3.1/AWSSDK.S3.dll": {}
         }
       },
       "BCrypt.Net-Next/4.0.2": {
@@ -1313,68 +1310,56 @@
     }
   },
   "libraries": {
-    "AWSSDK.Core/3.3.100": {
-      "sha512": "1zJggHEvcrqLRrICUJFsmmqxlnbQimUihhTsSWSlErqEi2keTROPrShmnAzz5aMU0dGuMFI8jWbAL1On2QXpKg==",
+    "AWSSDK.Core/3.7.0.11": {
+      "sha512": "uNl0cdPF+C2SJXiaOU8NazSs2sVXu+iZlJZS38Q9p2GIY46PsTboC/cTH6kVPY5TaN3Ez1ST/gNHayeCMpRtkg==",
       "type": "package",
-      "path": "awssdk.core/3.3.100",
+      "path": "awssdk.core/3.7.0.11",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "awssdk.core.3.3.100.nupkg.sha512",
+        "awssdk.core.3.7.0.11.nupkg.sha512",
         "awssdk.core.nuspec",
-        "lib/MonoAndroid10/AWSSDK.Core.XML",
-        "lib/MonoAndroid10/AWSSDK.Core.dll",
-        "lib/MonoAndroid10/AWSSDK.Core.pdb",
-        "lib/MonoTouch10/AWSSDK.Core.XML",
-        "lib/MonoTouch10/AWSSDK.Core.dll",
-        "lib/Xamarin.Mac20/AWSSDK.Core.XML",
-        "lib/Xamarin.Mac20/AWSSDK.Core.dll",
-        "lib/Xamarin.iOS10/AWSSDK.Core.XML",
-        "lib/Xamarin.iOS10/AWSSDK.Core.dll",
         "lib/net35/AWSSDK.Core.dll",
         "lib/net35/AWSSDK.Core.pdb",
         "lib/net35/AWSSDK.Core.xml",
         "lib/net45/AWSSDK.Core.dll",
         "lib/net45/AWSSDK.Core.pdb",
         "lib/net45/AWSSDK.Core.xml",
-        "lib/netstandard1.3/AWSSDK.Core.dll",
-        "lib/netstandard1.3/AWSSDK.Core.pdb",
-        "lib/netstandard1.3/AWSSDK.Core.xml",
+        "lib/netcoreapp3.1/AWSSDK.Core.dll",
+        "lib/netcoreapp3.1/AWSSDK.Core.pdb",
+        "lib/netcoreapp3.1/AWSSDK.Core.xml",
         "lib/netstandard2.0/AWSSDK.Core.dll",
         "lib/netstandard2.0/AWSSDK.Core.pdb",
         "lib/netstandard2.0/AWSSDK.Core.xml",
-        "lib/portable-net45+win8+wpa81+wp8/AWSSDK.Core.XML",
-        "lib/portable-net45+win8+wpa81+wp8/AWSSDK.Core.dll",
-        "lib/portable-net45+win8+wpa81+wp8/AWSSDK.Core.pdb",
-        "lib/uap/AWSSDK.Core.XML",
-        "lib/uap/AWSSDK.Core.dll",
-        "lib/uap/AWSSDK.Core.pdb",
-        "lib/win8/AWSSDK.Core.XML",
-        "lib/win8/AWSSDK.Core.dll",
-        "lib/win8/AWSSDK.Core.pdb",
-        "lib/wp8/AWSSDK.Core.XML",
-        "lib/wp8/AWSSDK.Core.dll",
-        "lib/wp8/AWSSDK.Core.pdb",
-        "lib/wpa81/AWSSDK.Core.XML",
-        "lib/wpa81/AWSSDK.Core.dll",
-        "lib/wpa81/AWSSDK.Core.pdb",
         "tools/account-management.ps1"
       ]
     },
-    "AWSSDK.Extensions.NETCore.Setup/3.3.101": {
-      "sha512": "mbFGOX62zG4A/0bIhKy+I3NmNBAwSCKClFl+Y6RzuRj+0cQDBbmH33JMe8x3SWizhoyl+ATm2ldOR1phIFTGvA==",
+    "AWSSDK.S3/3.7.0.11": {
+      "sha512": "GAsJTENSabGXKjsEHAte1OfvZmLQkZ6F4x7w7vGbVHws/CRSLt7HytYA2bCwCVH6oQC9Q33o/JTVaxgjK7n8FQ==",
       "type": "package",
-      "path": "awssdk.extensions.netcore.setup/3.3.101",
+      "path": "awssdk.s3/3.7.0.11",
+      "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "awssdk.extensions.netcore.setup.3.3.101.nupkg.sha512",
-        "awssdk.extensions.netcore.setup.nuspec",
-        "lib/netstandard1.3/AWSSDK.Extensions.NETCore.Setup.dll",
-        "lib/netstandard1.3/AWSSDK.Extensions.NETCore.Setup.pdb",
-        "lib/netstandard2.0/AWSSDK.Extensions.NETCore.Setup.dll",
-        "lib/netstandard2.0/AWSSDK.Extensions.NETCore.Setup.pdb"
+        "analyzers/dotnet/cs/AWSSDK.S3.CodeAnalysis.dll",
+        "awssdk.s3.3.7.0.11.nupkg.sha512",
+        "awssdk.s3.nuspec",
+        "lib/net35/AWSSDK.S3.dll",
+        "lib/net35/AWSSDK.S3.pdb",
+        "lib/net35/AWSSDK.S3.xml",
+        "lib/net45/AWSSDK.S3.dll",
+        "lib/net45/AWSSDK.S3.pdb",
+        "lib/net45/AWSSDK.S3.xml",
+        "lib/netcoreapp3.1/AWSSDK.S3.dll",
+        "lib/netcoreapp3.1/AWSSDK.S3.pdb",
+        "lib/netcoreapp3.1/AWSSDK.S3.xml",
+        "lib/netstandard2.0/AWSSDK.S3.dll",
+        "lib/netstandard2.0/AWSSDK.S3.pdb",
+        "lib/netstandard2.0/AWSSDK.S3.xml",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
       ]
     },
     "BCrypt.Net-Next/4.0.2": {
@@ -4408,7 +4393,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
-      "AWSSDK.Extensions.NETCore.Setup >= 3.3.101",
+      "AWSSDK.S3 >= 3.7.0.11",
       "BCrypt.Net-Next >= 4.0.2",
       "DevExtreme.AspNet.Data >= 2.6.2",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 3.1.6",
@@ -4422,23 +4407,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\MY HP\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Raj Seth\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Sample\\greenapi\\GreenTable\\GreentableApi.csproj",
+      "projectUniqueName": "C:\\Users\\Raj Seth\\api\\GreenTable\\GreentableApi.csproj",
       "projectName": "GreentableApi",
-      "projectPath": "E:\\Sample\\greenapi\\GreenTable\\GreentableApi.csproj",
-      "packagesPath": "C:\\Users\\MY HP\\.nuget\\packages\\",
-      "outputPath": "E:\\Sample\\greenapi\\GreenTable\\obj\\",
+      "projectPath": "C:\\Users\\Raj Seth\\api\\GreenTable\\GreentableApi.csproj",
+      "packagesPath": "C:\\Users\\Raj Seth\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Raj Seth\\api\\GreenTable\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\MY HP\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Raj Seth\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
@@ -4460,9 +4441,9 @@
     "frameworks": {
       "netcoreapp3.1": {
         "dependencies": {
-          "AWSSDK.Extensions.NETCore.Setup": {
+          "AWSSDK.S3": {
             "target": "Package",
-            "version": "[3.3.101, )"
+            "version": "[3.7.0.11, )"
           },
           "BCrypt.Net-Next": {
             "target": "Package",
