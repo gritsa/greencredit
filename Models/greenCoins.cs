@@ -8,7 +8,10 @@ namespace GreentableApi.Models
     {
         public long id { get; set; }
         public long profileid { get; set; }
-         public double coins { get; set; }
+
+        public long postid { get; set; }
+
+        public double coins { get; set; }
         // The JSON column
         [Column(TypeName = "jsonb")]
         public string meta { get; set; }

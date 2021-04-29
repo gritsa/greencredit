@@ -108,7 +108,9 @@ namespace GreentableApi.Controllers
 
                     }
                 }
-                return Ok(homecontent);
+                var homedata = _repo.homeContent.AsEnumerable().OrderByDescending(x => x.updatedAt);
+                return Ok(homedata.ToList());
+                // return Ok(homecontent);
 
             }
             catch (Exception ex)

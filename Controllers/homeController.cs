@@ -30,7 +30,8 @@ namespace GreentableApi.Controllers
         [Route("")]                            //to get the request GET api/users
         public ActionResult<IEnumerable<Command>> GetAllUsers()
         {
-            return Ok(_repo.homeContent.ToList());
+            var data = _repo.homeContent.AsEnumerable().OrderByDescending(x => x.updatedAt);
+            return Ok(data.ToList());
         }
 
 
@@ -62,10 +63,13 @@ namespace GreentableApi.Controllers
                 _repo.Add(content);
                 _repo.SaveChanges();
 
+                Random rnd = new Random();
+                int coin = rnd.Next(1, 11);  //random value between 1-10
                 coinData.profileid = id;
+                coinData.postid = content.id;
                 coinData.createdAt = now;
                 coinData.createdBy = content.profilename;
-                coinData.coins = 10; //make it random 1-10
+                coinData.coins = coin; //make it random 1-10 //orderby with linkq //descending
                 _repo.Add(coinData);
                 _repo.SaveChanges();
 
