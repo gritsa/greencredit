@@ -9,6 +9,7 @@ using GreentableApi.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace GreentableApi.Controllers
@@ -30,8 +31,62 @@ namespace GreentableApi.Controllers
         [Route("")]                            //to get the request GET api/users
         public ActionResult<IEnumerable<Command>> GetAllUsers()
         {
-            var data = _repo.homeContent.AsEnumerable().OrderByDescending(x => x.updatedAt);
-            return Ok(data.ToList());
+            try
+            {
+                var data = _repo.homeContent.AsEnumerable().OrderByDescending(x => x.updatedAt).ToList();
+
+                foreach (homeContent c in data)
+                {
+                    if (c.likes != null)
+                    {
+                        List<Likes> ForeachLike = new List<Likes>();
+
+                        ForeachLike = JsonConvert.DeserializeObject<List<Likes>>(c.likes);
+
+                        var pr = _repo.Profile.ToList();
+                        var likeJoin = pr.Join(
+                            ForeachLike,
+                            p => p.id,
+                            l => l.profileId,
+                            (p, l) => new
+                            {
+                                profileId = p.id,
+                                profileName = p.firstname,
+                                profileMedia = p.profilemedia
+                            }
+                        ).ToList();
+
+                        c.likes = JsonConvert.SerializeObject(likeJoin);
+
+                    }
+                    if (c.comments != null)
+                    {
+                        List<Comments> ForeachComment = new List<Comments>();
+
+                        ForeachComment = JsonConvert.DeserializeObject<List<Comments>>(c.comments);
+                        var profile = _repo.Profile.ToList();
+                        var commentJoin = profile.Join(
+                            ForeachComment,
+                            p => p.id,
+                            l => l.profileId,
+                            (p, l) => new
+                            {
+                                profileId = p.id,
+                                commentText = l.commentText,
+                                createdAt = l.createdAt,
+                                profileName = p.firstname,
+                                profileMedia = p.profilemedia
+                            }
+                        ).ToList();
+                        c.comments = JsonConvert.SerializeObject(commentJoin);
+                    }
+                }
+                return Ok(data.ToList());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
 
@@ -49,15 +104,18 @@ namespace GreentableApi.Controllers
             try
             {
                 var coinData = new greenCoins();
-                var imageResponse = await AmazonS3Service.UploadObject(file);
+                var imageResponse = await AmazonS3Service.UploadObject(file); //promiseAll
                 var data = this.HttpContext.Items["User"].ToString();
                 long id = long.Parse(data);
+                var newUser = _repo.Profile.FirstOrDefault(u => u.id == id);
                 var now = DateTime.UtcNow;
                 content.profileid = id;
+                content.profilename =  newUser.firstname;
+                content.profilemedia = newUser.profilemedia;
                 content.createdAt = now;
                 content.updatedAt = now;
-                content.createdBy = content.profilename;
-                content.updatedBy = content.profilename;
+                content.createdBy = newUser.firstname;
+                content.updatedBy = newUser.firstname;
                 content.url = imageResponse.FileName;
 
                 _repo.Add(content);
@@ -68,7 +126,7 @@ namespace GreentableApi.Controllers
                 coinData.profileid = id;
                 coinData.postid = content.id;
                 coinData.createdAt = now;
-                coinData.createdBy = content.profilename;
+                coinData.createdBy = newUser.firstname;
                 coinData.coins = coin; //make it random 1-10 //orderby with linkq //descending
                 _repo.Add(coinData);
                 _repo.SaveChanges();

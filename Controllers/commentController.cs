@@ -22,13 +22,14 @@ namespace GreentableApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Command> Postnewlike(Comments comments)
+        [Route("{id}")]
+        public ActionResult<Command> Postnewlike(int id, Comments comments)
         {
             try
             {
                 var data = this.HttpContext.Items["User"].ToString();
-                long id = long.Parse(data);
-                var newUser = _repo.Profile.FirstOrDefault(u => u.id == id);
+                long userid = long.Parse(data);
+                var newUser = _repo.Profile.FirstOrDefault(u => u.id == userid);
                 var homecontent = this._repo.homeContent.ToList();
                 if (homecontent.Count() > 0)
                 {
@@ -36,17 +37,14 @@ namespace GreentableApi.Controllers
                     {
                         List<Comments> comment;
                         comment = new List<Comments>();
-                        if (comments.postid == c.id)
+                        if (id == c.id)
                         {
+                            var currentdate = DateTime.UtcNow;
                             comment.Add(new Comments()
                             {
-                                ownerid = newUser.id,
-                                postid = comments.postid,
+                                profileId = newUser.id,
                                 commentText = comments.commentText,
-                                ownername = newUser.firstname,
-                                ownermedia = newUser.profilemedia
-
-
+                                createdAt = currentdate
                             });
 
                             if (c.comments != null)
@@ -61,22 +59,18 @@ namespace GreentableApi.Controllers
 
                                     secondcomment.Add(new Comments()
                                     {
-                                        ownerid = olddata[i].ownerid,
-                                        postid = olddata[i].postid,
+                                        profileId = olddata[i].profileId,
                                         commentText = olddata[i].commentText,
-                                        ownername = olddata[i].ownername,
-                                        ownermedia = olddata[i].ownermedia
+                                        createdAt = olddata[i].createdAt,
                                     });
 
                                 }
 
                                 secondcomment.Add(new Comments()
                                 {
-                                    ownerid = newdata.ownerid,
-                                    postid = newdata.postid,
+                                    profileId = newdata.profileId,
                                     commentText = newdata.commentText,
-                                    ownername = newdata.ownername,
-                                    ownermedia = newdata.ownermedia
+                                    createdAt = newdata.createdAt
                                 });
 
 

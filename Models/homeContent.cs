@@ -12,8 +12,6 @@ namespace GreentableApi.Models
         public long id { get; set; }
 
         public long profileid { get; set; }
-
-        [Required(ErrorMessage = "Profilename is required.")]
         public string profilename { get; set; }
         public string profilemedia { get; set; }
         public string posttext { get; set; }

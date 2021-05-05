@@ -22,13 +22,14 @@ namespace GreentableApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Command> Postnewlike(Likes likes)
+        [Route("{id}")]
+        public ActionResult<Command> Postnewlike(int id)
         {
             try
             {
                 var data = this.HttpContext.Items["User"].ToString();
-                long id = long.Parse(data);
-                var newUser = _repo.Profile.FirstOrDefault(u => u.id == id);
+                long userid = long.Parse(data);
+                var newUser = _repo.Profile.FirstOrDefault(u => u.id == userid);
                 var homecontent = this._repo.homeContent.ToList();
                 if (homecontent.Count() > 0)
                 {
@@ -36,14 +37,14 @@ namespace GreentableApi.Controllers
                     {
                         List<Likes> like;
                         like = new List<Likes>();
-                        if (likes.postid == c.id)
+                        if (id == c.id)
                         {
                             like.Add(new Likes()
                             {
-                                ownerid = newUser.id,
-                                postid = likes.postid,
-                                displayName = newUser.firstname,
-                                profilemedia = newUser.profilemedia
+                                profileId = newUser.id,
+                                // postid = likes.postid,
+                                // displayName = newUser.firstname,
+                                // profilemedia = newUser.profilemedia
 
 
                             });
@@ -60,14 +61,14 @@ namespace GreentableApi.Controllers
 
                                     secondlike.Add(new Likes()
                                     {
-                                        ownerid = olddata[i].ownerid,
-                                        postid = olddata[i].postid,
-                                        displayName = olddata[i].displayName,
-                                        profilemedia = olddata[i].profilemedia
+                                        profileId = olddata[i].profileId,
+                                        // postid = olddata[i].postid,
+                                        // displayName = olddata[i].displayName,
+                                        // profilemedia = olddata[i].profilemedia
 
                                     });
 
-                                    if (olddata[i].ownerid == newdata.ownerid)
+                                    if (olddata[i].profileId == newdata.profileId)
                                     {
                                         secondlike.RemoveAt(i);
                                     }
@@ -78,10 +79,10 @@ namespace GreentableApi.Controllers
                                 {
                                     secondlike.Add(new Likes()
                                     {
-                                        ownerid = newdata.ownerid,
-                                        postid = newdata.postid,
-                                        displayName = newdata.displayName,
-                                        profilemedia = newdata.profilemedia
+                                        profileId = newdata.profileId,
+                                        // postid = newdata.postid,
+                                        // displayName = newdata.displayName,
+                                        // profilemedia = newdata.profilemedia
                                     });
                                 }
 

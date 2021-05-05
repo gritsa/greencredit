@@ -7,10 +7,8 @@ namespace GreentableApi.Models
 
     public class Comments
     {
-        public long ownerid { get; set; }
-        public long postid { get; set; }
+        public long profileId { get; set; }
         public string commentText { get; set; }
-        public string ownername { get; set; }
-        public string ownermedia { get; set; }
+        public DateTime createdAt { get; set; }
     }
 }
