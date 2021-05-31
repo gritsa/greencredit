@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using GreentableApi.Helpers;
 using GreentableApi.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace GreentableApi.Controllers
@@ -34,17 +38,19 @@ namespace GreentableApi.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public ActionResult PutContent(int id, Profile profile)
+        public  async Task<IActionResult> PutContent(int id,[FromForm] string jsonData, IFormFile file)
         {
             try
             {
+                 Profile profile = JsonConvert.DeserializeObject<Profile>(jsonData);
+                 var imageResponse = await AmazonS3Service.UploadObject(file); 
                 // Users user = (new SecurityHelper(this)).User;
                 var newData = _repo.Profile.FirstOrDefault(u => u.id == id);
                 if (newData != null)
                 {
                     var now = DateTime.UtcNow;
                     newData.firstname = profile.firstname;
-                    newData.profilemedia = profile.profilemedia;
+                    newData.profilemedia = imageResponse.FileName;
                     newData.createdAt = now;
                     newData.updatedAt = now;
 
@@ -54,13 +60,14 @@ namespace GreentableApi.Controllers
                 {
                     return NotFound();
                 }
+                 return Ok(profile);
 
             }
             catch (Exception ex)
             {
                 return BadRequest(ex);
             }
-            return Ok(profile);
+           
         }
 
 

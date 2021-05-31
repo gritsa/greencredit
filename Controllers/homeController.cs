@@ -95,14 +95,15 @@ namespace GreentableApi.Controllers
         {
             // var content = new homeContent();
             // List<homeContent> content = 
-            homeContent content = JsonConvert.DeserializeObject<homeContent>(jsonData);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+
 
             try
             {
+                homeContent content = JsonConvert.DeserializeObject<homeContent>(jsonData);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
                 var coinData = new greenCoins();
                 var imageResponse = await AmazonS3Service.UploadObject(file); //promiseAll
                 var data = this.HttpContext.Items["User"].ToString();
@@ -110,7 +111,7 @@ namespace GreentableApi.Controllers
                 var newUser = _repo.Profile.FirstOrDefault(u => u.id == id);
                 var now = DateTime.UtcNow;
                 content.profileid = id;
-                content.profilename =  newUser.firstname;
+                content.profilename = newUser.firstname;
                 content.profilemedia = newUser.profilemedia;
                 content.createdAt = now;
                 content.updatedAt = now;

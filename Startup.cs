@@ -100,22 +100,17 @@ new string[] {}
             }
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-
-
-
-            // ...
-
-            // This should always be called last to ensure that
-            // middleware is registered in the correct order.
-
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "Greentable API");
-            });
+                string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
+                c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "GreenTable API");
+    // c.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "Impensa API");
+});
 
             app.UseHttpsRedirection();
             app.UseRouting();
