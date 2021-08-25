@@ -2,13 +2,14 @@
 // Green Credit Screen
 //***********************//
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import TransactionItemComponent from '../../components/transaction-item/transaction-item.component';
 
 class GreenCreditScreen extends React.Component{ 
 	render(){
 		return (
 			<View>
-                <Text>Green Credit</Text>
+                <TransactionItemComponent></TransactionItemComponent>
             </View>
 		)
 	}
