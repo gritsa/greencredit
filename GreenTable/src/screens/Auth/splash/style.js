@@ -26,7 +26,7 @@ export default StyleSheet.create({
       justifyContent: 'center',
   },
   icon:{
-    
+    marginBottom: 24
   },
   text:{
      color:'#fff',
