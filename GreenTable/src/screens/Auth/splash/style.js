@@ -6,11 +6,12 @@ export default StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor:'#ddd'  
+    backgroundColor: '#fff',
+    width: '100%'
   },
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover', // or 'stretch'
+    resizeMode: 'stretch', // or 'stretch'
   },
   content: {
       position: 'absolute',
@@ -18,6 +19,24 @@ export default StyleSheet.create({
       bottom: 0,
       left: 0,
       right: 0,
-      zIndex:1
+      zIndex:1000,
+      width: '100%',
+      height: '100%',   
+      alignItems: 'center',
+      justifyContent: 'center',
+  },
+  icon:{
+    
+  },
+  text:{
+     color:'#fff',
+     fontSize:20,
+     marginTop:20,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    flex: 1,
+    justifyContent: "center"
   },
 });
