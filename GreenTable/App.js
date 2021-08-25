@@ -1,18 +1,25 @@
+import 'react-native-gesture-handler';
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar
-} from 'react-native';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/es/integration/react';
+import {getPersistor} from '@rematch/persist';
 
-import SplashScreen from './src/screens/splash/splash.screen';
- 
-const App = () => {
+// load store
+import {store} from './src/core/store';
+// load routes
+import AppNavigator from './src/core/navigators';
+
+// load app configurations
+import './src/shared/utils/assets-pack';
+import './src/shared/utils/colors-pack';
+import './src/shared/utils/typography-pack';
+
+export default function App() {
   return (
-    <SafeAreaView>
-      <StatusBar barStyle={'dark-content'} />      
-      <SplashScreen />      
-    </SafeAreaView>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={getPersistor()}>
+        <AppNavigator />
+      </PersistGate>
+    </Provider>
   );
-};
- 
-export default App;
+}
