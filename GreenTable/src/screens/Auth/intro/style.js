@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 const PRIMARY_COLOR = '#348565';
 const SECONDARY_COLOR = '#1B1D4D';
 
@@ -13,7 +13,7 @@ export default StyleSheet.create({
 		backgroundColor: 'rgba(52,133,101, .05)'
 	},
 	right: {
-		backgroundColor:'#fff'
+		backgroundColor: '#fff'
 	},
 	contents: {
 		position: 'absolute',
@@ -21,12 +21,12 @@ export default StyleSheet.create({
 		width: '100%',
 		paddingVertical: '15%',
 		paddingVertical: '15%',
-		paddingHorizontal: 60,	
-		display:'flex',
+		paddingHorizontal: 60,
+		display: 'flex',
 		justifyContent: 'center'
 	},
-	button: {		 
-		backgroundColor: PRIMARY_COLOR,		
+	button: {
+		backgroundColor: PRIMARY_COLOR,
 	},
 	text: {
 		fontSize: 12,
@@ -34,9 +34,9 @@ export default StyleSheet.create({
 		color: '#fff'
 	},
 	// for sliders
-	sliderContainer: {		
+	sliderContainer: {
 		height: '100%',
-		paddingBottom: 10,		
+		paddingBottom: 10,
 		textAlign: 'left',
 		display: 'flex',
 		justifyContent: 'center',
@@ -66,14 +66,14 @@ export default StyleSheet.create({
 		color: 'white',
 		color: SECONDARY_COLOR
 	},
-	dotStyle : {
+	dotStyle: {
 		height: 8,
 		width: 8,
 		backgroundColor: 'rgba(27,29,77, .15)',
 	},
-	activeDotStyle : {
+	activeDotStyle: {
 		height: 8,
 		width: 8,
 		backgroundColor: 'rrgba(27,29,77, 1);',
-	}	
+	}
 });

@@ -6,23 +6,23 @@ export default StyleSheet.create({
 	container: {
 		display: 'flex',
 		flexDirection: 'row',
-		height: '100%',		
+		height: '100%',
 		justifyContent: 'space-between'
 	},
 	left: {
 		width: 100,
 		backgroundColor: 'rgba(52,133,101, .05)'
 	},
-	right: {	
-		backgroundColor:'#fff'		
+	right: {
+		backgroundColor: '#fff'
 	},
 	bgImage: {
-		position:'absolute',
-		resizeMode: "cover",				
+		position: 'absolute',
+		resizeMode: "cover",
 		width: 260,
 		height: 347,
 		top: 100,
-		right: 0			
+		right: 0
 	},
 	contents: {
 		position: 'absolute',

@@ -2,9 +2,8 @@
 // Splash Screen
 //***********************//
 import React from "react";
-import { Animated, View, ImageBackground } from "react-native";
+import { Animated, View, Image, ImageBackground } from "react-native";
 import styles from './style';
-import { Image } from 'react-native-ui-lib';
 import { ROUTES } from '../../../shared/constants/routes';
 
 // images from assets
@@ -17,26 +16,26 @@ class SplashScreen extends React.Component {
 	state = {
 		animate: new Animated.Value(0) // initial scale is 0
 	}
-	
+
 	componentDidMount = () => {
-		this.animateIt();		
+		this.animateIt();
 	}
 
-	slideToGetStarted = () =>  {
-		setTimeout(()=> {
+	slideToGetStarted = () => {
+		setTimeout(() => {
 			this.props.navigation.navigate(ROUTES.INTRO);
 		}, 1000)
 	}
 
-	animateIt = () =>  {
+	animateIt = () => {
 		Animated.timing(this.state.animate, {
 			toValue: 1,
 			duration: 1500,
 			useNativeDriver: true
-		}).start(()=>{
+		}).start(() => {
 			this.slideToGetStarted();
 		});
-	} 
+	}
 
 	render() {
 		return (

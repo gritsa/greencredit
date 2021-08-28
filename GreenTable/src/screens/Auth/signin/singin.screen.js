@@ -2,8 +2,7 @@
 // Signin Screen
 //***********************//
 import React from "react";
-import { View, Text, ImageBackground } from "react-native";
-import { Image } from 'react-native-ui-lib';
+import { View, Text, Image, ImageBackground } from "react-native";
 import styles from './style';
 import SharedStyle from '../../../shared/shared-styles';
 import { ROUTES } from '../../../shared/constants/routes';
@@ -17,7 +16,7 @@ const APPLE_ICON = require('../../../assets/images/apple-icon.png');
 
 class SigninScreen extends React.Component {
 
-	signInGoogle = () => {		
+	signInGoogle = () => {
 		this.props.navigation.navigate(ROUTES.ACTIVITY)
 	}
 	signInApple = () => {
