@@ -10,8 +10,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "react": "17.0.2",
-    "react-native": "0.65.1",
     "@react-native-async-storage/async-storage": "^1.14.1",
     "@react-native-community/blur": "^3.6.0",
     "@react-native-community/datetimepicker": "3.0.4",
@@ -25,6 +23,9 @@
     "@rematch/persist": "^2.0.1",
     "axios": "^0.21.1",
     "formik": "^2.2.6",
+    "react": "17.0.2",
+    "react-native": "0.65.1",
+    "react-native-app-intro-slider": "^4.0.4",
     "react-native-gesture-handler": "~1.8.0",
     "react-native-reanimated": "~1.13.0",
     "react-native-safe-area-context": "3.1.9",

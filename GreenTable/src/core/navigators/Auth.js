@@ -10,9 +10,9 @@ const Stack = createStackNavigator();
 const AuthStack = () => {
   return (
     <Stack.Navigator headerMode="none">
-      <Stack.Screen name={ROUTES.SPLASH} component={SplashScreen} /> 
-      <Stack.Screen name={ROUTES.SIGNIN} component={SigninScreen} />                 
+      <Stack.Screen name={ROUTES.SPLASH} component={SplashScreen} />
       <Stack.Screen name={ROUTES.INTRO} component={IntroScreen} />      
+      <Stack.Screen name={ROUTES.SIGNIN} component={SigninScreen} />                       
     </Stack.Navigator>
   );
 };
