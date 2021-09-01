@@ -1,9 +1,6 @@
-import {Colors} from 'react-native-ui-lib';
-
-// add colors here
-Colors.loadColors({
-  error: '#ff2442',
-  success: '#00CD8B',
-  text: '#20303C',
-});
-
+export const Color = {
+  PRIMARY_COLOR : '#348565',
+  SECONDARY_COLOR : '#1B1D4D',
+  SHADOW: 'rgba(27,29,77, .05)',
+  BODY_BG: '#F3F3F3',
+}

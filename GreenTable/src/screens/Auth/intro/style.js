@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-const PRIMARY_COLOR = '#348565';
-const SECONDARY_COLOR = '#1B1D4D';
+import { Color } from '../../../shared/utils/colors-pack';
+import { FontWeight } from '../../../shared/utils/typography-pack';
 
 export default StyleSheet.create({
 	container: {
@@ -26,11 +26,11 @@ export default StyleSheet.create({
 		justifyContent: 'center'
 	},
 	button: {
-		backgroundColor: PRIMARY_COLOR,
+		backgroundColor: Color.PRIMARY_COLOR,
 	},
 	text: {
 		fontSize: 12,
-		fontWeight: '500',
+		fontWeight: FontWeight.FONT_WEIGHT_SEMI_BOLD,
 		color: '#fff'
 	},
 	// for sliders
@@ -50,21 +50,21 @@ export default StyleSheet.create({
 	},
 	introTitle: {
 		fontSize: 11,
-		fontWeight: '500',
-		color: PRIMARY_COLOR
+		fontWeight: FontWeight.FONT_WEIGHT_BOLD,
+		color: Color.PRIMARY_COLOR
 	},
 	introDescription1: {
 		fontSize: 24,
 		color: 'white',
 		paddingVertical: 10,
 		fontWeight: 'bold',
-		color: SECONDARY_COLOR
+		color: Color.SECONDARY_COLOR
 	},
 	introDescription2: {
 		fontSize: 13,
 		fontWeight: 'normal',
 		color: 'white',
-		color: SECONDARY_COLOR
+		color: Color.SECONDARY_COLOR
 	},
 	dotStyle: {
 		height: 8,
