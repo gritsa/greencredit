@@ -66,12 +66,15 @@ export default StyleSheet.create({
 		borderTopRightRadius: 24,
 		height: tabHeight,
 		width: '100%',
-		shadowColor: 'rgba(27,29,77, .05)',
-		shadowRadius: 4.65,
+		shadowColor: "#000",
 		shadowOffset: {
-			height: 4,
 			width: 0,
+			height: 1,
 		},
-		shadowOpacity: 10
+		shadowOpacity: 0.1,
+		shadowRadius: 3,
+
+		elevation: 3,
+		position: 'relative'
 	}
 })

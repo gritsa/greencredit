@@ -27,6 +27,7 @@ class ActivityScreen extends React.Component {
 		created_at : '2 min ago',
 		comment_count : 2,
 		like_count : 2,
+		is_like: true
 	  },{
 		id: 2,
 		user_details : {
@@ -39,6 +40,7 @@ class ActivityScreen extends React.Component {
 		created_at : '5 min ago',
 		comment_count : 3,
 		like_count : 2,
+		is_like: false
 	  }]
 
 	render() {

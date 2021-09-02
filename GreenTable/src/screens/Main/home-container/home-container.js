@@ -2,21 +2,35 @@
 // Home Container Screen
 //***********************//
 import React from "react";
-import { StatusBar, SafeAreaView } from "react-native";
+import { StatusBar, Alert, View, SafeAreaView } from "react-native";
 import ActivityScreen from "../activity/activity.screen";
+import GreenCreditScreen from "../green-credits/green-credit.screen";
 import CustomTabComponent from "../../../components/custom-tab/custom-tab.component";
-import { ScrollView } from "react-native-gesture-handler";
-import { Color } from '../../../shared/utils/colors-pack';
+import { ROUTES } from "../../../shared/constants/routes";
 
 class HomeContainerScreen extends React.Component {
+
+	state = {
+		currentState: ROUTES.ACTIVITY
+	}
+	handleClick = (data) => {
+		Alert.alert(data);
+		this.setState({ currentState: data })
+	}
 	render() {
 		return (
-			<SafeAreaView style={{ height: '100%', backgroundColor: '#fff' }}>
+			<SafeAreaView style={{ position: 'relative', height: '100%', backgroundColor: '#fff' }}>
 
-				{/* Will change on tab click */}
-				<ActivityScreen></ActivityScreen>
+				{
+					this.state.currentState === ROUTES.ACTIVITY ?
+						<ActivityScreen></ActivityScreen>
+						:
+						<GreenCreditScreen></GreenCreditScreen>
 
-				<CustomTabComponent></CustomTabComponent>
+				}
+
+				<CustomTabComponent clickMe={this.handleClick} ></CustomTabComponent>
+
 			</SafeAreaView>
 		)
 	}

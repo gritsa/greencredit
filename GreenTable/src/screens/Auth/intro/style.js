@@ -10,7 +10,7 @@ export default StyleSheet.create({
 	},
 	left: {
 		width: '30%',
-		backgroundColor: 'rgba(52,133,101, .05)'
+		backgroundColor: Color.LIGHT_GREEN
 	},
 	right: {
 		backgroundColor: '#fff'
