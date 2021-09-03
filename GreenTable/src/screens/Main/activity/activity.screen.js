@@ -4,14 +4,14 @@
 import React from "react";
 import { View, Text } from "react-native";
 import AvatarComponent from '../../../components/avatar/avatar.component';
-import SharedStyle from '../../../shared/shared-styles';
 import PopularComponent from '../../../components/popular/popular.component';
 import PostCardComponent from '../../../components/post-card/post-card.component';
 import { ScrollView } from "react-native-gesture-handler";
 import { Color } from "../../../shared/utils/colors-pack";
+import sharedStyles from "../../../shared/shared-styles";
 
 // images from assets
-const PROFILE_PIC = require('../../../assets/images/pradeep.png');
+const PROFILE_PIC = require('../../../assets/images/avatar-1.png');
 
 class ActivityScreen extends React.Component {
 
@@ -46,28 +46,30 @@ class ActivityScreen extends React.Component {
 	render() {
 		return (
 
-			<View style={SharedStyle.container}>
+			<View>
 
-				<View style={SharedStyle.header}>
-					<View style={SharedStyle.headLeft}></View>
-					<Text style={SharedStyle.headTitle}>Activity</Text>
-					<View style={SharedStyle.headRight}>
+				<View style={sharedStyles.header}>
+					<View style={sharedStyles.headLeft}></View>
+					<Text style={sharedStyles.headTitle}>Activity</Text>
+					<View style={sharedStyles.headRight}>
 						<AvatarComponent size={32} url={PROFILE_PIC}></AvatarComponent>
 						</View>
 				</View>
 
 				<View>
-					<PopularComponent></PopularComponent>
-					
-					
+
+					<PopularComponent style={sharedStyles.popularSecHeight}></PopularComponent>
+					 
 					<View style={{backgroundColor: Color.BODY_BG}}>
-						<ScrollView>
-						{
-							this.posts.map((item, index) => {
-							return <PostCardComponent key={item.id} post={item}></PostCardComponent>
-							})
-						}  
-						</ScrollView>
+						<View style={sharedStyles.activityPostContainer}>
+							<ScrollView>
+							{
+								this.posts.map((item, index) => {
+								return <PostCardComponent key={item.id} post={item}></PostCardComponent>
+								})
+							}  
+							</ScrollView>
+						</View>
 					</View>
 					
 				</View>

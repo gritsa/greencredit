@@ -1,19 +1,23 @@
 import { StyleSheet } from 'react-native';
 import React, { useEffect } from 'react';
 import { View, Image, Text } from 'react-native';
+import { Color } from '../../shared/utils/colors-pack';
 
 const AvatarComponent = (props) => {
   useEffect(() => {
 
   }, []);
 
-  size = props.size ? props.size : 32
+  size = props.size ? props.size : 32;
+  border = props.border ? props.border : 0;
 
   return (
-    <View>
-      <Image style={styles.shadow, {
+    <View style={styles.border, styles.shadow} >
+      <Image style={{
         borderRadius: size / 2,
-        height: size, width: size
+        height: size, width: size, 
+        borderWidth: border,
+        borderColor: 'rgba(255,255,255,.5)'       
       }} source={props.url} />
     </View>
   );
@@ -24,12 +28,17 @@ export default AvatarComponent;
 
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: 'rgba(27,29,77, .05)',
+    shadowColor: 'rgba(27,29,77, .3)',
     shadowRadius: 4.65,
     shadowOffset: {
       height: 4,
       width: 0,
     },
-    shadowOpacity: 10
+    shadowOpacity: .4
+  },
+  border: {
+    borderWidth: 2,
+    borderColor: '#fff',
+    borderStyle: 'solid'
   }
 })

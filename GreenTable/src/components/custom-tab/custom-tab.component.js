@@ -1,6 +1,6 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import React, { useEffect } from 'react';
-import { Image, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Dimensions, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Text, View, TouchableOpacity } from 'react-native';
 import SharedStyles from '../../shared/shared-styles';
 import { Color } from '../../shared/utils/colors-pack';
 import { ROUTES } from '../../shared/constants/routes';
@@ -12,18 +12,24 @@ const ACTIVITY = require('../../assets/images/tab/home-active.png');
 const CREDIT = require('../../assets/images/tab/credit-active.png');
 
 const CustomTabComponent = (props) => {
+    
+  const [currentRoute, setCurrentState] = useState(ROUTES.ACTIVITY);   
 
+  navigate = (ROUTE) => {
+    setCurrentState(ROUTE);    
+    props.clickMe(ROUTE);
+  }
   return (
-    <View style={[SharedStyles.tabBottom, styles.tab]}>
+    <View style={[SharedStyles.tabBottom, styles.tab]}>      
       <View style={styles.tab}>
-        <TouchableOpacity onPress={() => props.clickMe(ROUTES.ACTIVITY)}>
-          <View style={[styles.activeTabButton, styles.button]}>
+        <TouchableOpacity onPress={() => navigate(ROUTES.ACTIVITY)}>
+          <View style={[currentRoute === ROUTES.ACTIVITY ? styles.activeTabButton : '' , styles.button]}>
             <Image style={styles.activeIcon} source={ACTIVITY} />
           </View>
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => props.clickMe(ROUTES.GREENCREDEIT)}>
-          <View style={[styles.button]} >
+        
+        <TouchableOpacity onPress={() => navigate(ROUTES.GREENCREDEIT)}>
+          <View style={[currentRoute === ROUTES.GREENCREDEIT ? styles.activeTabButton : '' , styles.button]}>
             <Image style={styles.inactiveIcon} source={CREDIT} />
           </View>
         </TouchableOpacity>
@@ -56,7 +62,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.LIGHT_GREEN
   },
   button: {
-    maxHeight: 35,
+    height: 35,
     width: 62,
     borderRadius: 18,
     display: 'flex',

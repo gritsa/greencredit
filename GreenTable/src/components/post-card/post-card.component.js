@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 import React, { useEffect } from 'react';
 import { View, Image, Text } from 'react-native';
 import { Color } from '../../shared/utils/colors-pack';
-import sharedStyles from '../../shared/shared-styles';
+import SharedStyles from '../../shared/shared-styles';
 import AvatarComponent from '../../components/avatar/avatar.component';
 import { FontWeight } from '../../shared/utils/typography-pack';
 
@@ -44,7 +44,7 @@ const PostCardComponent = (props) => {
       {/* Content */}
       <View style={styles.card}>
         <Text style={styles.post}>{props.post.post}</Text>
-        <Image style={[sharedStyles.shadow, styles.postImage]} source={props.post.post_image} />
+        <Image style={[SharedStyles.shadow, styles.postImage]} source={props.post.post_image} />
       </View>
       {/* Content end */}
 

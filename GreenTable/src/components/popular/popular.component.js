@@ -7,27 +7,27 @@ import { Color } from '../../shared/utils/colors-pack';
 const PopularComponent = (props) => {
     state = [
         {
-            profile_pic: require('../../assets/images/pradeep.png'),
+            profile_pic: require('../../assets/images/avatar-1.png'),
             name: 'Pradeep'
         },
         {
-            profile_pic: require('../../assets/images/pradeep.png'),
+            profile_pic: require('../../assets/images/avatar-1.png'),
             name: 'Pradeep'
         },
         {
-            profile_pic: require('../../assets/images/pradeep.png'),
+            profile_pic: require('../../assets/images/avatar-1.png'),
             name: 'Pradeep'
         },
         {
-            profile_pic: require('../../assets/images/pradeep.png'),
+            profile_pic: require('../../assets/images/avatar-1.png'),
             name: 'Pradeep'
         },
         {
-            profile_pic: require('../../assets/images/pradeep.png'),
+            profile_pic: require('../../assets/images/avatar-1.png'),
             name: 'Pradeep'
         },
         {
-            profile_pic: require('../../assets/images/pradeep.png'),
+            profile_pic: require('../../assets/images/avatar-1.png'),
             name: 'Pradeep'
         }
     ]
@@ -43,7 +43,7 @@ const PopularComponent = (props) => {
 
                     {
                         this.state.map((item, index) => {
-                            return <View style={styles.item} key={index} ><AvatarComponent size={72} url={item.profile_pic}></AvatarComponent></View>
+                            return <View style={styles.item} key={index} ><AvatarComponent size={52} url={item.profile_pic}></AvatarComponent></View>
                         })
                     }
                 </View>
@@ -56,18 +56,18 @@ export default PopularComponent;
 
 const styles = StyleSheet.create({
     popularContainer: {
+        height: 125,
         paddingTop: 20,
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: Color.BODY_BG
+        backgroundColor: Color.LIGHT_GREEN
     },
     popularImageContainer: {
-        paddingTop: 10,
+        paddingTop: 15,
         paddingBottom: 20,
         paddingLeft: 20,
         display: 'flex',
-        flexDirection: 'row',
-        backgroundColor: Color.BODY_BG
+        flexDirection: 'row'        
     },
     textTitle: {
         paddingLeft: 20,
@@ -75,6 +75,14 @@ const styles = StyleSheet.create({
         color: Color.PRIMARY_COLOR
     },
     item: {
-        marginRight: 15
+        marginRight: 18,
+        shadowColor: "rgba(0,0,0, 0.20)",
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 1,
+		shadowRadius: 15,
+		elevation: 10,
     }
 })

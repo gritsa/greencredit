@@ -7,20 +7,21 @@ import ActivityScreen from "../activity/activity.screen";
 import GreenCreditScreen from "../green-credits/green-credit.screen";
 import CustomTabComponent from "../../../components/custom-tab/custom-tab.component";
 import { ROUTES } from "../../../shared/constants/routes";
+import sharedStyles from "../../../shared/shared-styles";
 
 class HomeContainerScreen extends React.Component {
 
 	state = {
 		currentState: ROUTES.ACTIVITY
 	}
-	handleClick = (data) => {
-		Alert.alert(data);
+	handleClick = (data) => {		
 		this.setState({ currentState: data })
 	}
 	render() {
 		return (
-			<SafeAreaView style={{ position: 'relative', height: '100%', backgroundColor: '#fff' }}>
-
+			<SafeAreaView style={{ display:'flex',flex:1, position: 'relative', backgroundColor:'#fff', height: '100%'}}>
+				<StatusBar></StatusBar>
+				<View style={sharedStyles.container}>
 				{
 					this.state.currentState === ROUTES.ACTIVITY ?
 						<ActivityScreen></ActivityScreen>
@@ -28,6 +29,7 @@ class HomeContainerScreen extends React.Component {
 						<GreenCreditScreen></GreenCreditScreen>
 
 				}
+				</View>
 
 				<CustomTabComponent clickMe={this.handleClick} ></CustomTabComponent>
 

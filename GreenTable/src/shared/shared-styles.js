@@ -5,7 +5,8 @@ import { Dimensions } from 'react-native';
 
 const windowHeight = Dimensions.get('window').height;
 const tabHeight = 70;
-const headerHeight = 50;
+const headerHeight = 45;
+const popularSecHeight = 125;
 const containerHeight = windowHeight - (tabHeight + headerHeight);
 
 export default StyleSheet.create({
@@ -29,20 +30,26 @@ export default StyleSheet.create({
 		},
 		shadowOpacity: 10
 	},
-	container: {
-		paddingVertical: 15,
-		height: containerHeight
+	container: {		
+		height: containerHeight,
+		backgroundColor:'#fff'	
+	},
+	popularSecHeight : {
+		height :popularSecHeight
+	},
+	activityPostContainer : {
+		height : windowHeight - (45 + headerHeight+tabHeight+popularSecHeight)		
 	},
 	// Header
 	header: {		
-		height: headerHeight,
+		height: headerHeight,		
 		display: 'flex',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingVertical: 10,
 		paddingHorizontal: 20,
-		fontWeight: FontWeight.FONT_WEIGHT_BOLD
+		fontWeight: FontWeight.FONT_WEIGHT_BOLD		
 	},
 	headLeft: {
 		minWidth: 50,
@@ -73,7 +80,6 @@ export default StyleSheet.create({
 		},
 		shadowOpacity: 0.1,
 		shadowRadius: 3,
-
 		elevation: 3,
 		position: 'relative'
 	}
