@@ -12,24 +12,24 @@ const ACTIVITY = require('../../assets/images/tab/home-active.png');
 const CREDIT = require('../../assets/images/tab/credit-active.png');
 
 const CustomTabComponent = (props) => {
-    
-  const [currentRoute, setCurrentState] = useState(ROUTES.ACTIVITY);   
+
+  const [currentRoute, setCurrentState] = useState(ROUTES.ACTIVITY);
 
   navigate = (ROUTE) => {
-    setCurrentState(ROUTE);    
+    setCurrentState(ROUTE);
     props.clickMe(ROUTE);
   }
   return (
-    <View style={[SharedStyles.tabBottom, styles.tab]}>      
+    <View style={[SharedStyles.tabBottom, styles.tab]}>
       <View style={styles.tab}>
         <TouchableOpacity onPress={() => navigate(ROUTES.ACTIVITY)}>
-          <View style={[currentRoute === ROUTES.ACTIVITY ? styles.activeTabButton : '' , styles.button]}>
+          <View style={[currentRoute === ROUTES.ACTIVITY ? styles.activeTabButton : '', styles.button]}>
             <Image style={styles.activeIcon} source={ACTIVITY} />
           </View>
         </TouchableOpacity>
-        
+
         <TouchableOpacity onPress={() => navigate(ROUTES.GREENCREDEIT)}>
-          <View style={[currentRoute === ROUTES.GREENCREDEIT ? styles.activeTabButton : '' , styles.button]}>
+          <View style={[currentRoute === ROUTES.GREENCREDEIT ? styles.activeTabButton : '', styles.button]}>
             <Image style={styles.inactiveIcon} source={CREDIT} />
           </View>
         </TouchableOpacity>

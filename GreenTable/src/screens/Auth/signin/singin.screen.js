@@ -13,7 +13,6 @@ const SIGNIN_BG = require('../../../assets/images/signin-bg.png');
 const GOOGLE_ICON = require('../../../assets/images/google-icon.png');
 const APPLE_ICON = require('../../../assets/images/apple-icon.png');
 
-
 class SigninScreen extends React.Component {
 
 	signInGoogle = () => {

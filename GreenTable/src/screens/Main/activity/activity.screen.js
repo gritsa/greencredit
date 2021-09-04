@@ -17,31 +17,31 @@ class ActivityScreen extends React.Component {
 
 	posts = [{
 		id: 1,
-		user_details : {
-		  name : 'Pradeep Kumar Sharma',
-		  user_name : '@omprdq',
-		  profile_pic : require('../../../assets/images/pradeep.png')
+		user_details: {
+			name: 'Pradeep Kumar Sharma',
+			user_name: '@omprdq',
+			profile_pic: require('../../../assets/images/pradeep.png')
 		},
 		post: 'When true, the scroll view bounces horizontally when it reaches the end even if the content is smaller than the scroll view itself.',
-		post_image : require('../../../assets/images/sample-post-image.png'),
-		created_at : '2 min ago',
-		comment_count : 2,
-		like_count : 2,
+		post_image: require('../../../assets/images/sample-post-image.png'),
+		created_at: '2 min ago',
+		comment_count: 2,
+		like_count: 2,
 		is_like: true
-	  },{
+	}, {
 		id: 2,
-		user_details : {
-		  name : 'Pradeep Kumar',
-		  user_name : '@pradeepkr',
-		  profile_pic : require('../../../assets/images/pradeep.png')
+		user_details: {
+			name: 'Pradeep Kumar',
+			user_name: '@pradeepkr',
+			profile_pic: require('../../../assets/images/pradeep.png')
 		},
 		post: 'When true, the scroll view bounces horizontally when it reaches the end even if the content is smaller than the scroll view itself.',
-		post_image : require('../../../assets/images/sample-post-image.png'),
-		created_at : '5 min ago',
-		comment_count : 3,
-		like_count : 2,
+		post_image: require('../../../assets/images/sample-post-image.png'),
+		created_at: '5 min ago',
+		comment_count: 3,
+		like_count: 2,
 		is_like: false
-	  }]
+	}]
 
 	render() {
 		return (
@@ -53,25 +53,25 @@ class ActivityScreen extends React.Component {
 					<Text style={sharedStyles.headTitle}>Activity</Text>
 					<View style={sharedStyles.headRight}>
 						<AvatarComponent size={32} url={PROFILE_PIC}></AvatarComponent>
-						</View>
+					</View>
 				</View>
 
 				<View>
 
 					<PopularComponent style={sharedStyles.popularSecHeight}></PopularComponent>
-					 
-					<View style={{backgroundColor: Color.BODY_BG}}>
+
+					<View style={{ backgroundColor: Color.BODY_BG }}>
 						<View style={sharedStyles.activityPostContainer}>
 							<ScrollView>
-							{
-								this.posts.map((item, index) => {
-								return <PostCardComponent key={item.id} post={item}></PostCardComponent>
-								})
-							}  
+								{
+									this.posts.map((item, index) => {
+										return <PostCardComponent key={item.id} post={item}></PostCardComponent>
+									})
+								}
 							</ScrollView>
 						</View>
 					</View>
-					
+
 				</View>
 
 			</View>

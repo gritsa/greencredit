@@ -14,21 +14,21 @@ class HomeContainerScreen extends React.Component {
 	state = {
 		currentState: ROUTES.ACTIVITY
 	}
-	handleClick = (data) => {		
+	handleClick = (data) => {
 		this.setState({ currentState: data })
 	}
 	render() {
 		return (
-			<SafeAreaView style={{ display:'flex',flex:1, position: 'relative', backgroundColor:'#fff', height: '100%'}}>
+			<SafeAreaView style={{ display: 'flex', flex: 1, position: 'relative', backgroundColor: '#fff', height: '100%' }}>
 				<StatusBar></StatusBar>
 				<View style={sharedStyles.container}>
-				{
-					this.state.currentState === ROUTES.ACTIVITY ?
-						<ActivityScreen></ActivityScreen>
-						:
-						<GreenCreditScreen></GreenCreditScreen>
+					{
+						this.state.currentState === ROUTES.ACTIVITY ?
+							<ActivityScreen></ActivityScreen>
+							:
+							<GreenCreditScreen></GreenCreditScreen>
 
-				}
+					}
 				</View>
 
 				<CustomTabComponent clickMe={this.handleClick} ></CustomTabComponent>
