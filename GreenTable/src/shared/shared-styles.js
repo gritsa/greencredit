@@ -99,6 +99,18 @@ export default StyleSheet.create({
 		shadowRadius: 3,
 		elevation: 3,
 	},
+	couponListScrollContainer : {				
+		height : windowHeight - ( headerHeight+tabHeight + 220),				
+		paddingHorizontal: 16,			
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 1,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 3,
+		elevation: 3,
+	},
 	// Header
 	header: {		
 		height: headerHeight,		
