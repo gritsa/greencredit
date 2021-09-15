@@ -39,7 +39,7 @@ const RedeemItemComponent = (props) => {
             <Text style={{ fontSize: 12, fontWeight: FontWeight.FONT_WEIGHT_THIN }}>{props.item.description}</Text>
           </View>
 
-          <View style={{ marginTop: 16, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{width: (windowHeight - bufferWidth), marginTop: 16, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={styles.amount}>
               <Image style={styles.amountImage} source={CREDIT_ICON_INCOME} />
               <Text style={[sharedStyles.textPrimary, { fontWeight: FontWeight.FONT_WEIGHT_SEMI_BOLD, fontSize: 18 }]}>
@@ -126,9 +126,9 @@ const styles = StyleSheet.create({
   amount: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center'    
   },
-  amountImage: {
+  amountImage: {    
     marginRight: 5,
     height: 13,
     width: 13
