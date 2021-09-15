@@ -1,40 +1,24 @@
-// import React from 'react';
-// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-// import {ROUTES} from '../../shared/constants';
-// import {ActivityScreen} from '../../screens/Main/activity/activity.screen';
-// import {GreenCreditScreen} from '../../screens/Main/green-credits/green-credit.screen';
-
-// const Tab = createBottomTabNavigator();
-// const MainStack = () => {
-//   return (
-//     <Tab.Navigator headerMode="none"    
-//       tabBarOptions={{showLabel: false}}>
-//       <Tab.Screen name={ROUTES.ACTIVITY} component={ActivityScreen} />      
-//       <Tab.Screen name={ROUTES.GREENCREDEIT} component={GreenCreditScreen} />                
-//     </Tab.Navigator>
-//   );
-// };
-
-// export default MainStack;
-
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {ROUTES} from '../../shared/constants';
-import IntroScreen from '../../screens/Auth/intro/intro.screen';
-import SigninScreen from '../../screens/Auth/signin/singin.screen';
-import SplashScreen from '../../screens/Auth/splash/splash.screen';
-
+import { createStackNavigator } from '@react-navigation/stack';
+import { ROUTES } from '../../shared/constants';
+import ActivityScreen from '../../screens/Main/activity/activity.screen';
+import GreenCreditScreen from '../../screens/Main/green-credits/green-credit.screen';
+import HomeContainerScreen from '../../screens/Main/home-container/home-container';
+import RedeemCreditScreen from '../../screens/Main/redeem/redeem.screen';
+import CreatePostScreen from '../../screens/Main/create-post/create-post.screen';
 
 const Stack = createStackNavigator();
+
 const MainStack = () => {
   return (
     <Stack.Navigator headerMode="none">
-      <Stack.Screen name={ROUTES.SPLASH} component={SplashScreen} />
-      <Stack.Screen name={ROUTES.INTRO} component={IntroScreen} />      
-      <Stack.Screen name={ROUTES.SIGNIN} component={SigninScreen} />                       
+      <Stack.Screen name={ROUTES.HOME} component={HomeContainerScreen} />
+      <Stack.Screen name={ROUTES.ACTIVITY} component={ActivityScreen} />
+      <Stack.Screen name={ROUTES.GREENCREDEIT} component={GreenCreditScreen} />
+      <Stack.Screen name={ROUTES.REDEEM} component={RedeemCreditScreen} />
+      <Stack.Screen name={ROUTES.CREATEPOST} component={CreatePostScreen} />
     </Stack.Navigator>
   );
 };
 
 export default MainStack;
-

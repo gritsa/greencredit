@@ -1,6 +1,6 @@
-import {StyleSheet} from 'react-native';
-const PRIMARY_COLOR = '#348565';
-const SECONDARY_COLOR = '#1B1D4D';
+import { StyleSheet } from 'react-native';
+import { Color } from '../../../shared/utils/colors-pack';
+import { FontWeight } from '../../../shared/utils/typography-pack';
 
 export default StyleSheet.create({
 	container: {
@@ -10,10 +10,10 @@ export default StyleSheet.create({
 	},
 	left: {
 		width: '30%',
-		backgroundColor: 'rgba(52,133,101, .05)'
+		backgroundColor: Color.LIGHT_GREEN
 	},
 	right: {
-		backgroundColor:'#fff'
+		backgroundColor: '#fff'
 	},
 	contents: {
 		position: 'absolute',
@@ -21,22 +21,22 @@ export default StyleSheet.create({
 		width: '100%',
 		paddingVertical: '15%',
 		paddingVertical: '15%',
-		paddingHorizontal: 60,	
-		display:'flex',
+		paddingHorizontal: 60,
+		display: 'flex',
 		justifyContent: 'center'
 	},
-	button: {		 
-		backgroundColor: PRIMARY_COLOR,		
+	button: {
+		backgroundColor: Color.PRIMARY_COLOR,
 	},
 	text: {
 		fontSize: 12,
-		fontWeight: '500',
+		fontWeight: FontWeight.FONT_WEIGHT_SEMI_BOLD,
 		color: '#fff'
 	},
 	// for sliders
-	sliderContainer: {		
+	sliderContainer: {
 		height: '100%',
-		paddingBottom: 10,		
+		paddingBottom: 10,
 		textAlign: 'left',
 		display: 'flex',
 		justifyContent: 'center',
@@ -50,30 +50,30 @@ export default StyleSheet.create({
 	},
 	introTitle: {
 		fontSize: 11,
-		fontWeight: '500',
-		color: PRIMARY_COLOR
+		fontWeight: FontWeight.FONT_WEIGHT_BOLD,
+		color: Color.PRIMARY_COLOR
 	},
 	introDescription1: {
 		fontSize: 24,
 		color: 'white',
 		paddingVertical: 10,
 		fontWeight: 'bold',
-		color: SECONDARY_COLOR
+		color: Color.SECONDARY_COLOR
 	},
 	introDescription2: {
 		fontSize: 13,
 		fontWeight: 'normal',
 		color: 'white',
-		color: SECONDARY_COLOR
+		color: Color.SECONDARY_COLOR
 	},
-	dotStyle : {
+	dotStyle: {
 		height: 8,
 		width: 8,
 		backgroundColor: 'rgba(27,29,77, .15)',
 	},
-	activeDotStyle : {
+	activeDotStyle: {
 		height: 8,
 		width: 8,
 		backgroundColor: 'rrgba(27,29,77, 1);',
-	}	
+	}
 });

@@ -2,9 +2,8 @@
 // Intro Screen
 //***********************//
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import AppIntroSlider from 'react-native-app-intro-slider';
-import { Image } from 'react-native-ui-lib';
 import styles from './style';
 import SharedStyle from '../../../shared/shared-styles';
 import { ROUTES } from '../../../shared/constants/routes';
