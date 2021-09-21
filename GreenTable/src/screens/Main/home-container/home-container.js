@@ -9,6 +9,7 @@ import CustomTabComponent from "../../../components/custom-tab/custom-tab.compon
 import { ROUTES } from "../../../shared/constants/routes";
 import sharedStyles from "../../../shared/shared-styles";
 import RedeemCreditScreen from "../redeem/redeem.screen";
+import CreatePostScreen from "../create-post/create-post.screen";
 
 class HomeContainerScreen extends React.Component {
 
@@ -25,11 +26,9 @@ class HomeContainerScreen extends React.Component {
 				<View style={sharedStyles.container}>
 					{
 						this.state.currentState === ROUTES.ACTIVITY ?
-						<RedeemCreditScreen />	
-						// <ActivityScreen></ActivityScreen>
+							<CreatePostScreen></CreatePostScreen>						
 							:
 							<GreenCreditScreen></GreenCreditScreen>
-
 					}
 				</View>
 
