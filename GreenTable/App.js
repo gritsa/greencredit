@@ -1,8 +1,8 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/es/integration/react';
-import {getPersistor} from '@rematch/persist';
+// import {PersistGate} from 'redux-persist/es/integration/react';
+// import {getPersistor} from '@rematch/persist';
 
 // load store
 import {store} from './src/core/store';
@@ -17,9 +17,9 @@ import './src/shared/utils/typography-pack';
 export default function App() {
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={getPersistor()}>
+      {/* <PersistGate loading={null} persistor={getPersistor()}> */}
         <AppNavigator />
-      </PersistGate>
+      {/* </PersistGate> */}
     </Provider>
   );
 }

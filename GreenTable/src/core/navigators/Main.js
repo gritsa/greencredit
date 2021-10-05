@@ -1,6 +1,6 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { ROUTES } from '../../shared/constants';
+import {createStackNavigator} from '@react-navigation/stack';
+import {ROUTES} from '../../shared/constants';
 import ActivityScreen from '../../screens/Main/activity/activity.screen';
 import GreenCreditScreen from '../../screens/Main/green-credits/green-credit.screen';
 import HomeContainerScreen from '../../screens/Main/home-container/home-container';
