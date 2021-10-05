@@ -11,13 +11,20 @@ import sharedStyles from '../../../shared/shared-styles';
 import {StyleSheet} from 'react-native';
 
 class HomeContainerScreen extends React.Component {
+  constructor(props){
+    super(props);    
+  }
+
   state = {
     currentState: ROUTES.ACTIVITY,
   };
+  
   handleClick = data => {
     this.setState({currentState: data});
   };
+  
   render() {
+    //console.log(this.props.navigation);
     return (
       <SafeAreaView style={styles.safeContainer}>
         <StatusBar />
@@ -26,7 +33,7 @@ class HomeContainerScreen extends React.Component {
           {this.state.currentState === ROUTES.ACTIVITY ? (
             <ActivityScreen />
           ) : (
-            <GreenCreditScreen />
+            <GreenCreditScreen navigation={this.props.navigation}/>
           )}
         </View>
 

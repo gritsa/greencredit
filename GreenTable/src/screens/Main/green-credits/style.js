@@ -4,6 +4,13 @@ import { Color } from '../../../shared/utils/colors-pack';
 const transactionTitleHeight = 50;
 
 export default StyleSheet.create({
+  safeContainer: {
+    display: 'flex',
+    flex: 1,
+    position: 'relative',
+    backgroundColor: 'white',
+    height: '100%',
+  },
   bg: {
     backgroundColor: Color.PRIMARY_COLOR
   },

@@ -4,6 +4,7 @@ import {Image, View, TouchableOpacity} from 'react-native';
 import SharedStyles from '../../shared/shared-styles';
 import {Color} from '../../shared/utils/colors-pack';
 import {ROUTES} from '../../shared/constants/routes';
+import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -12,6 +13,7 @@ const ACTIVITY = require('../../assets/images/tab/home-active.png');
 const CREDIT = require('../../assets/images/tab/credit-active.png');
 
 const CustomTabComponent = props => {
+  const navigation = useNavigation();
   const [currentRoute, setCurrentState] = useState(ROUTES.ACTIVITY);
 
   const navigate = ROUTE => {
@@ -58,11 +60,11 @@ const CustomTabComponent = props => {
         </TouchableOpacity>
       </View>
 
-      <View
-        style={styles.homeButton}
-        onPress={() => navigate(ROUTES.CREATEPOST)}>
-        <Image style={styles.activeIcon} source={NEW_POST} />
-      </View>
+      <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate(ROUTES.CREATEPOST)}>
+        <View >
+          <Image style={styles.activeIcon} source={NEW_POST} />
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

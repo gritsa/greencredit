@@ -2,12 +2,11 @@
 // Create Post Screen
 //***********************//
 import React from "react";
-import { View, Text, Image, TextInput} from "react-native";
+import { TouchableOpacity, SafeAreaView, StatusBar, View, Text, Image, TextInput, Alert } from "react-native";
 import AvatarComponent from '../../../components/avatar/avatar.component';
 import { ScrollView } from "react-native-gesture-handler";
 import SharedStyles from "../../../shared/shared-styles";
 import styles from './style';
-import { ROUTES } from '../../../shared/constants/routes';
 import { Color } from "../../../shared/utils/colors-pack";
 
 const CROSS_GRAY = require('../../../assets/images/cross-gray.png');
@@ -19,21 +18,26 @@ const POST_SAMPLE = require('../../../assets/images/sample-post-image.png');
 
 class CreatePostScreen extends React.Component {
 	state = {
-		text :''
+		text: ''
 	}
 	send = () => {
 
 	}
+	navigate = () => {
+		this.props.navigation.goBack();
+	}
 	render() {
 		return (
-			<View>
+			<SafeAreaView style={styles.safeContainer}>
+
+				<StatusBar />
 
 				<View style={styles.head}>
 
 					<View style={SharedStyles.header}>
-						<View style={[SharedStyles.headLeft, SharedStyles.backButton]}>
+						<TouchableOpacity onPress={() => this.navigate()} style={[SharedStyles.headLeft, SharedStyles.backButton]}>
 							<Image source={CROSS_GRAY} />
-						</View>
+						</TouchableOpacity>
 						<Text style={[SharedStyles.headTitle, styles.title]}>Create Post</Text>
 						<View style={SharedStyles.headRight}>
 							<AvatarComponent border={0} size={32} url={PROFILE_PIC}></AvatarComponent>
@@ -51,11 +55,11 @@ class CreatePostScreen extends React.Component {
 						</View>
 						<View style={styles.footerContainer}>
 							{/* Input text */}
-							<View style={{minHeight: 56}}>
+							<View style={{ minHeight: 56 }}>
 								<TextInput
 									placeholder="State your green moment here..."
-									style={{										
-										width: '100%',										
+									style={{
+										width: '100%',
 										paddingHorizontal: 15,
 										paddingTop: 15,
 										paddingBottom: 10,
@@ -69,25 +73,25 @@ class CreatePostScreen extends React.Component {
 							</View>
 
 							{/* Actions */}
-							<View style={{height:50, paddingHorizontal: 15, paddingVertical:10, display: 'flex', justifyContent:'space-between', flexDirection:'row'}}>
-								<View style={{display: 'flex', flexDirection:'row'}}>
-									<View style={{marginRight: 10}}>
+							<View style={{ height: 50, paddingHorizontal: 15, paddingVertical: 10, display: 'flex', justifyContent: 'space-between', flexDirection: 'row' }}>
+								<View style={{ display: 'flex', flexDirection: 'row' }}>
+									<View style={{ marginRight: 10 }}>
 										<Image source={BTN_EMOJI} />
 									</View>
 									<View>
 										<Image source={BTN_MAP} />
 									</View>
 								</View>
-								<View style={{paddingRight: 8, height:28, backgroundColor: Color.LIGHT_GREEN_10, borderRadius:12, display: 'flex', alignItems:'center', flexDirection:'row'}}>
-									<Image style={{marginRight: 6}} source={BTN_PHOTO} />
-									<Text style={{fontSize:12, color: Color.GRAY_DARK}}>Take a Photo</Text>
-								</View>						
+								<View style={{ paddingRight: 8, height: 28, backgroundColor: Color.LIGHT_GREEN_10, borderRadius: 12, display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+									<Image style={{ marginRight: 6 }} source={BTN_PHOTO} />
+									<Text style={{ fontSize: 12, color: Color.GRAY_DARK }}>Take a Photo</Text>
+								</View>
 							</View>
 						</View>
 					</View>
 				</ScrollView>
 
-			</View>
+			</SafeAreaView>
 		)
 	}
 }

@@ -4,6 +4,13 @@ import {Dimensions} from 'react-native';
 const windowHeight = Dimensions.get('window').height;
 
 export default StyleSheet.create({
+  safeContainer: {
+    display: 'flex',
+    flex: 1,
+    position: 'relative',
+    backgroundColor: 'white',
+    height: '100%',
+  },
   bg: {
     backgroundColor: Color.PRIMARY_COLOR,
   },
@@ -14,7 +21,7 @@ export default StyleSheet.create({
     padding: 15,
   },
   container: {
-    height: windowHeight - 170,
+    height: windowHeight - 130,
     display: 'flex',
     justifyContent: 'space-between',
   },

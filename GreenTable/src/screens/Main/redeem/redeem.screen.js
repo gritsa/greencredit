@@ -2,7 +2,7 @@
 // Redeem Credit Screen
 //***********************//
 import React from "react";
-import { View, Text, Image, ImageBackground } from "react-native";
+import { TouchableOpacity, SafeAreaView, StatusBar, View, Text, Image, ImageBackground } from "react-native";
 import AvatarComponent from '../../../components/avatar/avatar.component';
 import RedeemItemComponent from '../../../components/redeem-item/redeem-item.component';
 import { ScrollView } from "react-native-gesture-handler";
@@ -16,9 +16,10 @@ const windowWidth = Dimensions.get('window').width;
 const CREDIT_ICON_INCOME = require('../../../assets/images/credit-count-icon.png');
 const PROFILE_PIC = require('../../../assets/images/avatar-1.png');
 const CREDIT_MASK = require('../../../assets/images/credit-mask.png');
-const CLOSE = require('../../../assets/images/cross-gray.png');
+const CROSS_GRAY = require('../../../assets/images/cross-gray.png');
 
 class RedeemCreditScreen extends React.Component {
+
 	transactions = [{
 		id: 1,
 		title: 'Earned for "For happiness on earth, testing loing text',
@@ -75,67 +76,77 @@ class RedeemCreditScreen extends React.Component {
 		logo: require('../../../assets/images/zara.png'),
 		amount: 333
 	}]
+
+	navigate = () => {
+		this.props.navigation.goBack();
+	}
+
 	render() {
 		return (
-			<View style={styles.bg}>
+			<SafeAreaView style={styles.safeContainer}>
 
-				<View style={styles.head}>
+				<StatusBar />
 
-					<ImageBackground style={{
-						borderBottomLeftRadius: 15,
-						borderBottomRightRadius: 15,
-						width: '100%', height: 220
-					}} source={CREDIT_MASK}>
-						<View style={{
-							height: '100%', 
+				<View style={styles.bg}>
+
+					<View style={styles.head}>
+
+						<ImageBackground style={{
 							borderBottomLeftRadius: 15,
-							borderBottomRightRadius: 15, 
-							backgroundColor: Color.WHITE_90
-						}}>
-							<View style={SharedStyles.header}>
-								<View style={[SharedStyles.headLeft, SharedStyles.backButton]}>
-									<Image source={CLOSE} />
+							borderBottomRightRadius: 15,
+							width: '100%', height: 220
+						}} source={CREDIT_MASK}>
+							<View style={{
+								height: '100%',
+								borderBottomLeftRadius: 15,
+								borderBottomRightRadius: 15,
+								backgroundColor: Color.WHITE_90
+							}}>
+								<View style={SharedStyles.header}>
+									<TouchableOpacity onPress={() => this.navigate()} style={[SharedStyles.headLeft, SharedStyles.backButton]}>
+										<Image source={CROSS_GRAY} />
+									</TouchableOpacity>
+									<Text style={[SharedStyles.headTitle, styles.title]}>Redeem</Text>
+									<View style={SharedStyles.headRight}>
+										<AvatarComponent border={2} size={32} url={PROFILE_PIC}></AvatarComponent>
+									</View>
 								</View>
-								<Text style={[SharedStyles.headTitle, styles.title]}>Redeem</Text>
-								<View style={SharedStyles.headRight}>
-									<AvatarComponent border={2} size={32} url={PROFILE_PIC}></AvatarComponent>
+
+								<View style={styles.creditInfoSec}>
+									<View style={styles.amount}>
+										<Image style={styles.amountImage} source={CREDIT_ICON_INCOME} />
+										<Text style={[SharedStyles.totalCreditText, SharedStyles.textSecondary]}>3225</Text>
+									</View>
+
+									<Text style={[SharedStyles.textPrimary, SharedStyles.fontSemiBold]}>GREEN CREDIT BALANCE</Text>
+
 								</View>
 							</View>
+						</ImageBackground>
 
-							<View style={styles.creditInfoSec}>
-								<View style={styles.amount}>
-									<Image style={styles.amountImage} source={CREDIT_ICON_INCOME} />
-									<Text style={[SharedStyles.totalCreditText, SharedStyles.textSecondary]}>3225</Text>
-								</View>
+					</View>
 
-								<Text style={[SharedStyles.textPrimary, SharedStyles.fontSemiBold]}>GREEN CREDIT BALANCE</Text>
 
+					<View style={styles.transactionContainer}>
+						<View>
+							<View style={styles.transactionTitle}>
+								<Text style={{ color: Color.PRIMARY_COLOR, fontWeight: FontWeight.FONT_WEIGHT_SEMI_BOLD }}>COUPONS</Text>
 							</View>
-						</View>
-					</ImageBackground>
-
-				</View>
-
-
-				<View style={styles.transactionContainer}>
-					<View>
-						<View style={styles.transactionTitle}>
-							<Text style={{ color: Color.PRIMARY_COLOR, fontWeight: FontWeight.FONT_WEIGHT_SEMI_BOLD }}>COUPONS</Text>
-						</View>
-						<View style={SharedStyles.couponListScrollContainer}>
-							<ScrollView>
-								{
-									this.transactions.map((item, index) => {
-										return <RedeemItemComponent key={item.id} item={item}></RedeemItemComponent>
-									})
-								}
-								<View style={{ height: 70 }}></View>
-							</ScrollView>
+							<View style={SharedStyles.couponListScrollContainer}>
+								<ScrollView>
+									{
+										this.transactions.map((item, index) => {
+											return <RedeemItemComponent key={item.id} item={item}></RedeemItemComponent>
+										})
+									}									
+								</ScrollView>
+							</View>
 						</View>
 					</View>
-				</View>
 
-			</View>
+				</View>
+			
+			</SafeAreaView>
 		)
 	}
 }

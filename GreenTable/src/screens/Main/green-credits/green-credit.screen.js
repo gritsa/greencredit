@@ -2,7 +2,7 @@
 // Green Credit Screen
 //***********************//
 import React from "react";
-import { View, Text, Image, ImageBackground, Alert } from "react-native";
+import { SafeAreaView, StatusBar, View, Text, Image, ImageBackground, TouchableOpacity } from "react-native";
 import AvatarComponent from '../../../components/avatar/avatar.component';
 import TransactionItemComponent from '../../../components/transaction-item/transaction-item.component';
 import { ScrollView } from "react-native-gesture-handler";
@@ -10,7 +10,6 @@ import { Color } from "../../../shared/utils/colors-pack";
 import SharedStyles from "../../../shared/shared-styles";
 import styles from './style';
 import { FontWeight } from "../../../shared/utils/typography-pack";
-import { Dimensions } from 'react-native';
 import { ROUTES } from '../../../shared/constants/routes';
 
 const CREDIT_ICON_INCOME = require('../../../assets/images/credit-count-icon.png');
@@ -19,7 +18,11 @@ const CREDIT_MASK = require('../../../assets/images/credit-mask.png');
 const LINER_GRADIENT = require('../../../assets/images/liner-gradient.png');
 
 class GreenCreditScreen extends React.Component {
-	 
+
+	constructor(props){		
+		super(props);			
+	}
+	
 	transactions = [{
 		id: 1,
 		description: 'Earned for "For happiness on earth, testing loing text',
@@ -74,14 +77,17 @@ class GreenCreditScreen extends React.Component {
 		created_at: '12 June 2021',
 		is_credit: false,
 		amount: 100
-	}]
-
-	navigateRedeem = () => {				
-		
+	}];
+	 
+	navigate(){		
+		this.props.navigation.navigate(ROUTES.REDEEM);
 	}
 	render() {
 		return (
-			<View style={styles.bg}>
+			<SafeAreaView style={styles.safeContainer}>
+
+				<StatusBar />
+				<View style={styles.bg}>
 
 				<ImageBackground source={LINER_GRADIENT} style={{ resizeMode: 'cover', width: '100%', height: 260 }}>
 					<View style={styles.head}>
@@ -105,9 +111,10 @@ class GreenCreditScreen extends React.Component {
 
 								<Text style={[SharedStyles.textWhite_50, SharedStyles.fontSemiBold]}>CREDIT EARNED</Text>
 
-								<View onTouchEnd={this.navigateRedeem} style={[SharedStyles.buttonPrimary, SharedStyles.shadow, {marginTop: 25}]}>
+								<TouchableOpacity style={[SharedStyles.buttonPrimary, SharedStyles.shadow, {marginTop: 25}]} 
+								onPress={() => this.navigate()}>
 									<Text style={[SharedStyles.textWhite, SharedStyles.fontSemiBold]}>REDEEM CREDITS</Text>
-								</View>
+								</TouchableOpacity>
 							</View>
 						</ImageBackground>
 
@@ -135,6 +142,8 @@ class GreenCreditScreen extends React.Component {
 				</View>
 
 			</View>
+			
+			</SafeAreaView>
 		)
 	}
 }
