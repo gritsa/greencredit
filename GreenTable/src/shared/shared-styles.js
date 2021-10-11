@@ -80,6 +80,11 @@ export default StyleSheet.create({
 		height: containerHeight,
 		backgroundColor:'#fff'	
 	},
+	pagerBox: {		
+		height: containerHeight - 160,		
+		width: '100%',		
+		backgroundColor: Color.LIGHT_GREEN	
+	},
 	popularSecHeight : {
 		height : popularSecHeight
 	},
