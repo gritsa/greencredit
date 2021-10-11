@@ -1,10 +1,10 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import React, { useEffect } from 'react';
-import { View, Image, Text } from 'react-native';
-import { Color } from '../../shared/utils/colors-pack';
+import {StyleSheet, Dimensions} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Image, Text} from 'react-native';
+import {Color} from '../../shared/utils/colors-pack';
 import SharedStyles from '../../shared/shared-styles';
 import AvatarComponent from '../../components/avatar/avatar.component';
-import { FontWeight } from '../../shared/utils/typography-pack';
+import {FontWeight} from '../../shared/utils/typography-pack';
 
 const BADGE_ICON = require('../../assets/images/badge-blue.png');
 const LIKE_ICON = require('../../assets/images/thumbs-up-outline.png');
@@ -13,25 +13,25 @@ const COMMENT_ICON = require('../../assets/images/messenger-outline.png');
 
 const windowWidth = Dimensions.get('window').width;
 
-const PostCardComponent = (props) => {
-
-  useEffect(() => {
-
-  }, []);
+const PostCardComponent = props => {
+  useEffect(() => {}, []);
 
   return (
     <View style={styles.cardContainer}>
-
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.leftSec}>
-          <AvatarComponent size={32} url={props.post.user_details.profile_pic}></AvatarComponent>
+          <AvatarComponent
+            size={32}
+            url={props.post.user_details.profile_pic}></AvatarComponent>
           <View style={styles.userDetails}>
             <View style={styles.nameSec}>
               <Text style={styles.name}>{props.post.user_details.name} </Text>
               <Text style={styles.timeAgo}>{props.post.created_at} </Text>
             </View>
-            <Text style={styles.userName}>{props.post.user_details.user_name}</Text>
+            <Text style={styles.userName}>
+              {props.post.user_details.user_name}
+            </Text>
           </View>
         </View>
 
@@ -44,16 +44,22 @@ const PostCardComponent = (props) => {
       {/* Content */}
       <View style={styles.card}>
         <Text style={styles.post}>{props.post.post}</Text>
-        <Image style={[SharedStyles.shadow, styles.postImage]} source={props.post.post_image} />
+        <Image
+          style={[SharedStyles.shadow, styles.postImage]}
+          source={props.post.post_image}
+        />
       </View>
       {/* Content end */}
 
       {/* Footer */}
       <View style={styles.footer}>
-
         <View style={styles.likeCommentSec}>
           <View style={styles.iconWithText}>
-            {props.post.post.is_like ? <Image source={LIKEED_ICON} /> : <Image source={LIKE_ICON} />}
+            {props.post.post.is_like ? (
+              <Image source={LIKEED_ICON} />
+            ) : (
+              <Image source={LIKE_ICON} />
+            )}
             <Text style={styles.iconText}>{props.post.comment_count}</Text>
           </View>
           <View style={styles.iconWithText}>
@@ -62,7 +68,9 @@ const PostCardComponent = (props) => {
           </View>
         </View>
         <View>
-          <Text style={styles.viewAllText}>View all {props.post.comment_count} comments</Text>
+          <Text style={styles.viewAllText}>
+            View all {props.post.comment_count} comments
+          </Text>
         </View>
       </View>
       {/* Footer end */}
@@ -78,16 +86,16 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     borderRadius: 8,
-    color: Color.SECONDARY_COLOR
+    color: Color.SECONDARY_COLOR,
   },
   card: {
-    padding: 5
+    padding: 5,
   },
   header: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5
+    marginBottom: 5,
   },
   leftSec: {
     maxWidth: windowWidth - 80,
@@ -96,7 +104,7 @@ const styles = StyleSheet.create({
   },
   userDetails: {
     display: 'flex',
-    paddingLeft: 12
+    paddingLeft: 12,
   },
   nameSec: {
     display: 'flex',
@@ -104,59 +112,59 @@ const styles = StyleSheet.create({
   },
   name: {
     fontWeight: FontWeight.FONT_WEIGHT_SEMI_BOLD,
-    color: Color.SECONDARY_COLOR
+    color: Color.SECONDARY_COLOR,
   },
   userName: {
     fontWeight: '300',
-    color: Color.GRAY_DARK
+    color: Color.GRAY_DARK,
   },
   timeAgo: {
     paddingLeft: 5,
     fontWeight: FontWeight.FONT_WEIGHT_BOLD,
-    color: Color.GRAY
+    color: Color.GRAY,
   },
   rightSec: {
     width: 22,
     textAlign: 'right',
     display: 'flex',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   postImage: {
     maxWidth: '100%',
-    borderRadius: 5
+    borderRadius: 5,
   },
   post: {
     marginBottom: 10,
     color: Color.SECONDARY_COLOR,
-    lineHeight: 20
+    lineHeight: 20,
   },
-  footer : {
+  footer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
-    paddingVertical: 5
+    paddingVertical: 5,
   },
-  likeCommentSec : {
+  likeCommentSec: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
-  iconWithText : {
+  iconWithText: {
     display: 'flex',
     flexDirection: 'row',
     paddingRight: 15,
     alignItems: 'center',
-    justifyContent: 'center',  
-  }, 
-  iconText : {
-    color: Color.GRAY_MEDIUM,
-    fontSize : 13,
-    paddingLeft: 3
+    justifyContent: 'center',
   },
-  viewAllText : {
+  iconText: {
     color: Color.GRAY_MEDIUM,
-    fontSize : 13,
-    fontWeight: FontWeight.FONT_WEIGHT_SEMI_BOLD
-  }
-})
+    fontSize: 13,
+    paddingLeft: 3,
+  },
+  viewAllText: {
+    color: Color.GRAY_MEDIUM,
+    fontSize: 13,
+    fontWeight: FontWeight.FONT_WEIGHT_SEMI_BOLD,
+  },
+});

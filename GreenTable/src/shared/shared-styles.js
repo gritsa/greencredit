@@ -84,7 +84,7 @@ export default StyleSheet.create({
 		height : popularSecHeight
 	},
 	activityPostContainer : {
-		height : windowHeight - (45 + headerHeight+tabHeight+popularSecHeight)		
+		height : windowHeight - (headerHeight+tabHeight+popularSecHeight)		
 	},	
 	transactionScrollContainer : {	
 		backgroundColor: Color.LIGHT_GREEN,	
