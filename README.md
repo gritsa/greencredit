@@ -5,12 +5,16 @@ The home of the GreenCREDIT Network project. GreenCREDIT aims to be an open arch
 RESTful API backend built with Django REST Framework, front-end app code written in React Native and database as PostgreSQL/CockroachDB
 
 ## Business Entities
+
+### Personas
 * Activist
 	* Performs the green activities to make the earth a greener place and save it before time runs out. The real hero.
 * Entity
 	* A company or an entity that brings green products or services to the world
 * Funder
 	* A person or a company contributing funds or resources with the intent of making the work d a greener place, and would like to enable the green activists to become successful in their work
+
+### Object Model
 * Activity
 	* A single and measurable act of kindness to save the planet. Only an Activity can generate GreenCREDITs.
 * Campaign
