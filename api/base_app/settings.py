@@ -105,9 +105,9 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Green_Credit',
-        'USER': 'postgres',
-        'PASSWORD': "Nimish@123",
+        'NAME': 'YOUR_DB_NAME',
+        'USER': 'YOUR_DB_USER',
+        'PASSWORD': "YOU_DB_PASSWORD",
         "HOST": "127.0.0.1",
         'PORT': '5432',
         # 'DISABLE_SERVER_SIDE_CURSORS': True,
@@ -154,11 +154,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # AUTHENTICATION_BACKENDS = [
 #     # Needed to login by username in Django admin, regardless of `allauth`
