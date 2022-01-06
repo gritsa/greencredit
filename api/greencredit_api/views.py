@@ -61,9 +61,9 @@ class VerifyEmail(views.APIView):
             print(payload)
             user = GreenCreditUser.objects.get(id=payload['user_id'])
             print(user)
-            if not user.is_active:
-                print(user.is_active)
-                user.is_active = True
+            if not user.is_verified:
+                print(user.is_verified)
+                user.is_verified = True
                 user.save()
             return Response({'Message': "Successfully activated"}, status=status.HTTP_200_OK)
         except jwt.ExpiredSignatureError as identifier:

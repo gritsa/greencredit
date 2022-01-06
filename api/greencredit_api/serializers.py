@@ -5,13 +5,14 @@ from rest_framework_simplejwt.tokens import Token
 
 from greencredit_api.admin import GreenCreditUserAdmin
 from .models import GreenCreditUser
-from django.contrib import auth
+from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 import re
 from rest_framework.validators import UniqueValidator
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length=255, min_length=6)
     password = serializers.CharField(
         max_length=255, min_length=6, write_only=True)
 
@@ -33,31 +34,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return GreenCreditUser.objects.create_user(**validated_data)
 
 
-# class RegisterSerializer(serializers.ModelSerializer):
-#     email = serializers.EmailField(
-#         required=True,
-#         validators=[UniqueValidator(queryset=GreenCreditUser.objects.all())]
-#     )
-#     password = serializers.CharField(
-#         max_length=255, min_length=6, write_only=True)
-
-#     class Meta:
-#         model = GreenCreditUser
-#         fields = [ 'email', 'password']
-
-#     def validate(self, attrs):
-#         email = attrs.get('email', ' ')
-#         EMAIL_REGEX = re.compile(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$",email)
-
-#         if not EMAIL_REGEX.match(email):
-#             raise serializers.ValidationError('Invalid Email Address')
-
-#         return attrs
-
-#     def create(self, validated_data):
-#         return GreenCreditUser.objects.create_user(**validated_data)
-
-
 class EmailVerificationSerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length=555)
 
@@ -71,7 +47,8 @@ class LoginSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length=70, min_length=6, write_only=True)
     username = serializers.CharField(
-        max_length=255, min_length=6, read_only=True)
+        max_length=255, min_length=6, read_only=True)   
+
     tokens = serializers.SerializerMethodField()
 
     def get_tokens(self, obj):
@@ -84,13 +61,16 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GreenCreditUser
-        fields = ['email', 'password', 'tokens', 'username']
+        fields = ['email', 'password','username', 'tokens']
 
     def validate(self, attrs):
         email = attrs.get('email', '')
         password = attrs.get('password', '')
 
-        user = auth.authenticate(email=email, password=password)
+        # if email and password:
+        #     user = auth.authenticate(request=self.context.get('request'),
+        #                         email=email, password=password)
+        user = authenticate(username=email, password=password)
 
         if not user:
             raise AuthenticationFailed('Invalid Credentials')

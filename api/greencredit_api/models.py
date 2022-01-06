@@ -42,13 +42,13 @@ class GreenCreditUser(AbstractUser):
     last_name = models.CharField(
         max_length=255, default=None, null=True, blank=True)
     email = models.EmailField(
-        max_length=255, default=None, null=True, blank=True)
+        max_length=255, default=None, null=True, blank=True, unique=True,)
     display_picture = models.ImageField(
         upload_to=user_profile_picture, default=None, null=True, blank=True)
     created_on = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     modified_on = models.DateTimeField(
         auto_now_add=True, null=True, blank=True)
-    is_active = models.BooleanField(default=True)
+    is_verified = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
@@ -61,3 +61,6 @@ class GreenCreditUser(AbstractUser):
             'refresh': str(refresh),
             'access': str(refresh.access_token)
         }
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
