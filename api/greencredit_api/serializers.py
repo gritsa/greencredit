@@ -1,17 +1,23 @@
 from django.db import models
 from django.db.models import fields
-from rest_framework import serializers
+from rest_framework import serializers,status
 from rest_framework_simplejwt.tokens import Token
 
 from greencredit_api.admin import GreenCreditUserAdmin
 from .models import GreenCreditUser
-from django.contrib import auth
+from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 import re
 from rest_framework.validators import UniqueValidator
 
+from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
 
 class RegisterSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length=255, min_length=6)
     password = serializers.CharField(
         max_length=255, min_length=6, write_only=True)
 
@@ -33,31 +39,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return GreenCreditUser.objects.create_user(**validated_data)
 
 
-# class RegisterSerializer(serializers.ModelSerializer):
-#     email = serializers.EmailField(
-#         required=True,
-#         validators=[UniqueValidator(queryset=GreenCreditUser.objects.all())]
-#     )
-#     password = serializers.CharField(
-#         max_length=255, min_length=6, write_only=True)
-
-#     class Meta:
-#         model = GreenCreditUser
-#         fields = [ 'email', 'password']
-
-#     def validate(self, attrs):
-#         email = attrs.get('email', ' ')
-#         EMAIL_REGEX = re.compile(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$",email)
-
-#         if not EMAIL_REGEX.match(email):
-#             raise serializers.ValidationError('Invalid Email Address')
-
-#         return attrs
-
-#     def create(self, validated_data):
-#         return GreenCreditUser.objects.create_user(**validated_data)
-
-
 class EmailVerificationSerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length=555)
 
@@ -71,7 +52,8 @@ class LoginSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length=70, min_length=6, write_only=True)
     username = serializers.CharField(
-        max_length=255, min_length=6, read_only=True)
+        max_length=255, min_length=6, read_only=True)   
+
     tokens = serializers.SerializerMethodField()
 
     def get_tokens(self, obj):
@@ -84,13 +66,16 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GreenCreditUser
-        fields = ['email', 'password', 'tokens', 'username']
+        fields = ['email', 'password','username', 'tokens']
 
     def validate(self, attrs):
         email = attrs.get('email', '')
         password = attrs.get('password', '')
 
-        user = auth.authenticate(email=email, password=password)
+        # if email and password:
+        #     user = auth.authenticate(request=self.context.get('request'),
+        #                         email=email, password=password)
+        user = authenticate(username=email, password=password)
 
         if not user:
             raise AuthenticationFailed('Invalid Credentials')
@@ -113,3 +98,34 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     class Meta:
         model = GreenCreditUser
         fields = ['email']
+
+
+
+class SetNewPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=6, max_length=68,write_only=True)
+    uidb64 = serializers.CharField(min_length=1,write_only=True)
+    token = serializers.CharField(min_length=6,write_only=True)
+
+    class Meta:
+        fields = ['password', 'uidb64', 'token']
+
+    def validate(self, attrs):
+        try:
+            password = attrs.get('password', '')
+            token = attrs.get('token', '')
+            uidb64 = attrs.get('uidb64', '')
+
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = GreenCreditUser.objects.get(id=id)
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                raise AuthenticationFailed('The rest link is invalid',status=status.HTTP_401_UNAUTHORIZED)  
+
+            user.set_password(password)
+            user.save()
+            return (user)
+
+        except Exception as e:
+            raise AuthenticationFailed('The rest link is invalid',status=status.HTTP_401_UNAUTHORIZED)
+        
+        return super().validate(attrs)

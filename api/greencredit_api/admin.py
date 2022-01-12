@@ -11,5 +11,8 @@ class GreenCreditUserAdmin(UserAdmin):
     UserAdmin.fieldsets += (('Profile Photo',
                             {'fields': ('display_picture',)}),)
 
+    UserAdmin.fieldsets += (('Is Verified',
+                            {'fields': ('is_verified',)}),)
+
 
 admin.sites.site.register(GreenCreditUser, GreenCreditUserAdmin)

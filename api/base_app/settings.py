@@ -105,8 +105,8 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'YOUR_DB_NAME',
-        'USER': 'YOUR_DB_USER',
+        'NAME': 'YOU_DB_NAME',
+        'USER': 'YOU_DB_USER',
         'PASSWORD': "YOU_DB_PASSWORD",
         "HOST": "127.0.0.1",
         'PORT': '5432',
@@ -154,16 +154,16 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "testnimishapp@gmail.com"
+EMAIL_HOST_PASSWORD = 'Test@1234'
 
-# AUTHENTICATION_BACKENDS = [
-#     # Needed to login by username in Django admin, regardless of `allauth`
-#     'django.contrib.auth.backends.ModelBackend',
+AUTHENTICATION_BACKENDS = [
+    #     # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
 
-#     # `allauth` specific authentication methods, such as login by e-mail
-#     # 'allauth.account.auth_backends.AuthenticationBackend',
-# ]
+    #     # `allauth` specific authentication methods, such as login by e-mail
+    #     # 'allauth.account.auth_backends.AuthenticationBackend',
+]
