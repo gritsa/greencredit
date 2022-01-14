@@ -6,6 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your models here.
 
+
 class BaseModel(models.Model):
     """
     Base Model with created_at, and modified_at fields, will be inherited
@@ -32,24 +33,41 @@ class BaseModel(models.Model):
 
 
 def user_profile_picture(instance, filename):
-    filebase, extension = filename.split('.')
-    return 'user_profile_picture/%s.%s' % (str(int(round(time.time() * 1000))), extension)
+    filebase, extension = filename.split(".")
+    return "user_profile_picture/%s.%s" % (
+        str(int(round(time.time() * 1000))),
+        extension,
+    )
+
+
+AUTH_PROVIDERS = {
+    "facebook": "facebook",
+    "google": "google",
+    "twitter": "twitter",
+    "email": "email",
+}
 
 
 class GreenCreditUser(AbstractUser):
-    first_name = models.CharField(
-        max_length=255, default=None, null=True, blank=True)
-    last_name = models.CharField(
-        max_length=255, default=None, null=True, blank=True)
+    first_name = models.CharField(max_length=255, default=None, null=True, blank=True)
+    last_name = models.CharField(max_length=255, default=None, null=True, blank=True)
     email = models.EmailField(
-        max_length=255, default=None, null=True, blank=True, unique=True,)
+        max_length=255,
+        default=None,
+        null=True,
+        blank=True,
+        unique=True,
+    )
     display_picture = models.ImageField(
-        upload_to=user_profile_picture, default=None, null=True, blank=True)
+        upload_to=user_profile_picture, default=None, null=True, blank=True
+    )
     created_on = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    modified_on = models.DateTimeField(
-        auto_now_add=True, null=True, blank=True)
+    modified_on = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     is_verified = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
+    auth_provider = models.CharField(
+        max_length=255, blank=False, null=False, default=AUTH_PROVIDERS.get("email")
+    )
 
     def __str__(self):
         # return self.first_name + " " + self.last_name
@@ -57,10 +75,7 @@ class GreenCreditUser(AbstractUser):
 
     def tokens(self):
         refresh = RefreshToken.for_user(self)
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token)
-        }
+        return {"refresh": str(refresh), "access": str(refresh.access_token)}
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]

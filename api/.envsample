@@ -1,0 +1,8 @@
+# Rename this file as .env and add your own keys
+
+GOOGLE_CLIENT_ID=''
+GOOGLE_CLIENT_SECRET=''
+SOCIAL_SECRET=''
+SECRET_KEY= ''
+DEBUG=True
+
