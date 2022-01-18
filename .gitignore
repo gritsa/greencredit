@@ -3,3 +3,4 @@ __pycache__/
 api/obj/
 .vs/
 .vscode/
+.env
