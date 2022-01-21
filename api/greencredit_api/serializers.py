@@ -1,15 +1,17 @@
+from email.policy import default
+from venv import create
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers, status
 from rest_framework_simplejwt.tokens import Token
 
 from greencredit_api.admin import GreenCreditUserAdmin
-from .models import GreenCreditUser
+from .models import Activity, GreenCreditUser
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 import re
 from rest_framework.validators import UniqueValidator
-
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.utils.encoding import (
     smart_str,
     force_str,
@@ -138,6 +140,22 @@ class SetNewPasswordSerializer(serializers.Serializer):
         return super().validate(attrs)
 
 
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    default_error_messages = {"bad_token": ("Token is expired or invalid")}
+
+    def validate(self, attrs):
+        self.token = attrs["refresh"]
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+        except Exception as e:
+            self.fail("Invalid Token")
+
+
 class GoogleSocialAuthSerializer(serializers.Serializer):
     auth_token = serializers.CharField()
 
@@ -160,3 +178,70 @@ class GoogleSocialAuthSerializer(serializers.Serializer):
         return register_social_user(
             provider=provider, user_id=user_id, email=email, name=name
         )
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = (
+            "id",
+            "photo_urls",
+            "geo_location",
+            "timestamp",
+            "tags",
+            "md5hash",
+            "post_text",
+            "user",
+        )
+
+    # create activity
+    def create(self, validated_data):
+        return Activity.objects.create(**validated_data)
+
+
+class UserActivitySerializer(serializers.ModelSerializer):
+    activities = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Activity
+        fields = ["activities"]
+
+    def get_activities(self, obj):
+        activity_list = []
+        activity = Activity.objects.filter(user_id=obj.id)
+
+        for act in activity:
+            activity_dic = {}
+            activity_dic["id"] = act.id
+            activity_dic["geo_location"] = act.geo_location
+            activity_dic["timestamp"] = act.timestamp
+            activity_dic["tags"] = act.tags
+            activity_dic["md5hash"] = act.md5hash
+            activity_dic["post_text"] = act.post_text
+            activity_dic["photos_urls"] = act.photo_urls
+            activity_list.append(activity_dic)
+        return activity_list
+
+
+class GetAllActivitySerializer(serializers.ModelSerializer):
+    activities = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Activity
+        fields = ["activities"]
+
+    def get_activities(self, obj):
+        activity_list = []
+        activity = Activity.objects.all()
+
+        for act in activity:
+            activity_dic = {}
+            activity_dic["id"] = act.id
+            activity_dic["geo_location"] = act.geo_location
+            activity_dic["timestamp"] = act.timestamp
+            activity_dic["tags"] = act.tags
+            activity_dic["md5hash"] = act.md5hash
+            activity_dic["post_text"] = act.post_text
+            activity_dic["photos_urls"] = act.photo_urls
+            activity_list.append(activity_dic)
+        return activity_list

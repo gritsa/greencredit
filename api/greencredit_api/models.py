@@ -1,8 +1,12 @@
+from sqlite3 import Timestamp
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import time
 from rest_framework_simplejwt.tokens import RefreshToken
 
+import inflect
+
+p = inflect.engine()
 
 # Create your models here.
 
@@ -79,3 +83,23 @@ class GreenCreditUser(AbstractUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
+
+
+def activity_photo_urls(instance, filename):
+    filebase, extension = filename.split(".")
+    return "activity_photo/%s.%s" % (str(int(round(time.time() * 1000))), extension)
+
+
+class Activity(models.Model):
+    photo_urls = models.JSONField(default="[]", null=True, blank=True)
+    geo_location = models.JSONField(default=dict, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    tags = models.JSONField(blank=True, null=True, default="[]")
+    md5hash = models.TextField(null=True, blank=True)
+    post_text = models.TextField(null=True, blank=True)
+    user = models.ForeignKey(
+        GreenCreditUser, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+
+    def __str__(self):
+        return f"{self.id} Activity"

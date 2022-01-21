@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from greencredit_api.models import GreenCreditUser
+from greencredit_api.models import Activity, GreenCreditUser
 
 # Register your models here.
 
@@ -15,4 +15,5 @@ class GreenCreditUserAdmin(UserAdmin):
     UserAdmin.fieldsets += (("Auth Provider", {"fields": ("auth_provider",)}),)
 
 
-admin.sites.site.register(GreenCreditUser, GreenCreditUserAdmin)
+admin.site.register(GreenCreditUser, GreenCreditUserAdmin)
+admin.site.register(Activity)
