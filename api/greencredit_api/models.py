@@ -102,4 +102,5 @@ class Activity(models.Model):
     )
 
     def __str__(self):
-        return f"{self.id} Activity"
+        return  p.ordinal(self.id) + " Activity"
+
