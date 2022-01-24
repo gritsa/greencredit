@@ -92,6 +92,7 @@ WSGI_APPLICATION = "base_app.wsgi.application"
 
 REST_FRAMEWORK = {
     "NON_FIELD_ERRORS_KEY": "error",
+    "EXCEPTION_HANDLER": "utils.exceptionhandler.custom_exception_handler",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
