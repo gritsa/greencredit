@@ -333,11 +333,21 @@ class ActivityByUserId(generics.RetrieveUpdateAPIView):
     serializer_class = UserActivitySerializer
 
 
-class UpdateUserProfileByID(APIView):
+class GetUpdateUserProfileByID(APIView):
     permission_classes = (IsAuthenticated,)
     lookup_field = "id"
     queryset = GreenCreditUser.objects.all()
     serializer_class = UpdateUserProfileSerializer
+
+    def get(self, request, id):
+        try:
+            user = GreenCreditUser.objects.get(id=id)
+            serializer = self.serializer_class(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except GreenCreditUser.DoesNotExist:
+            return Response(
+                {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def put(self, request, id):
         try:
@@ -353,3 +363,4 @@ class UpdateUserProfileByID(APIView):
             return Response(
                 {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
+
