@@ -55,6 +55,7 @@ AUTH_PROVIDERS = {
 class GreenCreditUser(AbstractUser):
     first_name = models.CharField(max_length=255, default=None, null=True, blank=True)
     last_name = models.CharField(max_length=255, default=None, null=True, blank=True)
+    title = models.CharField(max_length=100, blank=True, null=True)
     email = models.EmailField(
         max_length=255,
         default=None,
@@ -65,10 +66,15 @@ class GreenCreditUser(AbstractUser):
     display_picture = models.ImageField(
         upload_to=user_profile_picture, default=None, null=True, blank=True
     )
-    created_on = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    modified_on = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     is_verified = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
+    role = models.CharField(
+        max_length=20,
+        choices=[("ACTIVIST", "ACTIVIST"), ("ENTITY", "ENTITY"), ("FUNDER", "FUNDER")],
+        default="ACTIVIST",
+    )
     auth_provider = models.CharField(
         max_length=255, blank=False, null=False, default=AUTH_PROVIDERS.get("email")
     )
@@ -102,5 +108,4 @@ class Activity(models.Model):
     )
 
     def __str__(self):
-        return  p.ordinal(self.id) + " Activity"
-
+        return p.ordinal(self.id) + " Activity"

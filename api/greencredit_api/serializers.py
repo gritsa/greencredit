@@ -180,6 +180,12 @@ class GoogleSocialAuthSerializer(serializers.Serializer):
         )
 
 
+class UpdateUserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GreenCreditUser
+        fields = ["first_name", "last_name", "title", "display_picture", "role"]
+
+
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity

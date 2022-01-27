@@ -8,6 +8,7 @@ from .views import (
     LoginAPIView,
     LogoutAPIView,
     RegisterView,
+    UpdateUserProfileByID,
     VerifyEmail,
     PasswordTokenCheckAPI,
     RequestPasswordResetEmail,
@@ -45,5 +46,6 @@ urlpatterns = [
     path("get/activities/", GetActivity.as_view()),
     path("activities-by-id/<int:id>", GetUpdateActivityByID.as_view()),
     path("activities-by-user-id/<int:id>", ActivityByUserId.as_view()),
+    path("update-user-profile/<int:id>", UpdateUserProfileByID.as_view()),
     path("logout/", LogoutAPIView.as_view(), name="logout"),
 ]

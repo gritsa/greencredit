@@ -14,6 +14,7 @@ from .serializers import (
     LoginSerializer,
     ResetPasswordEmailRequestSerializer,
     SetNewPasswordSerializer,
+    UpdateUserProfileSerializer,
     UserActivitySerializer,
 )
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -103,7 +104,6 @@ class VerifyEmail(views.APIView):
 
             # we are passing our secret key here to decode the token
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            print(payload)
             user = GreenCreditUser.objects.get(id=payload["user_id"])
             if not user.is_verified:
                 user.is_verified = True
@@ -179,7 +179,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
             return Response(
                 {
                     "Success": True,
-                    "message": "Credentials Valid",
+                    "Message": "Credentials Valid",
                     "uidb64": uidb64,
                     "token": token,
                 },
@@ -188,7 +188,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
         except DjangoUnicodeDecodeError as identifier:
             if not PasswordResetTokenGenerator().check_token(user, token):
                 return Response(
-                    {"Message": "Take is not valid , please request a new one"},
+                    {"Message": "Token is not valid , please request a new one"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -331,3 +331,25 @@ class ActivityByUserId(generics.RetrieveUpdateAPIView):
     lookup_field = "id"
     queryset = Activity.objects.all()
     serializer_class = UserActivitySerializer
+
+
+class UpdateUserProfileByID(APIView):
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "id"
+    queryset = GreenCreditUser.objects.all()
+    serializer_class = UpdateUserProfileSerializer
+
+    def put(self, request, id):
+        try:
+            user = GreenCreditUser.objects.get(id=id)
+            user.first_name = request.data["first_name"]
+            user.last_name = request.data["last_name"]
+            user.display_picture = request.data["display_picture"]
+            user.title = request.data["title"]
+            user.role = request.data["role"]
+            user.save()
+            return Response({"Message": "User is updated"}, status=status.HTTP_200_OK)
+        except GreenCreditUser.DoesNotExist:
+            return Response(
+                {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
