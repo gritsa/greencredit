@@ -22,8 +22,6 @@ def register_social_user(provider, user_id, email, name):
             registered_user = authenticate(
                 email=email, password=config("SOCIAL_SECRET")
             )
-
-            # password = os.environ.get('SOCIAL_SECRET'))
             return {
                 "username": registered_user.username,
                 "email": registered_user.email,
@@ -42,8 +40,7 @@ def register_social_user(provider, user_id, email, name):
         user = {
             "username": generate_username(name),
             "email": email,
-            "password": config("SOCIAL_SECRET")
-            # 'password':os.environ.get('SOCIAL_SECRET')
+            "password": config("SOCIAL_SECRET"),
         }
         user = GreenCreditUser.objects.create_user(**user)
         user.is_verified = True
