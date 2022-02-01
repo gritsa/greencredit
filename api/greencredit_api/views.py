@@ -1,4 +1,6 @@
+import email
 from django.shortcuts import render
+import json
 
 # Create your views here.
 from datetime import date
@@ -7,14 +9,18 @@ from django.shortcuts import render
 from rest_framework import generics, permissions, serializers, status, views
 from .serializers import (
     EmailVerificationSerializer,
+    GetAllActivitySerializer,
     RegisterSerializer,
     LoginSerializer,
     ResetPasswordEmailRequestSerializer,
     SetNewPasswordSerializer,
+    UpdateUserProfileSerializer,
+    UserActivitySerializer,
 )
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import GreenCreditUser
+from .models import GreenCreditUser, Activity
 from .utils import Util
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
@@ -22,7 +28,6 @@ import jwt
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import (
     smart_str,
@@ -34,12 +39,24 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from .utils import Util
+from rest_framework.views import APIView
 
-# Create your views here.
 # google auth
 from rest_framework.generics import GenericAPIView
-from .serializers import GoogleSocialAuthSerializer
+from .serializers import (
+    GoogleSocialAuthSerializer,
+    ActivitySerializer,
+    LoginSerializer,
+    # UserActivitySerializer,
+    # ActivityImagesSerializers,
+    LogoutSerializer,
+)
 from rest_framework import status
+from rest_framework import viewsets
+import os
+from rest_framework.permissions import IsAuthenticated
+
+# Create your views here.
 
 
 class RegisterView(generics.GenericAPIView):
@@ -87,11 +104,8 @@ class VerifyEmail(views.APIView):
 
             # we are passing our secret key here to decode the token
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            print(payload)
             user = GreenCreditUser.objects.get(id=payload["user_id"])
-            # print(user)
             if not user.is_verified:
-                # print(user.is_verified)
                 user.is_verified = True
                 user.save()
             return Response(
@@ -113,7 +127,6 @@ class LoginAPIView(generics.GenericAPIView):
     def post(self, request):
         serializers = self.serializer_class(data=request.data)
         serializers.is_valid(raise_exception=True)
-        # print(serializers.data)
         return Response(serializers.data, status=status.HTTP_200_OK)
 
 
@@ -151,7 +164,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 
 
 class PasswordTokenCheckAPI(generics.GenericAPIView):
-    serializer_class = None
+    serializer_class = SetNewPasswordSerializer
 
     def get(self, request, uidb64, token):
         try:
@@ -166,7 +179,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
             return Response(
                 {
                     "Success": True,
-                    "message": "Credetials Valid",
+                    "Message": "Credentials Valid",
                     "uidb64": uidb64,
                     "token": token,
                 },
@@ -175,7 +188,7 @@ class PasswordTokenCheckAPI(generics.GenericAPIView):
         except DjangoUnicodeDecodeError as identifier:
             if not PasswordResetTokenGenerator().check_token(user, token):
                 return Response(
-                    {"Message": "Take is not valid , please request a new one"},
+                    {"Message": "Token is not valid , please request a new one"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -188,6 +201,18 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         return Response(
             {"success": True, "message": "Password Changed Successfully"},
+            status=status.HTTP_200_OK,
+        )
+
+
+class LogoutAPIView(generics.GenericAPIView):
+    serializer_class = LogoutSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(
+            {"success": True, "message": "Logout Successfully"},
             status=status.HTTP_200_OK,
         )
 
@@ -207,3 +232,135 @@ class GoogleSocialAuthView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         data = (serializer.validated_data)["auth_token"]
         return Response(data, status=status.HTTP_200_OK)
+
+
+class CreateActivity(generics.CreateAPIView):
+    serializer_class = ActivitySerializer
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        photo_urls = handle_uploaded_file(request.FILES.getlist("photo_urls"))
+        request.data["user"] = request.auth["user_id"]
+        # conver list to json
+        photo_urls = json.dumps(photo_urls)
+        request.data["photo_urls"] = photo_urls
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetActivity(generics.ListAPIView):
+    serializer_class = GetAllActivitySerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            activity = Activity.objects.all()
+            serializer = self.serializer_class(activity)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Activity.DoesNotExist:
+            return Response(
+                {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class GetUpdateActivityByID(generics.UpdateAPIView):
+    serializer_class = ActivitySerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Activity.objects.all()
+
+    def get(self, request, id):
+        try:
+            activity = Activity.objects.get(id=id)
+            serializer = self.serializer_class(activity)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Activity.DoesNotExist:
+            return Response(
+                {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+    def put(self, request, id):
+        try:
+            activity = Activity.objects.get(id=id)
+            photo_urls = handle_uploaded_file(request.FILES.getlist("photo_urls"))
+            activity.photo_urls = photo_urls
+            activity.geo_location = request.data["geo_location"]
+            activity.tags = request.data["tags"]
+            activity.md5hash = request.data["md5hash"]
+            activity.post_text = request.data["post_text"]
+            activity.save()
+            return Response(
+                {"Message": "Activity is updated"}, status=status.HTTP_200_OK
+            )
+        except Activity.DoesNotExist:
+            return Response(
+                {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+    def delete(self, request, id):
+        try:
+            activity = Activity.objects.get(id=id)
+            activity.delete()
+            return Response(
+                {"Message": "Activity is Deleted"}, status=status.HTTP_204_NO_CONTENT
+            )
+        except Activity.DoesNotExist:
+            return Response(
+                {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+def handle_uploaded_file(files):
+    photo_urls = []
+    for file in files:
+        with open(os.path.join(settings.MEDIA_ROOT, file.name), "wb+") as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+                photo_urls.append(file.name)
+            destination.close()
+    return photo_urls
+
+
+class ActivityByUserId(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "id"
+    queryset = Activity.objects.all()
+    serializer_class = UserActivitySerializer
+
+
+class GetUpdateUserProfileByID(APIView):
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "id"
+    queryset = GreenCreditUser.objects.all()
+    serializer_class = UpdateUserProfileSerializer
+
+    def get(self, request, id):
+        try:
+            user = GreenCreditUser.objects.get(id=id)
+            serializer = self.serializer_class(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except GreenCreditUser.DoesNotExist:
+            return Response(
+                {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+    def put(self, request, id):
+        try:
+            user = GreenCreditUser.objects.get(id=id)
+            user.first_name = request.data["first_name"]
+            user.last_name = request.data["last_name"]
+            user.display_picture = request.data["display_picture"]
+            user.title = request.data["title"]
+            user.role = request.data["role"]
+            user.save()
+            return Response({"Message": "User is updated"}, status=status.HTTP_200_OK)
+        except GreenCreditUser.DoesNotExist:
+            return Response(
+                {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+

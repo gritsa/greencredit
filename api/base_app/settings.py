@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_yasg",
     "greencredit_api",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 
@@ -55,7 +56,7 @@ SWAGGER_SETTINGS = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
@@ -91,6 +92,7 @@ WSGI_APPLICATION = "base_app.wsgi.application"
 
 REST_FRAMEWORK = {
     "NON_FIELD_ERRORS_KEY": "error",
+    "EXCEPTION_HANDLER": "utils.exceptionhandler.custom_exception_handler",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
@@ -102,7 +104,7 @@ REST_FRAMEWORK = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "Green_Credit",
+        "NAME": "GreenCredit",
         "USER": "postgres",
         "PASSWORD": "Nimish@123",
         "HOST": "127.0.0.1",
@@ -150,6 +152,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+MEDIA_ROOT = os.path.join(BASE_DIR, "document_photo")
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
