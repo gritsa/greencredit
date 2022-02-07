@@ -15,7 +15,9 @@ def generate_username(name):
         return generate_username(random_username)
 
 
-def register_social_user(provider, user_id, email, name):
+def register_social_user(
+    provider, user_id, email, name, first_name, last_name, display_picture
+):
     filtered_user_by_email = GreenCreditUser.objects.filter(email=email)
     if filtered_user_by_email.exists():
         if provider == filtered_user_by_email[0].auth_provider:
@@ -32,7 +34,7 @@ def register_social_user(provider, user_id, email, name):
 
         else:
             raise AuthenticationFailed(
-                detail="Please continue your login using"
+                detail="Please continue your login using "
                 + filtered_user_by_email[0].auth_provider
             )
 
@@ -41,6 +43,9 @@ def register_social_user(provider, user_id, email, name):
             "username": generate_username(name),
             "email": email,
             "password": config("SOCIAL_SECRET"),
+            "first_name": first_name,
+            "last_name": last_name,
+            "display_picture": display_picture,
         }
         user = GreenCreditUser.objects.create_user(**user)
         user.is_verified = True

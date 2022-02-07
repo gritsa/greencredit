@@ -1,6 +1,9 @@
+from cgitb import lookup
 import email
+from click import option
 from django.shortcuts import render
 import json
+from django.db.models import Q
 
 # Create your views here.
 from datetime import date
@@ -8,8 +11,10 @@ from django.http import request
 from django.shortcuts import render
 from rest_framework import generics, permissions, serializers, status, views
 from .serializers import (
+    CreditLedgerSerializer,
     EmailVerificationSerializer,
     GetAllActivitySerializer,
+    LedgerStatementSerializer,
     RegisterSerializer,
     LoginSerializer,
     ResetPasswordEmailRequestSerializer,
@@ -20,7 +25,7 @@ from .serializers import (
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import GreenCreditUser, Activity
+from .models import CreditLedger, GreenCreditUser, Activity
 from .utils import Util
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
@@ -55,6 +60,7 @@ from rest_framework import status
 from rest_framework import viewsets
 import os
 from rest_framework.permissions import IsAuthenticated
+from datetime import datetime
 
 # Create your views here.
 
@@ -63,29 +69,38 @@ class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
     def post(self, request):
-        user = request.data
-        serializer = self.serializer_class(data=user)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        user_data = serializer.data
-        user = GreenCreditUser.objects.get(email=user_data["email"])
-        token = RefreshToken.for_user(user).access_token
+        if GreenCreditUser.objects.filter(email=request.data["email"]).exists():
+            return Response(
+                {"message": "User with this email already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            user = request.data
+            serializer = self.serializer_class(data=user)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            user_data = serializer.data
+            user = GreenCreditUser.objects.get(email=user_data["email"])
+            token = RefreshToken.for_user(user).access_token
 
-        current_site = get_current_site(request).domain
-        relativelink = reverse("email-verify")
-        absurl = "http://" + current_site + relativelink + "?token=" + str(token)
-        email_body = (
-            "Hi " + user.username + " Use below link to verify your email \n" + absurl
-        )
-        data = {
-            "email_body": email_body,
-            "to_email": user.email,
-            "email_subject": "Verify your email address",
-        }
+            current_site = get_current_site(request).domain
+            relativelink = reverse("email-verify")
+            absurl = "http://" + current_site + relativelink + "?token=" + str(token)
+            email_body = (
+                "Hi "
+                + user.username
+                + " Use below link to verify your email \n"
+                + absurl
+            )
+            data = {
+                "email_body": email_body,
+                "to_email": user.email,
+                "email_subject": "Verify your email address",
+            }
 
-        Util.send_email(data)
+            Util.send_email(data)
 
-        return Response(user_data, status=status.HTTP_201_CREATED)
+            return Response(user_data, status=status.HTTP_201_CREATED)
 
 
 class VerifyEmail(views.APIView):
@@ -157,9 +172,12 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 
             Util.send_email(data)
 
+            return Response(
+                {"Success": "We have sent you an link to reset your password"},
+                status=status.HTTP_200_OK,
+            )
         return Response(
-            {"Success": "We have sent you an link to reset your password"},
-            status=status.HTTP_200_OK,
+            {"Error": "Email does not exist"}, status=status.HTTP_400_BAD_REQUEST
         )
 
 
@@ -364,3 +382,121 @@ class GetUpdateUserProfileByID(APIView):
                 {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
 
+
+def transact(from_user_id, to_user_id, amount, meta):
+    from_user = GreenCreditUser.objects.filter(id=from_user_id).first()
+    to_user = GreenCreditUser.objects.filter(id=to_user_id).first()
+
+    credit_ledger = CreditLedger(
+        from_user=from_user, to_user=to_user, amount=amount, transaction_meta=meta
+    )
+
+    credit_ledger.save()
+    return credit_ledger
+
+
+class CreateCreditLedger(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        # validate all the request data fields are present and not empty and valid data
+        if (
+            "user_id" not in request.auth
+            or "to_user" not in request.data
+            or "amount" not in request.data
+            or "transaction_meta" not in request.data
+        ):
+            return Response(
+                {"Message": "Please provide all the required fields"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        from_user = request.auth["user_id"]
+        to_user = GreenCreditUser.objects.get(id=request.data["to_user"])
+        to_user = to_user.id
+        amount = request.data["amount"]
+        meta = request.data["transaction_meta"]
+        if from_user == to_user:
+            return Response(
+                {"Message": "You cannot transact with yourself"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if float(amount) <= 0:
+            return Response(
+                {"Message": "Amount cannot be zero or negative"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        credit_ledger = transact(from_user, to_user, amount, meta)
+        return Response(
+            {"Message": "Ledger is created"}, status=status.HTTP_201_CREATED
+        )
+
+
+def get_statement(user_id, options):
+    if options:
+        if "start_timestamp" in options and "end_timestamp" in options:
+            start_timestamp = options["start_timestamp"]
+            end_timestamp = options["end_timestamp"]
+            return CreditLedger.objects.filter(
+                Q(from_user=user_id) | Q(to_user=user_id),
+                timestamp__range=[start_timestamp, end_timestamp],
+            ).order_by("-amount")
+        else:
+            return CreditLedger.objects.filter(
+                Q(from_user=user_id) | Q(to_user=user_id)
+            ).order_by("-amount")
+    else:
+        return CreditLedger.objects.filter(
+            Q(from_user=user_id) | Q(to_user=user_id)
+        ).order_by("-amount")
+
+
+def get_balance(id):
+    credit_ledger = CreditLedger.objects.filter(
+        Q(from_user=id) | Q(to_user=id)
+    ).order_by("-id")
+    balance = 0
+    for ledger in credit_ledger:
+        if ledger.from_user_id == id:
+            balance -= ledger.amount
+        else:
+            balance += ledger.amount
+    return balance
+
+
+class GetCreditLedgerStatement(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = LedgerStatementSerializer
+
+    def get(self, request, id=None):
+        id = request.auth["user_id"]
+        options = request.data["options"]
+        try:
+            user = GreenCreditUser.objects.get(id=id)
+            credit_ledger = get_statement(id, options)
+            serializer = self.serializer_class(credit_ledger, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except GreenCreditUser.DoesNotExist:
+            return Response(
+                {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class GetCreditLedgerBalance(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = CreditLedgerSerializer
+
+    def get(self, request, id=None):
+        id = request.auth["user_id"]
+
+        try:
+            # add timestamp of when the response was generated by API
+            timestamp = datetime.now()
+            balance = get_balance(id)
+            return Response(
+                {"user_id": id, "credit_balance": balance, "timestamp": timestamp},
+                status=status.HTTP_200_OK,
+            )
+        except GreenCreditUser.DoesNotExist:
+            return Response(
+                {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
