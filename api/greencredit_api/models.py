@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 import time
 from rest_framework_simplejwt.tokens import RefreshToken
+import uuid
 
 import inflect
 
@@ -109,3 +110,127 @@ class Activity(models.Model):
 
     def __str__(self):
         return p.ordinal(self.id) + " Activity"
+
+
+class CreditLedger(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    from_user = models.ForeignKey(
+        GreenCreditUser,
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+    to_user = models.ForeignKey(
+        GreenCreditUser,
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+    amount = models.FloatField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    transaction_meta = models.JSONField(default="{}", null=True, blank=True)
+
+    def __str__(self):
+        return (
+            str(self.from_user.first_name)
+            + " to "
+            + str(self.to_user.first_name)
+            + " Amount is "
+            + str(self.amount)
+        )
+
+
+class ContentType(models.Model):
+    app_lable = models.CharField(max_length=255, null=True, blank=True)
+    model = models.CharField(max_length=255, null=True, blank=True)
+
+
+class AdminLog(models.Model):
+    user = models.ForeignKey(
+        GreenCreditUser, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+    object_id = models.TextField(null=True, blank=True)
+    object_repr = models.CharField(max_length=255, null=True, blank=True)
+    action_flag = models.IntegerField(null=True, blank=True)
+    change_message = models.TextField(null=True, blank=True)
+    action_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    def __str__(self):
+        return p.ordinal(self.id) + " Admin Log"
+
+
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255, null=True, blank=True)
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+    codename = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return p.ordinal(self.id) + " Auth Permission"
+
+
+class AuthGroup(models.Model):
+    name = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class AuthGroupPermissions(models.Model):
+    group = models.ForeignKey(
+        AuthGroup, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+    permission = models.ForeignKey(
+        AuthPermission, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+
+    def __str__(self):
+        return self.group
+
+
+class GreenCreditUserGroup(models.Model):
+    user = models.ForeignKey(
+        GreenCreditUser, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+    group = models.ForeignKey(
+        AuthGroup, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+
+    def __str__(self):
+        return self.user.email + " " + self.group.name
+
+
+class GreenCreditUserPermissions(models.Model):
+    user = models.ForeignKey(
+        GreenCreditUser, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+    permission = models.ForeignKey(
+        AuthPermission, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+
+    def __str__(self):
+        return self.user.email + " " + self.permission.name
+
+
+class Migrations(models.Model):
+    app = models.CharField(max_length=255, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
+    applied = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Session(models.Model):
+    session_key = models.CharField(max_length=40, primary_key=True)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    def __str__(self):
+        return self.session_key

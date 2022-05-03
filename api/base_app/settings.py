@@ -56,8 +56,8 @@ SWAGGER_SETTINGS = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
 }
 
 MIDDLEWARE = [
@@ -92,7 +92,7 @@ WSGI_APPLICATION = "base_app.wsgi.application"
 
 REST_FRAMEWORK = {
     "NON_FIELD_ERRORS_KEY": "error",
-    "EXCEPTION_HANDLER": "utils.exceptionhandler.custom_exception_handler",
+    # "EXCEPTION_HANDLER": "utils.exceptionhandler.custom_exception_handler",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
@@ -104,10 +104,10 @@ REST_FRAMEWORK = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "GreenCredit",
-        "USER": "postgres",
-        "PASSWORD": "Nimish@123",
-        "HOST": "127.0.0.1",
+        "NAME": "greetable.dev",
+        "USER": "itabmenu",
+        "PASSWORD": "devuser",
+        "HOST": "itabmenu.com",
         "PORT": "5432",
         # 'DISABLE_SERVER_SIDE_CURSORS': True,
     }
@@ -166,3 +166,6 @@ AUTHENTICATION_BACKENDS = [
     #     # `allauth` specific authentication methods, such as login by e-mail
     #     # 'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+
+# USE_TZ = False

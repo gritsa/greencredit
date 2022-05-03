@@ -6,7 +6,7 @@ from rest_framework import serializers, status
 from rest_framework_simplejwt.tokens import Token
 
 from greencredit_api.admin import GreenCreditUserAdmin
-from .models import Activity, GreenCreditUser
+from .models import Activity, CreditLedger, GreenCreditUser
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 import re
@@ -168,15 +168,24 @@ class GoogleSocialAuthSerializer(serializers.Serializer):
                 "The token is invalid or expired. Please login again."
             )
         if user_data["aud"] != config("GOOGLE_CLIENT_ID"):
-            raise AuthenticationFailed("oops, Who are you ?")
+            raise AuthenticationFailed("Authentication failed! Try again.")
 
         user_id = user_data["sub"]
         email = user_data["email"]
         name = user_data["name"]
+        first_name = user_data["given_name"]
+        last_name = user_data["family_name"]
+        display_picture = user_data["picture"]
         provider = "google"
 
         return register_social_user(
-            provider=provider, user_id=user_id, email=email, name=name
+            provider=provider,
+            user_id=user_id,
+            email=email,
+            name=name,
+            first_name=first_name,
+            last_name=last_name,
+            display_picture=display_picture,
         )
 
 
@@ -251,3 +260,33 @@ class GetAllActivitySerializer(serializers.ModelSerializer):
             activity_dic["photos_urls"] = act.photo_urls
             activity_list.append(activity_dic)
         return activity_list
+
+
+class CreditLedgerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CreditLedger
+        fields = ["from_user", "to_user", "amount", "transaction_meta"]
+
+    # def validate(self, attrs):
+    #     from_user = attrs.get("from_user","")
+    #     to_user = attrs.get("to_user","")
+    #     amount = attrs.get("amount","")
+
+    #     if not from_user:
+    #         raise serializers.ValidationError("From user is required")
+    #     if not to_user:
+    #         raise serializers.ValidationError("To user is required")
+    #     if not amount:
+    #         raise serializers.ValidationError("Amount is required")
+    #     if from_user == to_user:
+    #         raise serializers.ValidationError("You can't send credit to yourself")
+    #     if float(amount) <= 0:
+    #         raise serializers.ValidationError("Insufficient balance")
+
+    #     return attrs
+
+
+class LedgerStatementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CreditLedger
+        fields = ["id", "from_user", "to_user", "amount"]
