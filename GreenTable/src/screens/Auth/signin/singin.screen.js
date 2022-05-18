@@ -6,6 +6,10 @@ import { View, Text, Image, ImageBackground } from "react-native";
 import styles from './style';
 import SharedStyle from '../../../shared/shared-styles';
 import { ROUTES } from '../../../shared/constants/routes';
+import {
+	GoogleSignin,
+	statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 // images from assets
 const ICON = require('../../../assets/images/icon.png');
@@ -16,7 +20,21 @@ const APPLE_ICON = require('../../../assets/images/apple-icon.png');
 class SigninScreen extends React.Component {
 
 	signInGoogle = () => {
-		this.props.navigation.navigate(ROUTES.ACTIVITY)
+		GoogleSignin.signOut();
+		GoogleSignin.configure({
+			androidClientId: '209848220646-2tlf540hpq4lpq2tta9dshq5u14nstpd.apps.googleusercontent.com',
+		});
+		GoogleSignin.hasPlayServices().then((hasPlayService) => {
+			if (hasPlayService) {
+				GoogleSignin.signIn().then((userInfo) => {
+					console.log(JSON.stringify(userInfo))
+				}).catch((e) => {
+					console.log("ERROR IS: " + JSON.stringify(e));
+				})
+			}
+		}).catch((e) => {
+			console.log("ERROR IS: " + JSON.stringify(e));
+		})
 	}
 	signInApple = () => {
 		this.props.navigation.navigate(ROUTES.INTRO)

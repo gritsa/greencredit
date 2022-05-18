@@ -21,7 +21,7 @@ const CustomTabComponent = props => {
     props.clickMe(ROUTE);
   };
   return (
-    <View style={[SharedStyles.tabBottom, styles.tab]}>
+    <View style={[SharedStyles.tabBottom, styles.tab, styles.bottomTab]}>
       <View style={styles.tab}>
         <TouchableOpacity onPress={() => navigate(ROUTES.ACTIVITY)}>
           <View
@@ -78,6 +78,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     width: '100%',
+  },
+  bottomTab: {
+    marginTop: 50,
   },
   inactiveIcon: {
     opacity: 0.2,

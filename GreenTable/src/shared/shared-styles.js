@@ -139,8 +139,6 @@ export default StyleSheet.create({
 	},
 	tabBottom: {
 		backgroundColor: '#fff',
-		borderTopLeftRadius: 24,
-		borderTopRightRadius: 24,
 		height: tabHeight,
 		width: '100%',
 		shadowColor: "#000",

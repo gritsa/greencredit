@@ -6,7 +6,7 @@ import MainStack from './Main';
 
 const AppNavigator = () => {
   const token = useSelector((state) => state.auth.token);
-  return <NavigationContainer>{!token ? <MainStack /> : <AuthStack />}</NavigationContainer>;
+  return <NavigationContainer>{token ? <MainStack /> : <AuthStack />}</NavigationContainer>;
 };
 
 export default AppNavigator;
