@@ -1,5 +1,5 @@
 // BASE URL
-export const BASEURL = 'http://localhost:4545';
+export const BASEURL = 'http://127.0.0.1:8000/';
 
 /**
  * create api urls
@@ -14,6 +14,6 @@ const createApiUrl = (url) => {
 // Api urls
 export const API_URLS = {
   login: () => createApiUrl('/login/'),
-  signup: () => createApiUrl('/signup/'),
+  signup: () => createApiUrl('/users/signup/'),
   profile: () => createApiUrl('/getData/'),
 };

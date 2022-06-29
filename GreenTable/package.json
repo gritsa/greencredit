@@ -42,6 +42,7 @@
     "react-redux": "^7.2.3",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.4.1",
     "yup": "^0.32.9"
   },
   "devDependencies": {
