@@ -108,6 +108,8 @@ class Activity(models.Model):
     user = models.ForeignKey(
         GreenCreditUser, on_delete=models.DO_NOTHING, null=True, blank=True
     )
+    likes=models.JSONField(default="[]", null=True, blank=True)
+    comments=models.JSONField(default="[]", null=True, blank=True)
 
     def __str__(self):
         return p.ordinal(self.id) + " Activity"

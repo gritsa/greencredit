@@ -218,6 +218,8 @@ class ActivitySerializer(serializers.ModelSerializer):
             "md5hash",
             "post_text",
             "user",
+            "likes",
+            "comments",
         )
 
     # create activity
