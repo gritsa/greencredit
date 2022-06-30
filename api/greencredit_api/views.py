@@ -61,6 +61,7 @@ from rest_framework import viewsets
 import os
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
+from django.core import serializers
 
 # Create your views here.
 
@@ -70,35 +71,39 @@ class RegisterView(generics.GenericAPIView):
 
     def post(self, request):
         if GreenCreditUser.objects.filter(email=request.data["email"]).exists():
-            return Response(
-                {"message": "User with this email already exists"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            user = GreenCreditUser.objects.get(email=request.data["email"])
+            serializer = RegisterSerializer(instance=user, data=request.data, partial=True)
+            if serializer.is_valid():
+               serializer.save()
+               user_data = serializer.data
+               token = RefreshToken.for_user(user).access_token
+               return Response(user_data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             user = request.data
             serializer = self.serializer_class(data=user)
-            serializer.is_valid(raise_exception=True)
+            serializer.is_valid(raise_exception=False)
             serializer.save()
             user_data = serializer.data
             user = GreenCreditUser.objects.get(email=user_data["email"])
             token = RefreshToken.for_user(user).access_token
+            # current_site = get_current_site(request).domain
+            # relativelink = reverse("email-verify")
+            # absurl = "http://" + current_site + \
+            #     relativelink + "?token=" + str(token)
+            # email_body = (
+            #     "Hi "
+            #     + user.username
+            #     + " Use below link to verify your email \n"
+            #     + absurl
+            # )
+            # data = {
+            #     "email_body": email_body,
+            #     "to_email": user.email,
+            #     "email_subject": "Verify your email address",
+            # }
 
-            current_site = get_current_site(request).domain
-            relativelink = reverse("email-verify")
-            absurl = "http://" + current_site + relativelink + "?token=" + str(token)
-            email_body = (
-                "Hi "
-                + user.username
-                + " Use below link to verify your email \n"
-                + absurl
-            )
-            data = {
-                "email_body": email_body,
-                "to_email": user.email,
-                "email_subject": "Verify your email address",
-            }
-
-            Util.send_email(data)
+            # Util.send_email(data)
 
             return Response(user_data, status=status.HTTP_201_CREATED)
 
@@ -118,7 +123,8 @@ class VerifyEmail(views.APIView):
         try:
 
             # we are passing our secret key here to decode the token
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            payload = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=["HS256"])
             user = GreenCreditUser.objects.get(id=payload["user_id"])
             if not user.is_verified:
                 user.is_verified = True
@@ -305,7 +311,8 @@ class GetUpdateActivityByID(generics.UpdateAPIView):
     def put(self, request, id):
         try:
             activity = Activity.objects.get(id=id)
-            photo_urls = handle_uploaded_file(request.FILES.getlist("photo_urls"))
+            photo_urls = handle_uploaded_file(
+                request.FILES.getlist("photo_urls"))
             activity.photo_urls = photo_urls
             activity.geo_location = request.data["geo_location"]
             activity.tags = request.data["tags"]

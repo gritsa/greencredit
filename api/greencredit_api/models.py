@@ -54,6 +54,7 @@ AUTH_PROVIDERS = {
 
 
 class GreenCreditUser(AbstractUser):
+    id        = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=255, default=None, null=True, blank=True)
     last_name = models.CharField(max_length=255, default=None, null=True, blank=True)
     title = models.CharField(max_length=100, blank=True, null=True)
@@ -64,9 +65,7 @@ class GreenCreditUser(AbstractUser):
         blank=True,
         unique=True,
     )
-    display_picture = models.ImageField(
-        upload_to=user_profile_picture, default=None, null=True, blank=True
-    )
+    display_picture = models.CharField(max_length=255, default=None, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     is_verified = models.BooleanField(default=False)
@@ -79,6 +78,8 @@ class GreenCreditUser(AbstractUser):
     auth_provider = models.CharField(
         max_length=255, blank=False, null=False, default=AUTH_PROVIDERS.get("email")
     )
+
+    username = models.CharField(max_length=255, default=None, null=True, blank=True)
 
     def __str__(self):
         # return self.first_name + " " + self.last_name
@@ -234,3 +235,4 @@ class Session(models.Model):
 
     def __str__(self):
         return self.session_key
+        

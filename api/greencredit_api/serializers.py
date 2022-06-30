@@ -32,23 +32,34 @@ from decouple import config
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
     email = serializers.EmailField(max_length=255, min_length=6)
-    password = serializers.CharField(max_length=255, min_length=6, write_only=True)
+    first_name = serializers.CharField(max_length=255)
+    last_name = serializers.CharField(max_length=255)
+    title = serializers.CharField(max_length=255)
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+    display_picture = serializers.CharField()
+    is_verified = serializers.BooleanField(default=True)
+    is_deleted = serializers.BooleanField(default=False)
+    role = serializers.CharField(max_length=20)
+    username = serializers.CharField(max_length=255)
+    auth_provider = serializers.CharField(max_length=255)
 
     class Meta:
         model = GreenCreditUser
-        fields = ["username", "email", "password"]
+        fields =['id', "email", "first_name", "last_name", "title", "created_at", "updated_at", "display_picture", "is_verified", "is_deleted", "role", "username", "auth_provider"]
 
-    def validate(self, attrs):
-        email = attrs.get("email", " ")
-        username = attrs.get("username", " ")
+    # def validate(self, attrs):
+    #     email = attrs.get("email", " ")
+    #     username = attrs.get("username", " ")
 
-        if not username.isalnum():
-            raise serializers.ValidationError(
-                "The Username should only contain alphanumeric alphanumeric"
-            )
+    #     if not username.isalnum():
+    #         raise serializers.ValidationError(
+    #             "The Username should only contain alphanumeric alphanumeric"
+    #         )
 
-        return attrs
+    #     return attrs
 
     def create(self, validated_data):
         return GreenCreditUser.objects.create_user(**validated_data)
