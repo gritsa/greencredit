@@ -263,11 +263,11 @@ class CreateActivity(generics.CreateAPIView):
     # permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        # photo_urls = handle_uploaded_file(request.FILES.getlist("photo_urls"))
-        # request.data["user"] = request.auth["user_id"]
-        # # conver list to json
-        # photo_urls = json.dumps(photo_urls)
-        # request.data["photo_urls"] = photo_urls
+        photo_urls = handle_uploaded_file(request.FILES.getlist("photo_urls"))
+        request.data["user"] = request.auth["user_id"]
+        # conver list to json
+        photo_urls = json.dumps(photo_urls)
+        request.data["photo_urls"] = photo_urls
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -290,6 +290,35 @@ class GetActivity(generics.ListAPIView):
                 {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
 
+class GetUpdatedActivity(generics.UpdateAPIView):
+    serializer_class = ActivitySerializer
+    def post(self, request, id):
+        try:
+            activity = Activity.objects.get(id=id)
+            activity.likes = request.data["likes"]
+            activity.comments = request.data["comments"]
+            activity.save()
+            return Response(
+                {"Message": "Activity Updated"}, status=status.HTTP_200_OK
+            )
+        except Activity.DoesNotExist:
+            return Response(
+                {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+# class GetComments(generics.ListAPIView):
+#     serializer_class = ActivitySerializer
+#     # permission_classes = (IsAuthenticated,)
+
+#     def get(self, request, id):
+#         try:
+#             activity = Activity.objects.get(id=id)
+#             serializer = self.serializer_class(activity)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         except Activity.DoesNotExist:
+#             return Response(
+#                 {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
+            # )            
 
 class GetUpdateActivityByID(generics.UpdateAPIView):
     serializer_class = ActivitySerializer
