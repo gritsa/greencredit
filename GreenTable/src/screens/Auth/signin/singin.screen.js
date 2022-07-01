@@ -12,8 +12,8 @@ import {
 } from '@react-native-google-signin/google-signin';
 import { useSelector, useDispatch } from 'react-redux';
 import { signup } from '../../../core/Redux/actions/UserActions';
-import httpInstance from '../../../core/services/interceptor';
 import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // images from assets
 const ICON = require('../../../assets/images/icon.png');
@@ -22,10 +22,25 @@ const GOOGLE_ICON = require('../../../assets/images/google-icon.png');
 const APPLE_ICON = require('../../../assets/images/apple-icon.png');
 
 function SigninScreen(props) {
-
+	const user = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 
 	signInGoogle = () => {
+		// let data = {
+		// 	"email": 'payalseth33@gmail.com',
+		// 	"first_name": 'payal',
+		// 	"last_name": 'seth',
+		// 	"title": 'seth',
+		// 	"created_at": "2022-06-30T12:52:24.127Z",
+		// 	"updated_at": "2022-06-30T12:52:24.127Z",
+		// 	"display_picture": 'hhh',
+		// 	"is_verified": true,
+		// 	"is_deleted": false,
+		// 	"role": "Activist",
+		// 	"username": 'sdjs',
+		// 	"auth_provider": 'dshbh'
+		// }
+		// signupUser(data);
 		GoogleSignin.signOut();
 		GoogleSignin.configure({
 			androidClientId: '209848220646-2tlf540hpq4lpq2tta9dshq5u14nstpd.apps.googleusercontent.com',
@@ -33,55 +48,22 @@ function SigninScreen(props) {
 		GoogleSignin.hasPlayServices().then((hasPlayService) => {
 			if (hasPlayService) {
 				GoogleSignin.signIn().then((userInfo) => {
-					let googleData = {
-						google: {
-							accessToken: 145256,
-							displayName: userInfo.user.name,
-							email: 'yyyy@gmail.com',
-							familyName: userInfo.user.familyName,
-							givenName: userInfo.user.givenName,
-							idToken: 145256,
-							imageUrl: userInfo.user.photoURL,
-							userId: 145256
-						}
-					}
-					let poet = {
-						type: undefined,
-						name: '',
-						breed: undefined,
-						size: 'Small',
-						age: null,
-						about: '',
-						birthday: '',
-						meta: {
-							'gender': 'hhh',
-							'neutered': true,
-							'petcategory': 'hghg',
-						},
-						isDropDown: true
-					}
 					let data = {
-						'pets': JSON.stringify(poet),
-						'firstname': userInfo.user.givenName,
-						'lastname': userInfo.user.familyName,
-						'email': 'yyyy@gmail.com',
-						'password': '1234',
-						'country': 'gggg',
-						'city': 'dfhdf',
-						'zipcode': 123456,
-						'state': 'dghg',
-						'birthday': null,
-						'meta': {
-							'latitude': 54,
-							'longitude': 78,
-							hideageCheck: false,
-							'startage': 25,
-							'endage': 75,
-							'google': googleData.google
-						},
-
-					};
+						"email": userInfo.user.email.trim().toLowerCase(),
+						"first_name": userInfo.user.givenName,
+						"last_name": userInfo.user.familyName,
+						"title": userInfo.user.givenName,
+						"created_at": "2022-06-30T12:52:24.127Z",
+						"updated_at": "2022-06-30T12:52:24.127Z",
+						"display_picture": userInfo.user.photo,
+						"is_verified": true,
+						"is_deleted": false,
+						"role": "Activist",
+						"username": userInfo.user.givenName,
+						"auth_provider": userInfo.user.id
+					}
 					signupUser(data);
+
 				}).catch((e) => {
 					console.log("ERROR IS: " + JSON.stringify(e));
 				})
@@ -94,27 +76,26 @@ function SigninScreen(props) {
 	signupUser = (data) => {
 		dispatch(signup(data))
 			.then((res) => {
+				props.navigation.navigate(ROUTES.HOME)
 				console.log(res + 'test')
 			})
 			.catch((error) => {
 				console.log(error + 'test3')
 			});
-		// httpInstance.post('https://api.boocoopets.com/signup', data)
-		// 	.then((res) => {
-		// 		console.log(res)
-		// 	}).catch((error) => {
-		// 		console.log(error)
-		// 	});
-	// 	axios.post('https://api.boocoopets.com/users/signup', data)
-	// 		.then((response) => console.log(response))
-	// 		.catch(error => {
-	// 			console.log(error)
-	// 		});
-	 }
+	}
+
+	async function gettingLocal() {
+		const token = await AsyncStorage.getItem("token");
+		const user = await AsyncStorage.getItem("user");
+
+		return { token, user };
+	}
 
 	signInApple = () => {
-		this.props.navigation.navigate(ROUTES.INTRO)
+		// this.props.navigation.navigate(ROUTES.INTRO)
+		console.log(gettingLocal(), user);
 	}
+
 
 	return (
 		<View style={styles.container}>

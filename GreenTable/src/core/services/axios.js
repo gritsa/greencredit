@@ -1,8 +1,5 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { HTTP_REQUEST_TIME_OUT, STORAGE_KEYS } from '../../shared/constants';
-import { isNetworkConnected } from '../../shared/utils';
-import { BASEURL } from '../../shared/constants';
 import { Store } from '../Redux/store';
 
 let token;
@@ -11,24 +8,24 @@ async function gettingToken() {
 }
 
 gettingToken();
-const httpInstance = axios.create({
-  baseURL: BASEURL,
+
+const axiosInstance = axios.create({
+  baseURL: 'http://54.148.23.236:805/api/',
   headers: {
     Authorization: token ? `bearer ${token}` : '',
     Accept: 'application/json',
   },
 });
 
-httpInstance.interceptors.request.use(req => {
+axiosInstance.interceptors.request.use(req => {
   const { user } = Store.getState();
-
-  if (user && user.token) {
+  if (user.token) {
     req.headers.Authorization = `bearer ${user.token}`;
   }
   return req;
 });
 
-httpInstance.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   res => {
     return res;
   },
@@ -38,6 +35,4 @@ httpInstance.interceptors.response.use(
   },
 );
 
-// export default httpInstance;
-
-export default httpInstance;
+export default axiosInstance;
