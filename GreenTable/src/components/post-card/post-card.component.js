@@ -1,10 +1,15 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import React, {useEffect} from 'react';
-import {View, Image, Text} from 'react-native';
-import {Color} from '../../shared/utils/colors-pack';
+import { StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Image, Text, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Color } from '../../shared/utils/colors-pack';
 import SharedStyles from '../../shared/shared-styles';
 import AvatarComponent from '../../components/avatar/avatar.component';
-import {FontWeight} from '../../shared/utils/typography-pack';
+import { FontWeight } from '../../shared/utils/typography-pack';
+import { ROUTES } from '../../shared/constants/routes';
+import CommentScreen from '../comment/comment';
+import ViewComment from '../view_comment/view_comment';
+
+
 
 const BADGE_ICON = require('../../assets/images/badge-blue.png');
 const LIKE_ICON = require('../../assets/images/thumbs-up-outline.png');
@@ -13,24 +18,44 @@ const COMMENT_ICON = require('../../assets/images/messenger-outline.png');
 
 const windowWidth = Dimensions.get('window').width;
 
-const PostCardComponent = props => {
-  useEffect(() => {}, []);
+function PostCardComponent ({post, onCommentPress }) {
+  const liked = post.comment_count;
+  useEffect(() => { }, []);
+  const [count, setCount] = useState(LIKE_ICON);
+  const [likescount, setLikescount] = useState(liked)
+  const onPresss = () => {
+    if (count == LIKE_ICON) {
+      setCount(LIKEED_ICON);
+      setLikescount(liked + 1);
+    }
+
+    else if (count == LIKEED_ICON) {
+      setCount(LIKE_ICON);
+      setLikescount(liked);
+    }
+  }
+
+
+  const [isShown, setIsShown] = useState(false);
+  const onTap = () => setIsShown(current => !current);
+  console.log(post.like_count);
 
   return (
+
     <View style={styles.cardContainer}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.leftSec}>
           <AvatarComponent
             size={32}
-            url={props.post.user_details.profile_pic}></AvatarComponent>
+            url={post.user_details.profile_pic}></AvatarComponent>
           <View style={styles.userDetails}>
             <View style={styles.nameSec}>
-              <Text style={styles.name}>{props.post.user_details.name} </Text>
-              <Text style={styles.timeAgo}>{props.post.created_at} </Text>
+              <Text style={styles.name}>{post.user_details.name} </Text>
+              <Text style={styles.timeAgo}>{post.created_at} </Text>
             </View>
             <Text style={styles.userName}>
-              {props.post.user_details.user_name}
+              {post.user_details.user_name}
             </Text>
           </View>
         </View>
@@ -43,36 +68,49 @@ const PostCardComponent = props => {
 
       {/* Content */}
       <View style={styles.card}>
-        <Text style={styles.post}>{props.post.post}</Text>
+        <Text style={styles.post}>{post.post}</Text>
         <Image
           style={[SharedStyles.shadow, styles.postImage]}
-          source={props.post.post_image}
+          source={post.post_image}
         />
       </View>
       {/* Content end */}
 
       {/* Footer */}
-      <View style={styles.footer}>
-        <View style={styles.likeCommentSec}>
-          <View style={styles.iconWithText}>
-            {props.post.post.is_like ? (
-              <Image source={LIKEED_ICON} />
-            ) : (
-              <Image source={LIKE_ICON} />
-            )}
-            <Text style={styles.iconText}>{props.post.comment_count}</Text>
+
+        <View style={styles.footer}>
+          <View style={styles.likeCommentSec}>
+            <TouchableOpacity onPress={onPresss}>
+              <View style={styles.iconWithText}>
+
+                <Image source={count}></Image>
+
+
+                <Text style={styles.iconText}>{likescount}</Text>
+              </View></TouchableOpacity>
+            
+              
+            <View style={styles.iconWithText}>
+              <TouchableOpacity onPress={onTap}>
+                <Image source={COMMENT_ICON} /></TouchableOpacity>
+              <Text style={styles.iconText}>{post.comment_count}</Text>
+
+            </View>
+          
           </View>
-          <View style={styles.iconWithText}>
-            <Image source={COMMENT_ICON} />
-            <Text style={styles.iconText}>{props.post.comment_count}</Text>
+          <View>
+            <TouchableOpacity onPress={onCommentPress}>
+              <Text style={styles.viewAllText}>
+                View all {post.comment_count} comments
+              </Text></TouchableOpacity>
           </View>
         </View>
-        <View>
-          <Text style={styles.viewAllText}>
-            View all {props.post.comment_count} comments
-          </Text>
-        </View>
-      </View>
+      
+        
+                {isShown && <CommentScreen />}
+            
+
+   
       {/* Footer end */}
     </View>
   );
@@ -81,6 +119,9 @@ const PostCardComponent = props => {
 export default PostCardComponent;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   cardContainer: {
     backgroundColor: '#fff',
     margin: 10,

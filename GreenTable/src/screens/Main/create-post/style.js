@@ -25,6 +25,9 @@ export default StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  wrap:{
+    flex:1,
+    },
   postImageContainer: {
     borderRadius: 8,
     backgroundColor: Color.LIGHT_GREEN,
@@ -36,4 +39,5 @@ export default StyleSheet.create({
     minHeight: 100,
     backgroundColor: Color.LIGHT_GREEN,
   },
+  
 });

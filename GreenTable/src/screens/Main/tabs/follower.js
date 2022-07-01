@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { ScrollView, View } from 'react-native';
 import PostCardComponent from '../../../components/post-card/post-card.component';
+import { ROUTES } from '../../../shared/constants/routes';
 
-export default function Follower() {
+export default function Follower(props) {
 
   posts = [
     {
@@ -49,11 +50,15 @@ export default function Follower() {
     },
   ];
 
+  function onPress ()  {
+    props.navigation.navigate("ViewComment");
+  }
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <ScrollView>
         {this.posts.map((item, index) => {
-          return <PostCardComponent key={item.id} post={item} />;
+          return <PostCardComponent key={item.id} post={item} onCommentPress={onPress}/>;
         })}
 
         {/* empty view for bottom space that is overlapped by bottom tab */}

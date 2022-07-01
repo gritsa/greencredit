@@ -7,4 +7,6 @@ export const ROUTES = {
   INTRO: 'INTRO',
   SPLASH: 'SPLASH',
   REDEEM: 'REDEEM',
+  CAMERA:'CAMERA',
+  COMMENT:'COMMENT',
 };

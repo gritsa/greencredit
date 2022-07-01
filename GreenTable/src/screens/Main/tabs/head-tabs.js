@@ -5,8 +5,12 @@ import Follower from '../tabs/follower';
 import Local from '../tabs/local';
 import Global from '../tabs/global';
 import {Color} from '../../../shared/utils/colors-pack';
+import ViewComment from '../../../components/view_comment/view_comment';
+import {createStackNavigator} from '@react-navigation/stack';
+
 
 const Tab = createMaterialTopTabNavigator();
+const Stack = createStackNavigator();
 
 const tabBarOptions = {
   activeTintColor: Color.SECONDARY_COLOR,
@@ -28,14 +32,23 @@ const tabBarOptions = {
   },
 };
 
-export default function HeadTabs() {
+function Home() {
   return (
-    <NavigationContainer independent={true}>
       <Tab.Navigator tabBarOptions={tabBarOptions}>
         <Tab.Screen name="FOLLOWER" component={Follower} />
         <Tab.Screen name="LOCAL" component={Local} />
         <Tab.Screen name="GLOBAL" component={Global} />
       </Tab.Navigator>
+  );
+}
+
+export default function HeadTabs() {
+  return (
+    <NavigationContainer independent={true}> 
+      <Stack.Navigator>
+        <Stack.Screen options={{headerShown: false}} name="Home" component={Home} />
+        <Stack.Screen name="ViewComment" component={ViewComment} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
