@@ -260,14 +260,14 @@ class GoogleSocialAuthView(GenericAPIView):
 
 class CreateActivity(generics.CreateAPIView):
     serializer_class = ActivitySerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        photo_urls = handle_uploaded_file(request.FILES.getlist("photo_urls"))
-        request.data["user"] = request.auth["user_id"]
-        # conver list to json
-        photo_urls = json.dumps(photo_urls)
-        request.data["photo_urls"] = photo_urls
+        # photo_urls = handle_uploaded_file(request.FILES.getlist("photo_urls"))
+        # request.data["user"] = request.auth["user_id"]
+        # # conver list to json
+        # photo_urls = json.dumps(photo_urls)
+        # request.data["photo_urls"] = photo_urls
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -278,7 +278,7 @@ class CreateActivity(generics.CreateAPIView):
 
 class GetActivity(generics.ListAPIView):
     serializer_class = GetAllActivitySerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         try:

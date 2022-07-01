@@ -271,6 +271,9 @@ class GetAllActivitySerializer(serializers.ModelSerializer):
             activity_dic["md5hash"] = act.md5hash
             activity_dic["post_text"] = act.post_text
             activity_dic["photos_urls"] = act.photo_urls
+            activity_dic["user_id"] = act.user_id
+            activity_dic["comments"] = act.comments
+            activity_dic["likes"] = act.likes
             activity_list.append(activity_dic)
         return activity_list
 
