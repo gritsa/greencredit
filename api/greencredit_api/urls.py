@@ -18,6 +18,7 @@ from .views import (
     RequestPasswordResetEmail,
     SetNewPasswordAPIView,
     GoogleSocialAuthView,
+    uploadImage
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -57,5 +58,6 @@ urlpatterns = [
     path("credit-ledger/", CreateCreditLedger.as_view()),
     path("check-ledger-balance/", GetCreditLedgerBalance.as_view()),
     path("check-ledger-statement/", GetCreditLedgerStatement.as_view()),
+    path("uploadimage/", uploadImage.as_view()),
     path("logout/", LogoutAPIView.as_view(), name="logout"),
 ]

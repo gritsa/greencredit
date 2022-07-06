@@ -45,6 +45,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from .utils import Util
 from rest_framework.views import APIView
+import base64
 
 # google auth
 from rest_framework.generics import GenericAPIView
@@ -62,9 +63,14 @@ import os
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 from django.core import serializers
+import boto3
 
 # Create your views here.
 
+session = boto3.Session(
+    aws_access_key_id= 'AKIAUC7HEA4AFTIO7XEZ',
+    aws_secret_access_key = 'YAxkkQoy87ILCG2D+jUB2AkNScSVdVWBFog1tcft'
+)
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
@@ -263,11 +269,8 @@ class CreateActivity(generics.CreateAPIView):
     # permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        photo_urls = handle_uploaded_file(request.FILES.getlist("photo_urls"))
-        request.data["user"] = request.auth["user_id"]
-        # conver list to json
-        photo_urls = json.dumps(photo_urls)
-        request.data["photo_urls"] = photo_urls
+        # photo_urls = request.FILES["photo_urls"]
+        # ret = image.UploadImage(datetime.now(), photo_urls)
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -275,6 +278,19 @@ class CreateActivity(generics.CreateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class uploadImage(generics.CreateAPIView):
+    def post(self, request):
+        image_base64 = request.data["photo"]
+        now = datetime.now()
+        filename = str(now) + '_picture.jpg'
+        # imagedata = photo_urls
+        s3 = boto3.resource('s3')
+        try:
+            object = s3.Object('greencredits3bucket', filename)
+            object.put(Body=base64.b64decode(image_base64),Key=filename)
+            return Response(filename, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return e
 
 class GetActivity(generics.ListAPIView):
     serializer_class = GetAllActivitySerializer
