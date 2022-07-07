@@ -31,7 +31,7 @@ class HomeContainerScreen extends React.Component {
 
         <View style={sharedStyles.container}>
           {this.state.currentState === ROUTES.ACTIVITY ? (
-            <ActivityScreen />
+            <ActivityScreen props={this.props}/>
           ) : (
             <GreenCreditScreen navigation={this.props.navigation}/>
           )}

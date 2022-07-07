@@ -21,10 +21,13 @@ export default StyleSheet.create({
     padding: 15,
   },
   container: {
-    height: windowHeight - 130,
+    height: windowHeight - 50,
     display: 'flex',
     justifyContent: 'space-between',
   },
+  wrap:{
+    flex:1,
+    },
   postImageContainer: {
     borderRadius: 8,
     backgroundColor: Color.LIGHT_GREEN,
@@ -36,4 +39,5 @@ export default StyleSheet.create({
     minHeight: 100,
     backgroundColor: Color.LIGHT_GREEN,
   },
+  
 });

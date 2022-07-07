@@ -132,6 +132,12 @@ android {
         versionCode 1
         versionName "1.0"
     }
+       defaultConfig {
+        multiDexEnabled true
+    }
+     defaultConfig {
+    missingDimensionStrategy 'react-native-camera', 'general' // <--- insert this line
+  }
     splits {
         abi {
             reset()

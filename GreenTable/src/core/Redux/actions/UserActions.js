@@ -8,7 +8,6 @@ export const signup = (userform) => {
     dispatch({ type: ActionTypes.SIGNUP_REQUEST });
     // const res = await axios.get(`/user/${userform.userId}`, userform);
     const res = await axios.post(`http://54.148.23.236:805/api/register/`, userform);
-    console.log(res)
     if (res.status === 201) {
       const user = res.data;
       const token = 123456789;

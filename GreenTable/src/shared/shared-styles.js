@@ -154,5 +154,14 @@ export default StyleSheet.create({
 	totalCreditText: {
 		fontSize: 35,
 		fontWeight: FontWeight.FONT_WEIGHT_BOLD
+	},
+	activityPostHeader: {
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		padding: 16,
+		backgroundColor: '#fff',
+		borderBottomStartRadius: 15,
+		borderBottomEndRadius: 15,
 	}
 })

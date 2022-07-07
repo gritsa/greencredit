@@ -1,36 +1,82 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import React, {useEffect} from 'react';
-import {View, Image, Text} from 'react-native';
-import {Color} from '../../shared/utils/colors-pack';
+import { StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Image, Text, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Color } from '../../shared/utils/colors-pack';
 import SharedStyles from '../../shared/shared-styles';
 import AvatarComponent from '../../components/avatar/avatar.component';
-import {FontWeight} from '../../shared/utils/typography-pack';
+import { FontWeight } from '../../shared/utils/typography-pack';
+import { ROUTES } from '../../shared/constants/routes';
+import CommentScreen from '../comment/comment';
+import ViewComment from '../view_comment/view_comment';
+import moment from 'moment';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from 'react-redux';
 
 const BADGE_ICON = require('../../assets/images/badge-blue.png');
 const LIKE_ICON = require('../../assets/images/thumbs-up-outline.png');
-const LIKEED_ICON = require('../../assets/images/thumbs-up-fill.png');
+const LIKEED_ICON = require('../../assets/images/liked.png');
 const COMMENT_ICON = require('../../assets/images/messenger-outline.png');
 
 const windowWidth = Dimensions.get('window').width;
 
-const PostCardComponent = props => {
-  useEffect(() => {}, []);
+function PostCardComponent({ post, onCommentPress }) {
+  const user = useSelector((state) => state.user);
+  const liked = post.likes.length;
+  const [count, setCount] = useState(LIKE_ICON);
+  const [likescount, setLikescount] = useState(liked)
+
+  useEffect(() => {
+    setLikeToPost();
+  }, []);
+
+  function setLikeToPost() {
+    if (post.likes.length) {
+      const like = post.likes.find(like => like === parseInt(user.user.id));
+      if (like) {
+        setCount(LIKEED_ICON);
+      } else {
+        setCount(LIKE_ICON);
+      }
+    } else {
+      setCount(LIKE_ICON);
+    }
+
+  }
+
+  const onPresss = () => {
+    if (count == LIKE_ICON) {
+      setCount(LIKEED_ICON);
+      setLikescount(liked + 1);
+    }
+
+    else if (count == LIKEED_ICON) {
+      setCount(LIKE_ICON);
+      setLikescount(liked);
+    }
+  }
+  
+
+
+  const [isShown, setIsShown] = useState(false);
+  const onTap = () => setIsShown(current => !current);
 
   return (
+
     <View style={styles.cardContainer}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.leftSec}>
-          <AvatarComponent
-            size={32}
-            url={props.post.user_details.profile_pic}></AvatarComponent>
+          <Image
+            style={{ width: 50, height: 50 }}
+            source={{ uri: user.user.display_picture }}
+          />
           <View style={styles.userDetails}>
             <View style={styles.nameSec}>
-              <Text style={styles.name}>{props.post.user_details.name} </Text>
-              <Text style={styles.timeAgo}>{props.post.created_at} </Text>
+              <Text style={styles.name}>ghgh</Text>
+              <Text style={styles.timeAgo}>{moment(post.timestamp).startOf('hour').fromNow()} </Text>
             </View>
             <Text style={styles.userName}>
-              {props.post.user_details.user_name}
+              hhghj
             </Text>
           </View>
         </View>
@@ -43,36 +89,43 @@ const PostCardComponent = props => {
 
       {/* Content */}
       <View style={styles.card}>
-        <Text style={styles.post}>{props.post.post}</Text>
-        <Image
-          style={[SharedStyles.shadow, styles.postImage]}
-          source={props.post.post_image}
-        />
+        <Text style={styles.post}>{post.post_text}</Text>
+        {/* {post && post.photos_urls && (
+          <Image
+            style={[SharedStyles.shadow, styles.postImage]}
+            source={post.photos_urls}
+          />
+        )} */}
       </View>
       {/* Content end */}
 
       {/* Footer */}
+
       <View style={styles.footer}>
         <View style={styles.likeCommentSec}>
+          <TouchableOpacity onPress={onPresss}>
+            <View style={styles.iconWithText}>
+              <Image style={{ width: 15, height: 15 }} source={count}></Image>
+              <Text style={styles.iconText}>{likescount}</Text>
+            </View></TouchableOpacity>
+
+
           <View style={styles.iconWithText}>
-            {props.post.post.is_like ? (
-              <Image source={LIKEED_ICON} />
-            ) : (
-              <Image source={LIKE_ICON} />
-            )}
-            <Text style={styles.iconText}>{props.post.comment_count}</Text>
+            <TouchableOpacity onPress={onTap}>
+              <Image source={COMMENT_ICON} /></TouchableOpacity>
+            <Text style={styles.iconText}>{post.comments.length}</Text>
+
           </View>
-          <View style={styles.iconWithText}>
-            <Image source={COMMENT_ICON} />
-            <Text style={styles.iconText}>{props.post.comment_count}</Text>
-          </View>
+
         </View>
         <View>
-          <Text style={styles.viewAllText}>
-            View all {props.post.comment_count} comments
-          </Text>
+          <TouchableOpacity onPress={onCommentPress}>
+            <Text style={styles.viewAllText}>
+              View all {post.comments.length} comments
+            </Text></TouchableOpacity>
         </View>
       </View>
+      {isShown && <CommentScreen />}
       {/* Footer end */}
     </View>
   );
@@ -81,12 +134,16 @@ const PostCardComponent = props => {
 export default PostCardComponent;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   cardContainer: {
     backgroundColor: '#fff',
     margin: 10,
     padding: 10,
     borderRadius: 8,
     color: Color.SECONDARY_COLOR,
+    width: 320,
   },
   card: {
     padding: 5,
@@ -122,6 +179,9 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     fontWeight: FontWeight.FONT_WEIGHT_BOLD,
     color: Color.GRAY,
+    fontSize: 10,
+    marginTop: 5,
+    marginLeft: 5
   },
   rightSec: {
     width: 22,
