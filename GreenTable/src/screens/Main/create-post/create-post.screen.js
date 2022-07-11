@@ -14,6 +14,9 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import axios from 'axios';
 import Loader from "../../../components/loader/loader";
+import ImagePicker from 'react-native-image-crop-picker';
+import BottomSheet from 'reanimated-bottom-sheet';
+import Animated from 'react-native-reanimated';
 
 const CROSS_GRAY = require('../../../assets/images/cross-gray.png');
 const PROFILE_PIC = require('../../../assets/images/button-post.png');
@@ -24,7 +27,7 @@ const POST_SAMPLE = require('../../../assets/images/sample-post-image.png');
 
 function CreatePostScreen(props) {
 	const imageUrl = props.route.params ?  props.route.params.data : null;
-	console.log(imageUrl);
+	//console.log(imageUrl);
 	const user = useSelector((state) => state.user);
 	const [text, setText] = useState('');
 	const [loader, setLoader] = useState(false)
@@ -32,6 +35,57 @@ function CreatePostScreen(props) {
 	navigate = () => {
 		props.navigation.goBack();
 	}
+	const takephotofromCamera=()=>{
+		ImagePicker.openCamera({
+			width: 300,
+			height: 400,
+			cropping: true,
+		  }).then(image => {
+			
+		  });
+	}
+	const takephotofromGallery=()=>{
+		ImagePicker.openPicker({
+			width: 300,
+			height: 400,
+			cropping: true
+		  }).then(image => {
+			console.log(image.data);
+			
+
+		  });
+	}
+	
+	const renderInner = () => (
+		<View style={styles.panel}>
+      <View style={{alignItems: 'center'}}>
+        <Text style={styles.panelTitle}>Upload Photo</Text>
+        <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
+      </View>
+      <TouchableOpacity style={styles.panelButton} onPress={takephotofromCamera}>
+        <Text style={styles.panelButtonTitle}>Take Photo</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.panelButton} onPress={takephotofromGallery}>
+        <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.panelButton}
+        onPress={() => bs.current.snapTo(1)}>
+        <Text style={styles.panelButtonTitle}>Cancel</Text>
+      </TouchableOpacity>
+    </View>
+	  );
+	
+	 const renderHeader = () => (
+		<View style={styles.header}>
+		  <View style={styles.panelHeader}>
+			<View style={styles.panelHandle} />
+		  </View>
+		</View>
+	  );
+	 
+	const bs = React.createRef();
+	const fall = new Animated.Value(1);
 
 	async function newPost() {
 		if (text.length > 0) {
@@ -65,6 +119,15 @@ function CreatePostScreen(props) {
 
 	return (
 		<SafeAreaView style={styles.safeContainer}>
+			<BottomSheet
+					ref={bs}
+					snapPoints={[330, 0]}
+					renderContent={renderInner}
+					renderHeader={renderHeader}
+					initialSnap={1}
+					callbackNode={fall}
+					enabledGestureInteraction={true}
+				/>
 			{loader && (
 				<Loader />
 			)}
@@ -129,7 +192,7 @@ function CreatePostScreen(props) {
 
 
 							<View style={{ paddingRight: 8, height: 28, backgroundColor: Color.LIGHT_GREEN_10, borderRadius: 12, display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
-								<TouchableOpacity onPress={() => props.navigation.navigate(ROUTES.CAMERA)}>
+								<TouchableOpacity onPress={() => bs.current.snapTo(0)}>
 
 									<Image style={{ marginRight: 6 }} source={BTN_PHOTO} /></TouchableOpacity>
 								<Text style={{ fontSize: 12, color: Color.GRAY_DARK }}>Take a Photo</Text>
