@@ -74,6 +74,13 @@ session = boto3.Session(
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
+    
+    # def post(self, request):
+    #     serializers = self.serializer_class(data=request.data)
+    #     serializers.is_valid(raise_exception=True)
+    #     return Response(serializers.data, status=status.HTTP_200_OK)
+    
+    
 
     def post(self, request):
         if GreenCreditUser.objects.filter(email=request.data["email"]).exists():
@@ -82,7 +89,7 @@ class RegisterView(generics.GenericAPIView):
             if serializer.is_valid():
                serializer.save()
                user_data = serializer.data
-               token = RefreshToken.for_user(user).access_token
+               tokens = RefreshToken.for_user(user).access_token
                return Response(user_data, status=status.HTTP_201_CREATED)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -112,6 +119,10 @@ class RegisterView(generics.GenericAPIView):
             # Util.send_email(data)
 
             return Response(user_data, status=status.HTTP_201_CREATED)
+def get_tokens(self, obj):
+        user = GreenCreditUser.objects.get(email=obj["email"])
+
+        return {"refresh": user.tokens()["refresh"], "access": user.tokens()["access"]}
 
 
 class VerifyEmail(views.APIView):

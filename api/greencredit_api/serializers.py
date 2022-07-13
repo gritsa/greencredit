@@ -45,10 +45,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     role = serializers.CharField(max_length=20)
     username = serializers.CharField(max_length=255)
     auth_provider = serializers.CharField(max_length=255)
+    
 
     class Meta:
         model = GreenCreditUser
-        fields =['id', "email", "first_name", "last_name", "title", "created_at", "updated_at", "display_picture", "is_verified", "is_deleted", "role", "username", "auth_provider"]
+        fields =['id', "email", "first_name", "last_name", "title", "created_at", "updated_at", "display_picture", "is_verified", "is_deleted", "role", "username", "auth_provider","tokens"]
 
     # def validate(self, attrs):
     #     email = attrs.get("email", " ")
