@@ -17,3 +17,9 @@ export const authConstants = {
     LOGOUT_SUCESS: "LOGOUT_SUCESS",
     LOGOUT_FAILURE: "LOGOUT_FAILURE",
   };
+
+  export const PostTypes={
+    POST_REQUEST:"POST REQUEST",
+    POST_FAILURE:"POST_FAILURE",
+    POST_SUCESS:"POST_SUCESS",
+  }

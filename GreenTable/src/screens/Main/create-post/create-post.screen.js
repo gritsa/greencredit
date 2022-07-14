@@ -10,13 +10,14 @@ import styles from './style';
 import { Color } from "../../../shared/utils/colors-pack";
 import { RNCamera } from 'react-native-camera';
 import { ROUTES } from '../../../shared/constants/routes';
-import { useSelector } from 'react-redux';
+import { useSelector ,useDispatch } from 'react-redux';
 import moment from 'moment';
 import axios from 'axios';
 import Loader from "../../../components/loader/loader";
 import ImagePicker from 'react-native-image-crop-picker';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
+import {post_image} from '../../../core/Redux/actions/PostActions'
 
 const CROSS_GRAY = require('../../../assets/images/cross-gray.png');
 const PROFILE_PIC = require('../../../assets/images/button-post.png');
@@ -27,12 +28,13 @@ const POST_SAMPLE = require('../../../assets/images/sample-post-image.png');
 
 function CreatePostScreen(props) {
 	const imageUrl = props.route.params ?  props.route.params.data : null;
+	
 	//console.log(imageUrl);
 	const user = useSelector((state) => state.user);
 	const [text, setText] = useState('');
 	const [loader, setLoader] = useState(false)
 
-	navigate = () => {
+	const navigate = () => {
 		props.navigation.goBack();
 	}
 	const takephotofromCamera=()=>{
@@ -60,13 +62,13 @@ function CreatePostScreen(props) {
 		<View style={styles.panel}>
       <View style={{alignItems: 'center'}}>
         <Text style={styles.panelTitle}>Upload Photo</Text>
-        <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
+        <Text style={styles.panelSubtitle}>Choose Your  Picture</Text>
       </View>
       <TouchableOpacity style={styles.panelButton} onPress={takephotofromCamera}>
         <Text style={styles.panelButtonTitle}>Take Photo</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton} onPress={takephotofromGallery}>
-        <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+        <Text style={styles.panelButtonTitle}>Choose From Gallery</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.panelButton}
@@ -101,17 +103,32 @@ function CreatePostScreen(props) {
 				"comments": [],
 				"likes": []
 			}
-			await axios.post(`http://54.148.23.236:805/api/create/activities/`, data)
-				.then(res => {
-					setLoader(false)
-					props.navigation.navigate(ROUTES.HOME)
-				})
-				.catch(err => {
-					setLoader(false)
-					Alert.alert('Some error occured');
-					console.log(err);
-				}
-				);
+			//await axios.post(`http://54.148.23.236:805/api/create/activities/`, data)
+			//console.log(res.data)
+			
+				dispatch(post_image(data))
+					.then((res) => {
+						props.navigation.navigate(ROUTES.HOME)
+						setLoader(false)
+						console.log('testing')
+					})
+					.catch((error) => {
+						setLoader(false)
+						console.log(err);
+					});
+			
+
+				// .then(res => {
+				// 	setLoader(false)
+				// 	props.navigation.navigate(ROUTES.HOME)
+				// 	console.log('testing')
+				// })
+				// .catch(err => {
+				// 	setLoader(false)
+				// 	Alert.alert('Some error occured');
+				// 	console.log(err);
+				// }
+				// );
 		} else {
 			Alert.alert('Please enter text!');
 		}
@@ -134,7 +151,7 @@ function CreatePostScreen(props) {
 			<StatusBar />
 			<View style={styles.head}>
 				<View style={SharedStyles.header}>
-					<TouchableOpacity onPress={() => this.navigate()} style={[SharedStyles.headLeft, SharedStyles.backButton]}>
+					<TouchableOpacity onPress={() => navigate()} style={[SharedStyles.headLeft, SharedStyles.backButton]}>
 						<Image source={CROSS_GRAY} />
 					</TouchableOpacity>
 					<Text style={[SharedStyles.headTitle, styles.title]}>Create Post</Text>

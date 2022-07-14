@@ -84,7 +84,7 @@ export default StyleSheet.create({
   panelButton: {
     padding: 13,
     borderRadius: 10,
-    backgroundColor: 'green',
+    backgroundColor: '#348565',
     alignItems: 'center',
     marginVertical: 7,
   },
