@@ -307,3 +307,28 @@ class LedgerStatementSerializer(serializers.ModelSerializer):
     class Meta:
         model = CreditLedger
         fields = ["id", "from_user", "to_user", "amount"]
+
+
+#UserCreditLedgerSerializer
+class UserCreditLedgerSerializer(serializers.ModelSerializer):
+    creditledgers = serializers.SerializerMethodField()
+    
+
+    class Meta:
+        model = CreditLedger
+        fields = ["creditledgers"]
+
+    def get_creditledgers(self, obj):
+        creditledger_list = []
+        creditledger = CreditLedger.objects.filter(user_id=obj.id)
+        
+
+        for credit in creditledger:
+            creditledger_dic = {}
+            creditledger_dic["id"] = credit.id
+            creditledger_dic["from_user"] = credit.from_user
+            creditledger_dic["amount"] = credit.amount
+            creditledger_dic["timestamp"] = credit.timestamp
+            creditledger_dic["transaction_meta"] = credit.transaction_meta
+            creditledger_list.append(creditledger_dic)
+        return creditledger_list

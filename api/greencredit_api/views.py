@@ -11,6 +11,7 @@ from django.http import request
 from django.shortcuts import render
 from rest_framework import generics, permissions, serializers, status, views
 from .serializers import (
+    UserCreditLedgerSerializer,
     CreditLedgerSerializer,
     EmailVerificationSerializer,
     GetAllActivitySerializer,
@@ -64,6 +65,7 @@ from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 from django.core import serializers
 import boto3
+import random
 
 # Create your views here.
 
@@ -281,6 +283,11 @@ class CreateActivity(generics.CreateAPIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
+    #         credit_ledger = CreditLedger(
+    #     from_user=request.data.user, to_user=request.data.user, amount=random.randrange(1, 1000), transaction_meta="{}",activity_id=id,timestamb=datetime.now()
+    # )
+
+    #         credit_ledger.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -559,3 +566,10 @@ class GetCreditLedgerBalance(APIView):
             return Response(
                 {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
+
+#UserCreditLedgerByUserIdView
+class CreditLedgerByUserId(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    lookup_field = "id"
+    queryset = CreditLedger.objects.all()
+    serializer_class = UserCreditLedgerSerializer

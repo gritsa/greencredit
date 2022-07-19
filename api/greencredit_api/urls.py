@@ -1,6 +1,7 @@
 from webbrowser import get
 from django.urls import path, include, re_path
 from .views import (
+    CreditLedgerByUserId,
     ActivityByUserId,
     CreateCreditLedger,
     GetActivity,
@@ -48,7 +49,7 @@ urlpatterns = [
         SetNewPasswordAPIView.as_view(),
         name="password-reset-complete",
     ),
-    # path("api/activitys/", GetCreateActivity.as_view(), name="get-create-activity"),
+    #path("api/activitys/", GetCreateActivity.as_view(), name="get-create-activity"),
     path("create/activities/", CreateActivity.as_view()),
     path("get/activities/", GetActivity.as_view()),
     path("activities-by-id/<int:id>", GetUpdateActivityByID.as_view()),
@@ -56,6 +57,7 @@ urlpatterns = [
     path("activities-by-user-id/<int:id>", ActivityByUserId.as_view()),
     path("get-update-user-profile/<int:id>", GetUpdateUserProfileByID.as_view()),
     path("credit-ledger/", CreateCreditLedger.as_view()),
+    path("creditledgers-by-user-id/<int:id>", CreditLedgerByUserId.as_view()),
     path("check-ledger-balance/", GetCreditLedgerBalance.as_view()),
     path("check-ledger-statement/", GetCreditLedgerStatement.as_view()),
     path("uploadimage/", uploadImage.as_view()),
