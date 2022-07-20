@@ -343,6 +343,7 @@ class UserCreditLedgerSerializer(serializers.ModelSerializer):
             creditledger_dic = {}
             creditledger_dic["id"] = credit.id
             creditledger_dic["from_user"] = credit.from_user
+            creditledger_dic["to_user"] = credit.to_user
             creditledger_dic["amount"] = credit.amount
             creditledger_dic["timestamp"] = credit.timestamp
             creditledger_dic["transaction_meta"] = credit.transaction_meta
