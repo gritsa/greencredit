@@ -22,6 +22,7 @@ from .serializers import (
     SetNewPasswordSerializer,
     UpdateUserProfileSerializer,
     UserActivitySerializer,
+    CreditPointSerializer,
 )
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
@@ -54,6 +55,8 @@ from .serializers import (
     GoogleSocialAuthSerializer,
     ActivitySerializer,
     LoginSerializer,
+    CreditLedgerSerializer,
+    CreditPoint,
     # UserActivitySerializer,
     # ActivityImagesSerializers,
     LogoutSerializer,
@@ -66,27 +69,24 @@ from datetime import datetime
 from django.core import serializers
 import boto3
 import random
+from greencredit_api.helpers.DBFunction import InvokeDBFunction
 
 # Create your views here.
 
-session = boto3.Session(
-    aws_access_key_id= 'AKIAUC7HEA4AFTIO7XEZ',
-    aws_secret_access_key = 'YAxkkQoy87ILCG2D+jUB2AkNScSVdVWBFog1tcft'
-)
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
-    
-    
+
     def post(self, request):
         if GreenCreditUser.objects.filter(email=request.data["email"]).exists():
             user = GreenCreditUser.objects.get(email=request.data["email"])
-            serializer = RegisterSerializer(instance=user, data=request.data, partial=True)
+            serializer = RegisterSerializer(
+                instance=user, data=request.data, partial=True)
             if serializer.is_valid():
-               serializer.save()
-               user_data = serializer.data
-               tokens = RefreshToken.for_user(user).access_token
-               return Response(user_data, status=status.HTTP_201_CREATED)
+                serializer.save()
+                user_data = serializer.data
+                tokens = RefreshToken.for_user(user).access_token
+                return Response(user_data, status=status.HTTP_201_CREATED)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             user = request.data
@@ -115,8 +115,8 @@ class RegisterView(generics.GenericAPIView):
             # Util.send_email(data)
 
             return Response(user_data, status=status.HTTP_201_CREATED)
-    
-    #token
+
+    # token
     def get_tokens(self, obj):
         user = GreenCreditUser.objects.get(email=obj["email"])
 
@@ -275,6 +275,7 @@ class GoogleSocialAuthView(GenericAPIView):
 
 class CreateActivity(generics.CreateAPIView):
     serializer_class = ActivitySerializer
+    serializer_credit_class = CreditPoint
     # permission_classes = (IsAuthenticated,)
 
     def post(self, request):
@@ -283,14 +284,15 @@ class CreateActivity(generics.CreateAPIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
-    #         credit_ledger = CreditLedger(
-    #     from_user=request.data.user, to_user=request.data.user, amount=random.randrange(1, 1000), transaction_meta="{}",activity_id=id,timestamb=datetime.now()
-    # )
+            credit = self.serializer_credit_class(
+                user_id=request.data['user'], activity_id=serializer.data['id'], amount=random.randrange(1, 1000), meta="{}", timestamp=datetime.now()
+            )
 
-    #         credit_ledger.save()
+            credit.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class uploadImage(generics.CreateAPIView):
     def post(self, request):
@@ -301,27 +303,50 @@ class uploadImage(generics.CreateAPIView):
         s3 = boto3.resource('s3')
         try:
             object = s3.Object('greencredits3bucket', filename)
-            object.put(Body=base64.b64decode(image_base64),Key=filename)
+            object.put(Body=base64.b64decode(image_base64), Key=filename)
             return Response(filename, status=status.HTTP_201_CREATED)
         except Exception as e:
             return e
+
 
 class GetActivity(generics.ListAPIView):
     serializer_class = GetAllActivitySerializer
     # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        try:
-            activity = Activity.objects.all()
-            serializer = self.serializer_class(activity)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Activity.DoesNotExist:
-            return Response(
-                {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
-            )
+        # try:
+        # # activity = Activity.objects.all()
+        # # serializer = self.serializer_class(activity)
+        # return Response(serializer.data, status=status.HTTP_200_OK)
+        data = InvokeDBFunction().callRoutine('select * from fngetallposts();')
+        if data['status'] == 200:
+            return self.dictfetchall(data['data'], data['columns'])
+        else:
+            return Response({'responseStatusCode': data['responseStatusCode'],
+                             'description':  data['description']}, status=data['status'])
+
+    def dictfetchall(self, data, columns):
+        if len(data) == 0:
+            return Response({
+                            'responseStatusCode': 400,
+                            'description': 'No data found'
+                            }, status=status.HTTP_200_OK)
+        else:
+            columns = [col[0] for col in columns]
+            return Response([
+                dict(zip(columns, row))
+                for row in data
+            ])
+
+        # except Activity.DoesNotExist:
+        #     return Response(
+        #         {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
+        #     )
+
 
 class GetUpdatedActivity(generics.UpdateAPIView):
     serializer_class = ActivitySerializer
+
     def post(self, request, id):
         try:
             activity = Activity.objects.get(id=id)
@@ -336,6 +361,64 @@ class GetUpdatedActivity(generics.UpdateAPIView):
                 {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
 
+
+class AddLikeToActivity(generics.UpdateAPIView):
+    serializer_class = ActivitySerializer
+
+    def post(self, request):
+        postId = request.data["activityId"]
+        userId = request.data["userId"]
+        data = InvokeDBFunction().callRoutine(
+            'select * from fnaddlikes(%s, %s);', postId,  userId)
+
+        if data['status'] == 200:
+            return self.dictfetchall(data['data'], data['columns'])
+        else:
+            return Response({'responseStatusCode': data['responseStatusCode'],
+                             'description':  data['description']}, status=data['status'])
+
+    def dictfetchall(self, data, columns):
+        if len(data) == 0:
+            return Response({
+                            'responseStatusCode': 400,
+                            'description': 'No data found'
+                            }, status=status.HTTP_200_OK)
+        else:
+            columns = [col[0] for col in columns]
+            return Response([
+                dict(zip(columns, row))
+                for row in data
+            ])
+
+
+class AddCommentToActivity(generics.UpdateAPIView):
+    serializer_class = ActivitySerializer
+
+    def post(self, request):
+        postId = request.data["activityId"]
+        comments = request.data["comments"]
+        data = InvokeDBFunction().callRoutine(
+            'select * from fnaddcomment(%s, %s);', postId,  comments)
+
+        if data['status'] == 200:
+            return self.dictfetchall(data['data'], data['columns'])
+        else:
+            return Response({'responseStatusCode': data['responseStatusCode'],
+                             'description':  data['description']}, status=data['status'])
+
+    def dictfetchall(self, data, columns):
+        if len(data) == 0:
+            return Response({
+                            'responseStatusCode': 400,
+                            'description': 'No data found'
+                            }, status=status.HTTP_200_OK)
+        else:
+            columns = [col[0] for col in columns]
+            return Response([
+                dict(zip(columns, row))
+                for row in data
+            ])
+
 # class GetComments(generics.ListAPIView):
 #     serializer_class = ActivitySerializer
 #     # permission_classes = (IsAuthenticated,)
@@ -348,7 +431,8 @@ class GetUpdatedActivity(generics.UpdateAPIView):
 #         except Activity.DoesNotExist:
 #             return Response(
 #                 {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
-            # )            
+            # )
+
 
 class GetUpdateActivityByID(generics.UpdateAPIView):
     serializer_class = ActivitySerializer
@@ -567,9 +651,11 @@ class GetCreditLedgerBalance(APIView):
                 {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
 
-#UserCreditLedgerByUserIdView
+# UserCreditLedgerByUserIdView
+
+
 class CreditLedgerByUserId(generics.RetrieveUpdateAPIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     lookup_field = "id"
-    queryset = CreditLedger.objects.all()
-    serializer_class = UserCreditLedgerSerializer
+    queryset = CreditPoint.objects.all()
+    serializer_class = CreditPointSerializer

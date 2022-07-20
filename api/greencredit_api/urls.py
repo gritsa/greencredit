@@ -19,7 +19,9 @@ from .views import (
     RequestPasswordResetEmail,
     SetNewPasswordAPIView,
     GoogleSocialAuthView,
-    uploadImage
+    uploadImage,
+    AddLikeToActivity,
+    AddCommentToActivity
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -51,6 +53,8 @@ urlpatterns = [
     ),
     #path("api/activitys/", GetCreateActivity.as_view(), name="get-create-activity"),
     path("create/activities/", CreateActivity.as_view()),
+    path("like/", AddLikeToActivity.as_view()),
+    path("comments/", AddCommentToActivity.as_view()),
     path("get/activities/", GetActivity.as_view()),
     path("activities-by-id/<int:id>", GetUpdateActivityByID.as_view()),
     path("like/<int:id>", GetUpdatedActivity.as_view()),

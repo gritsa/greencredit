@@ -6,7 +6,7 @@ from rest_framework import serializers, status
 from rest_framework_simplejwt.tokens import Token
 
 from greencredit_api.admin import GreenCreditUserAdmin
-from .models import Activity, CreditLedger, GreenCreditUser
+from .models import Activity, CreditLedger, GreenCreditUser, CreditPoint
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 import re
@@ -226,6 +226,22 @@ class ActivitySerializer(serializers.ModelSerializer):
     # create activity
     def create(self, validated_data):
         return Activity.objects.create(**validated_data)
+
+class CreditPointSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CreditPoint
+        fields = (
+            "id",
+            "user_id",
+            "activity_id",
+            "amount",
+            "timestamp",
+            "meta",
+        )
+
+    # create activity
+    def create(self, validated_data):
+        return Activity.objects.create(**validated_data)        
 
 
 class UserActivitySerializer(serializers.ModelSerializer):

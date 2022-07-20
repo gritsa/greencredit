@@ -92,7 +92,7 @@ WSGI_APPLICATION = "base_app.wsgi.application"
 
 REST_FRAMEWORK = {
     "NON_FIELD_ERRORS_KEY": "error",
-    # "EXCEPTION_HANDLER": "utils.exceptionhandler.custom_exception_handler",
+    "EXCEPTION_HANDLER": "utils.exceptionhandler.custom_exception_handler",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
@@ -159,6 +159,9 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "testnimishapp@gmail.com"
 EMAIL_HOST_PASSWORD = "Test@1234"
+AWS_S3_OBJECT_PARAMETERS = {
+    'ACL': 'public-read',
+}
 
 AUTHENTICATION_BACKENDS = [
     #     # Needed to login by username in Django admin, regardless of `allauth`
@@ -169,3 +172,11 @@ AUTHENTICATION_BACKENDS = [
 
 
 # USE_TZ = False
+
+#s3 bucket config
+
+AWS_ACCESS_KEY_ID = 'AKIAUC7HEA4AFTIO7XEZ'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'greencredits3bucket'
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

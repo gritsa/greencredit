@@ -144,6 +144,14 @@ class CreditLedger(models.Model):
             + str(self.amount)
         )
 
+class CreditPoint(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user_id = models.IntegerField(null=True, blank=True)
+    activity_id = models.IntegerField(null=True, blank=True)
+    amount = models.FloatField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    meta = models.JSONField(default="{}", null=True, blank=True) 
+
 
 class ContentType(models.Model):
     app_lable = models.CharField(max_length=255, null=True, blank=True)
