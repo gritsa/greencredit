@@ -61,7 +61,7 @@ urlpatterns = [
     path("activities-by-user-id/<int:id>", ActivityByUserId.as_view()),
     path("get-update-user-profile/<int:id>", GetUpdateUserProfileByID.as_view()),
     path("credit-ledger/", CreateCreditLedger.as_view()),
-    path("creditledgers-by-user-id/<int:id>", CreditLedgerByUserId.as_view()),
+    path("creditledgers-by-user-id/<int:user_id>", CreditLedgerByUserId.as_view()),
     path("check-ledger-balance/", GetCreditLedgerBalance.as_view()),
     path("check-ledger-statement/", GetCreditLedgerStatement.as_view()),
     path("uploadimage/", uploadImage.as_view()),

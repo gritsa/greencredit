@@ -656,6 +656,16 @@ class GetCreditLedgerBalance(APIView):
 
 class CreditLedgerByUserId(generics.RetrieveUpdateAPIView):
     # permission_classes = (IsAuthenticated,)
-    lookup_field = "id"
-    queryset = CreditPoint.objects.all()
+  #  lookup_field = "id"
+   # queryset = CreditPoint.objects.all()
     serializer_class = CreditPointSerializer
+    
+    def get(self, request, user_id):
+        try:
+            creditPoints = CreditPoint.objects.get(user_id=user_id)
+            serializer = self.serializer_class(creditPoints)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except GreenCreditUser.DoesNotExist:
+            return Response(
+                {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
