@@ -23,7 +23,7 @@ import style from '../../screens/Main/create-post/style';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 
-function CameraScreen({ postId }) {
+function CameraScreen({ postId, isShow}) {
   const user = useSelector((state) => state.user);
   const [text, setText] = useState('');
   const submitText = () => { setText('') }
@@ -32,24 +32,25 @@ function CameraScreen({ postId }) {
       comment_text: text,
       userId: user.user.id
     }
-    // await axios.post(`http://54.148.23.236:805/api/comments/`, data)
-    var bodyFormData = new FormData();
-    bodyFormData.append('activityId', postId);
-    bodyFormData.append('comments', comments);
-    axios({ method: 'post', url: `http://54.148.23.236:805/api/comments/`, data: bodyFormData, })
+    const data = {
+      activityId: postId,
+      comments: JSON.stringify(comments)
+    }
+    await axios.post(`http://54.148.23.236:805/api/comments/`, data)
       .then(res => {
-        console.log(res)
+        console.log(res);
+        isShow = false;
       })
       .catch(err => {
         Alert.alert('Some error occured');
         console.log(err);
+        isShow = false;
       }
       );
 
   }
   console.log(postId);
   return (
-
     <View style={styles.containerr}>
       <View style={styles.content}>
         <View style={styles.contentHeader}>
@@ -82,20 +83,10 @@ function CameraScreen({ postId }) {
               color='black'
               style={styles.submit}
             />
-
           </View>
         </View>
-
-
-
-
-
       </View>
-
     </View>
-
-
-
   );
 }
 
