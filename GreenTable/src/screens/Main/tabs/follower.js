@@ -15,7 +15,7 @@ export default function Follower({ props, post, onPress }) {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <ScrollView>
         {post && post.map((item, index) => {
-          return <PostCardComponent key={item.id} post={item} onCommentPress={onPress} />;
+          return <PostCardComponent key={index} post={item} onCommentPress={onPress} props={props} />;
         })}
 
         {/* empty view for bottom space that is overlapped by bottom tab */}

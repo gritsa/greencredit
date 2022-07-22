@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { Color } from '../../shared/utils/colors-pack';
@@ -11,6 +11,7 @@ import ViewComment from '../view_comment/view_comment';
 import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from 'react-redux';
+import { mediaUrl } from '../../shared/constants/api-urls';
 
 const BADGE_ICON = require('../../assets/images/badge-blue.png');
 const LIKE_ICON = require('../../assets/images/thumbs-up-outline.png');
@@ -19,9 +20,9 @@ const COMMENT_ICON = require('../../assets/images/messenger-outline.png');
 
 const windowWidth = Dimensions.get('window').width;
 
-function PostCardComponent({ post, onCommentPress }) {
+function PostCardComponent({ post, props }) {
   const user = useSelector((state) => state.user);
-  const liked = post.likes.length;
+  const liked = post.likeData.length;
   const [count, setCount] = useState(LIKE_ICON);
   const [likescount, setLikescount] = useState(liked)
 
@@ -30,8 +31,8 @@ function PostCardComponent({ post, onCommentPress }) {
   }, []);
 
   function setLikeToPost() {
-    if (post.likes.length) {
-      const like = post.likes.find(like => like === parseInt(user.user.id));
+    if (post.likeData && post.likeData.length) {
+      const like = post.likeData.find(like => like === parseInt(user.user.id));
       if (like) {
         setCount(LIKEED_ICON);
       } else {
@@ -42,6 +43,11 @@ function PostCardComponent({ post, onCommentPress }) {
     }
 
   }
+
+  function onCommentPress() {
+    props.navigation.navigate("COMMENT", { post });
+  }
+  
 
   const onPresss = () => {
     if (count == LIKE_ICON) {
@@ -54,7 +60,7 @@ function PostCardComponent({ post, onCommentPress }) {
       setLikescount(liked);
     }
   }
-  
+
 
 
   const [isShown, setIsShown] = useState(false);
@@ -68,11 +74,11 @@ function PostCardComponent({ post, onCommentPress }) {
         <View style={styles.leftSec}>
           <Image
             style={{ width: 50, height: 50 }}
-            source={{ uri: user.user.display_picture }}
+            source={{ uri: post.display_image }}
           />
           <View style={styles.userDetails}>
             <View style={styles.nameSec}>
-              <Text style={styles.name}>ghgh</Text>
+              <Text style={styles.name}>{post.profile_name}</Text>
               <Text style={styles.timeAgo}>{moment(post.timestamp).startOf('hour').fromNow()} </Text>
             </View>
             <Text style={styles.userName}>
@@ -89,13 +95,17 @@ function PostCardComponent({ post, onCommentPress }) {
 
       {/* Content */}
       <View style={styles.card}>
-        <Text style={styles.post}>{post.post_text}</Text>
-        {/* {post && post.photos_urls && (
-          <Image
-            style={[SharedStyles.shadow, styles.postImage]}
-            source={post.photos_urls}
-          />
-        )} */}
+        {post && post.post_text.length > 0 && (
+          <Text style={styles.post}>{post.post_text}</Text>
+        )}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}>
+          {post && post.images.length > 0 && post.images.map((item, index) => {
+            return <Image key={index} style={[SharedStyles.shadow, styles.postImage]} source={{ uri: mediaUrl(item) }} />;
+          })}
+
+        </ScrollView>
       </View>
       {/* Content end */}
 
@@ -113,7 +123,7 @@ function PostCardComponent({ post, onCommentPress }) {
           <View style={styles.iconWithText}>
             <TouchableOpacity onPress={onTap}>
               <Image source={COMMENT_ICON} /></TouchableOpacity>
-            <Text style={styles.iconText}>{post.comments.length}</Text>
+            <Text style={styles.iconText}>{post.commentData.length}</Text>
 
           </View>
 
@@ -121,11 +131,11 @@ function PostCardComponent({ post, onCommentPress }) {
         <View>
           <TouchableOpacity onPress={onCommentPress}>
             <Text style={styles.viewAllText}>
-              View all {post.comments.length} comments
+              View all {post.commentData.length} comments
             </Text></TouchableOpacity>
         </View>
       </View>
-      {isShown && <CommentScreen />}
+      {isShown && <CommentScreen postId={post.id} />}
       {/* Footer end */}
     </View>
   );
@@ -192,6 +202,10 @@ const styles = StyleSheet.create({
   postImage: {
     maxWidth: '100%',
     borderRadius: 5,
+    width: 280,
+    height: 350,
+    borderRadius: 5,
+    margin: 10
   },
   post: {
     marginBottom: 10,

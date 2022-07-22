@@ -35,10 +35,21 @@ function ActivityScreen({ props }) {
   const getPosts = async () => {
     await axios.get(`http://54.148.23.236:805/api/get/activities/`)
       .then(res => {
-        setPosts(res.data.activities);
+        const data = [];
+        res.data.forEach(element => {
+          data.push({
+            ...element,
+            likeData: JSON.parse(element.likes),
+            commentData: JSON.parse(element.comments),
+            images: JSON.parse(element.photo_urls),
+          })
+        });
+        setPosts(data);
+        console.log(data);
       })
       .catch(err => {
         console.log(err);
+        console.log('false to get posts');
       }
       );
   }
