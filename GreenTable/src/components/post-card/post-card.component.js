@@ -1,6 +1,6 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { View, Image, Text, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { View, Image, Text, Button, TouchableOpacity, KeyboardAvoidingView, TextInput } from 'react-native';
 import { Color } from '../../shared/utils/colors-pack';
 import SharedStyles from '../../shared/shared-styles';
 import AvatarComponent from '../../components/avatar/avatar.component';
@@ -11,6 +11,8 @@ import ViewComment from '../view_comment/view_comment';
 import moment from 'moment';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from 'react-redux';
+import { mediaUrl } from '../../shared/constants/api-urls';
+import axios from 'axios';
 
 const BADGE_ICON = require('../../assets/images/badge-blue.png');
 const LIKE_ICON = require('../../assets/images/thumbs-up-outline.png');
@@ -19,9 +21,9 @@ const COMMENT_ICON = require('../../assets/images/messenger-outline.png');
 
 const windowWidth = Dimensions.get('window').width;
 
-function PostCardComponent({ post, onCommentPress }) {
+function PostCardComponent({ post, props }) {
   const user = useSelector((state) => state.user);
-  const liked = post.likes.length;
+  const liked = post.likeData.length;
   const [count, setCount] = useState(LIKE_ICON);
   const [likescount, setLikescount] = useState(liked)
 
@@ -30,8 +32,8 @@ function PostCardComponent({ post, onCommentPress }) {
   }, []);
 
   function setLikeToPost() {
-    if (post.likes.length) {
-      const like = post.likes.find(like => like === parseInt(user.user.id));
+    if (post.likeData && post.likeData.length) {
+      const like = post.likeData.find(like => like === parseInt(user.user.id));
       if (like) {
         setCount(LIKEED_ICON);
       } else {
@@ -42,6 +44,11 @@ function PostCardComponent({ post, onCommentPress }) {
     }
 
   }
+
+  function onCommentPress() {
+    props.navigation.navigate("COMMENT", { post });
+  }
+
 
   const onPresss = () => {
     if (count == LIKE_ICON) {
@@ -54,11 +61,36 @@ function PostCardComponent({ post, onCommentPress }) {
       setLikescount(liked);
     }
   }
-  
-
 
   const [isShown, setIsShown] = useState(false);
   const onTap = () => setIsShown(current => !current);
+  const [text, setText] = useState('');
+  const submitText = () => { setText('') }
+  async function submitComment() {
+    const comments = {
+      comment_text: text,
+      userId: user.user.id
+    }
+    const data = {
+      activityId: post.id,
+      comments: JSON.stringify(comments)
+    }
+    setIsShown(false);
+    await axios.post(`http://54.148.23.236:805/api/comments/`, data)
+      .then(res => {
+        console.log(res);
+        setIsShown(false);
+        setText('')
+      })
+      .catch(err => {
+        Alert.alert('Some error occured');
+        console.log(err);
+        setIsShown(false);
+        setText('')
+      }
+      );
+
+  }
 
   return (
 
@@ -68,11 +100,11 @@ function PostCardComponent({ post, onCommentPress }) {
         <View style={styles.leftSec}>
           <Image
             style={{ width: 50, height: 50 }}
-            source={{ uri: user.user.display_picture }}
+            source={{ uri: post.display_image }}
           />
           <View style={styles.userDetails}>
             <View style={styles.nameSec}>
-              <Text style={styles.name}>ghgh</Text>
+              <Text style={styles.name}>{post.profile_name}</Text>
               <Text style={styles.timeAgo}>{moment(post.timestamp).startOf('hour').fromNow()} </Text>
             </View>
             <Text style={styles.userName}>
@@ -89,13 +121,17 @@ function PostCardComponent({ post, onCommentPress }) {
 
       {/* Content */}
       <View style={styles.card}>
-        <Text style={styles.post}>{post.post_text}</Text>
-        {/* {post && post.photos_urls && (
-          <Image
-            style={[SharedStyles.shadow, styles.postImage]}
-            source={post.photos_urls}
-          />
-        )} */}
+        {post && post.post_text.length > 0 && (
+          <Text style={styles.post}>{post.post_text}</Text>
+        )}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}>
+          {post && post.images.length > 0 && post.images.map((item, index) => {
+            return <Image key={index} style={[SharedStyles.shadow, styles.postImage]} source={{ uri: mediaUrl(item) }} />;
+          })}
+
+        </ScrollView>
       </View>
       {/* Content end */}
 
@@ -113,19 +149,57 @@ function PostCardComponent({ post, onCommentPress }) {
           <View style={styles.iconWithText}>
             <TouchableOpacity onPress={onTap}>
               <Image source={COMMENT_ICON} /></TouchableOpacity>
-            <Text style={styles.iconText}>{post.comments.length}</Text>
-
+            <Text style={styles.iconText}>{post.commentData.length}</Text>
           </View>
-
         </View>
         <View>
           <TouchableOpacity onPress={onCommentPress}>
-            <Text style={styles.viewAllText}>
-              View all {post.comments.length} comments
-            </Text></TouchableOpacity>
+            {post && post.commentData.length > 0 && (
+              <Text style={styles.viewAllText}>
+                View all {post.commentData.length} comments
+              </Text>
+            )}
+          </TouchableOpacity>
+
         </View>
       </View>
-      {isShown && <CommentScreen />}
+      {isShown && <View style={styles.containerr}>
+        <View style={styles.content}>
+          <View style={styles.contentHeader}>
+            <Image
+              style={{ width: 30, height: 30, marginTop: 10 }}
+              source={{ uri: user.user.display_picture }}
+            />
+            <TextInput
+              multiline
+              style={styles.input} placeholder="Comment..."
+              placeholderTextColor={'black'}
+              value={text}
+              maxLength={1000}
+              onChangeText={(text) => setText(text)}
+            />
+          </View>
+
+          <View style={styles.container}>
+
+          </View>
+
+
+          <View style={{ flexDirection: "row" }}>
+            <View style={styles.buttonStyle}>
+              <Button title={"Submit"} color='black' onPress={submitComment} />
+
+            </View>
+            <View style={styles.buttonStyle}>
+              <Button title={"Cancel"}
+                color='black'
+                style={styles.submit}
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+      }
       {/* Footer end */}
     </View>
   );
@@ -192,6 +266,10 @@ const styles = StyleSheet.create({
   postImage: {
     maxWidth: '100%',
     borderRadius: 5,
+    width: 280,
+    height: 350,
+    borderRadius: 5,
+    margin: 10
   },
   post: {
     marginBottom: 10,
@@ -227,4 +305,64 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: FontWeight.FONT_WEIGHT_SEMI_BOLD,
   },
+  root: {
+    backgroundColor: "#ffffff",
+    marginTop: 10,
+  },
+  container: {
+    paddingLeft: 19,
+    paddingRight: 16,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'flex-start'
+  },
+  containerr: {
+    flex: 1,
+  },
+  content: {
+    marginLeft: 16,
+    flex: 1,
+  },
+  contentHeader: {
+    flexDirection: 'row',
+    marginBottom: 6
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#CCCCCC"
+  },
+  image: {
+    width: 45,
+    height: 45,
+    borderRadius: 20,
+    marginLeft: 20
+  },
+  time: {
+    fontSize: 11,
+    color: "#808080",
+  },
+  btn: {
+    marginRight: 100,
+  },
+  input: {
+    margin: 12,
+    padding: 10,
+
+  },
+  input: {
+    borderColor: "white",
+    width: "100%",
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    padding: 10,
+  },
+  submit: {
+    backgroundColor: '#68a0cf',
+    overflow: 'hidden',
+    marginLeft: 10
+  },
+  buttonStyle: {
+    marginLeft: 10,
+  }
 });

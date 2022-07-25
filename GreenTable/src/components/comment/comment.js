@@ -8,7 +8,7 @@ import { ROUTES } from '../../shared/constants/routes';
 import React, { Component, useState } from 'react';
 import {
   StyleSheet,
-  Text,
+  Alert,
   View,
   TouchableOpacity,
   Image,
@@ -21,19 +21,40 @@ import {
 
 import style from '../../screens/Main/create-post/style';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
-function CameraScreen() {
+function CameraScreen({ postId, isShow}) {
   const user = useSelector((state) => state.user);
   const [text, setText] = useState('');
   const submitText = () => { setText('') }
+  async function submitComment() {
+    const comments = {
+      comment_text: text,
+      userId: user.user.id
+    }
+    const data = {
+      activityId: postId,
+      comments: JSON.stringify(comments)
+    }
+    await axios.post(`http://54.148.23.236:805/api/comments/`, data)
+      .then(res => {
+        console.log(res);
+        isShow = false;
+      })
+      .catch(err => {
+        Alert.alert('Some error occured');
+        console.log(err);
+        isShow = false;
+      }
+      );
+
+  }
+  console.log(postId);
   return (
-
     <View style={styles.containerr}>
-
-
       <View style={styles.content}>
         <View style={styles.contentHeader}>
-        <Image
+          <Image
             style={{ width: 30, height: 30, marginTop: 10 }}
             source={{ uri: user.user.display_picture }}
           />
@@ -43,40 +64,29 @@ function CameraScreen() {
             placeholderTextColor={'black'}
             value={text}
             maxLength={1000}
-            onChangeText={(text) =>setText(text)}
+            onChangeText={(text) => setText(text)}
           />
         </View>
 
         <View style={styles.container}>
-         
+
         </View>
 
 
         <View style={{ flexDirection: "row" }}>
           <View style={styles.buttonStyle}>
-            <Button title={"Submit"} color='black' />
+            <Button title={"Submit"} color='black' onPress={submitComment} />
 
           </View>
           <View style={styles.buttonStyle}>
             <Button title={"Cancel"}
               color='black'
               style={styles.submit}
-              onPress={submitText}
             />
-
           </View>
         </View>
-
-
-
-
-
       </View>
-
     </View>
-
-
-
   );
 }
 
@@ -143,7 +153,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginLeft: 10
   },
-  buttonStyle:{
+  buttonStyle: {
     marginLeft: 10,
   }
 

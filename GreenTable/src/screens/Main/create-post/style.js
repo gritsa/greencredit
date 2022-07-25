@@ -30,7 +30,7 @@ export default StyleSheet.create({
     },
   postImageContainer: {
     borderRadius: 8,
-    backgroundColor: Color.LIGHT_GREEN,
+    // backgroundColor: Color.LIGHT_GREEN,
     width: '100%',
     minHeight: 200,
     maxHeight: 360,
