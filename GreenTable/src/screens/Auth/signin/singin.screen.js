@@ -1,8 +1,8 @@
 //***********************//
 // Signin Screen
 //***********************//
-import React from "react";
-import { View, Text, Image, ImageBackground } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, ImageBackground, Platform } from "react-native";
 import styles from './style';
 import SharedStyle from '../../../shared/shared-styles';
 import { ROUTES } from '../../../shared/constants/routes';
@@ -12,8 +12,9 @@ import {
 } from '@react-native-google-signin/google-signin';
 import { useSelector, useDispatch } from 'react-redux';
 import { signup } from '../../../core/Redux/actions/UserActions';
-import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loader from "../../../components/loader/loader";
+import { AppleButton, appleAuth } from '@invertase/react-native-apple-authentication';
 
 // images from assets
 const ICON = require('../../../assets/images/icon.png');
@@ -25,29 +26,25 @@ function SigninScreen(props) {
 	const user = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 
+	const [loader, setLoader] = useState(false)
+
+	useEffect(() => {
+		// onCredentialRevoked returns a function that will remove the event listener. useEffect will call this function when the component unmounts
+		return appleAuth.onCredentialRevoked(async () => {
+		  console.warn('If this function executes, User Credentials have been Revoked');
+		});
+	  }, []);
+
 	signInGoogle = () => {
-		// let data = {
-		// 	"email": 'payalseth33@gmail.com',
-		// 	"first_name": 'payal',
-		// 	"last_name": 'seth',
-		// 	"title": 'seth',
-		// 	"created_at": "2022-06-30T12:52:24.127Z",
-		// 	"updated_at": "2022-06-30T12:52:24.127Z",
-		// 	"display_picture": 'hhh',
-		// 	"is_verified": true,
-		// 	"is_deleted": false,
-		// 	"role": "Activist",
-		// 	"username": 'sdjs',
-		// 	"auth_provider": 'dshbh'
-		// }
-		// signupUser(data);
 		GoogleSignin.signOut();
 		GoogleSignin.configure({
 			androidClientId: '209848220646-2tlf540hpq4lpq2tta9dshq5u14nstpd.apps.googleusercontent.com',
+			iosClientId: '209848220646-juvm203thn1i4555fgo6nq28b06s2mok.apps.googleusercontent.com',
 		});
 		GoogleSignin.hasPlayServices().then((hasPlayService) => {
 			if (hasPlayService) {
 				GoogleSignin.signIn().then((userInfo) => {
+					setLoader(true)
 					let data = {
 						"email": userInfo.user.email.trim().toLowerCase(),
 						"first_name": userInfo.user.givenName,
@@ -65,21 +62,43 @@ function SigninScreen(props) {
 					signupUser(data);
 
 				}).catch((e) => {
+					setLoader(false)
 					console.log("ERROR IS: " + JSON.stringify(e));
 				})
 			}
 		}).catch((e) => {
+			setLoader(false)
 			console.log("ERROR IS: " + JSON.stringify(e));
 		})
 	}
+
+	async function onAppleButtonPress() {
+		// performs login request
+		const appleAuthRequestResponse = await appleAuth.performRequest({
+		  requestedOperation: appleAuth.Operation.LOGIN,
+		  requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+		});
+	  
+		// get current authentication state for user
+		// /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+		const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
+	  
+		// use credentialState response to ensure the user is authenticated
+		if (credentialState === appleAuth.State.AUTHORIZED) {
+		  // user is authenticated
+		  alert(JSON.stringify(appleAuthRequestResponse))
+		}
+	  }
 
 	signupUser = (data) => {
 		dispatch(signup(data))
 			.then((res) => {
 				props.navigation.navigate(ROUTES.HOME)
+				setLoader(false)
 				console.log(res + 'test')
 			})
 			.catch((error) => {
+				setLoader(false)
 				console.log(error + 'test3')
 			});
 	}
@@ -87,7 +106,6 @@ function SigninScreen(props) {
 	async function gettingLocal() {
 		const token = await AsyncStorage.getItem("token");
 		const user = await AsyncStorage.getItem("user");
-
 		return { token, user };
 	}
 
@@ -99,14 +117,16 @@ function SigninScreen(props) {
 
 	return (
 		<View style={styles.container}>
-
 			<View style={styles.left}></View>
-
 			<View style={styles.right}>
 				<ImageBackground style={styles.bgImage} source={SIGNIN_BG}></ImageBackground>
 			</View>
 
 			<View style={styles.contents}>
+				{loader && (
+					<Loader />
+				)}
+
 				<View style={styles.sliderContainer}>
 					<Image style={styles.introImage} source={ICON} />
 					<Text style={styles.introTitle}></Text>
@@ -122,10 +142,19 @@ function SigninScreen(props) {
 						<Text>Sign in with Google</Text>
 					</View>
 
-					<View style={[SharedStyle.shadow, SharedStyle.button, styles.buttonApple]} onTouchEnd={this.signInApple}>
+					{Platform.OS === 'ios' && (
+						<AppleButton
+							buttonStyle={AppleButton.Style.BLACK}
+							buttonType={AppleButton.Type.SIGN_IN}
+							style={SharedStyle.button}
+							onPress={() => onAppleButtonPress()}
+						/>
+					)}
+
+					{/* <View style={[SharedStyle.shadow, SharedStyle.button, styles.buttonApple]} onTouchEnd={this.signInApple}>
 						<Image style={styles.buttonIcon} source={APPLE_ICON} />
 						<Text style={styles.text}>Sign in with Apple</Text>
-					</View>
+					</View> */}
 				</View>
 			</View>
 

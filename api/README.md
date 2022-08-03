@@ -1,31 +1,117 @@
-# GreenCREDIT
-The home of the GreenCREDIT Network project. GreenCREDIT aims to be an open architecture for a network backend exposed as a set of RESTful API services. With GreenCREDIT Network, we aim to bring credit rewards to green activists and allow green companies and green funders to fund the activities for the activists.
+# Django Restframework 
 
-## Tech Stack
-To build a RESTful API backend, we choose to go with .NET Core Web API framework, however the protocol could be implemented in any programming language (and probably will also be written in Node and Django at a later date).
+Steps to setup a django rest framework [Green_Credit](https://github.com/gritsa/greencredit/tree/main/api) Project .
 
-## Business Entities
-* Activist
-	* Performs the green activities to make the earth a greener place and save it before time runs out. The real hero.
-* Entity
-	* A company or an entity that brings green products or services to the world
-* Funder
-	* A person or a company contributing funds or resources with the intent of making the work d a greener place, and would like to enable the green activists to become successful in their work
-* Activity
-	* A single and measurable act of kindness to save the planet. Only an Activity can generate GreenCREDITs.
-* Campaign
-	* A string of activities performed by multiple activists to achieve a common goal
-* CreditLedger
-	* A ledger of GreenCREDITs credited and debited
-* Reward
-	* A product/service or discount that can be redeemed with GreenCREDITs. Ledger entry is made for the Entity that is providing the rewards against the GreenCREDIT
+## Introduction
 
-## Business Actions
-* Signup / Signin (Activity/Entity/Funder)
-* Post Activity
-* Upvote Activity
-* Post Campaign
-* Start Campaign
-* End Campaign
-* Fund Campaign
-* Credit/Debit GreenCREDITs
+
+Django REST framework is a powerful and flexible toolkit for building Web APIs. ... The Web browsable API is a huge usability win for your developers. Authentication policies including packages for OAuth1a and OAuth2. Serialization that supports both ORM and non-ORM data sources.
+
+This Documentation  will walk you through installing Python and setting up a programming environment with Django Restframework on an Ubantu.
+
+## Installing
+
+#### Step 1 — Update the system and install the python :- 
+Check the system update and install the python. 
+
+```bash
+$ sudo apt update
+$ sudo apt -y upgrade
+$ sudo apt install python3.8
+```
+#### Step 2 — Check Version of Python :-
+Check which version of Python 3 is installed by typing. 
+
+```bash
+$ python3 -V
+```
+
+#### Step 3 — Install pip :-
+To manage software packages for Python, install pip, a tool that will help you manage libraries or modules to use in your projects.
+
+```bash
+$ sudo apt install -y python3-pip
+```
+#### Step 4 — Create Folder :-
+We will create a folder to hold the installations .
+
+
+```bash
+$ mkdir green_credit
+```
+#### Step 5 — Clone Repository :-
+Clone the repository with SSH key.
+
+
+```bash
+$ git clone git@github.com:gritsa/greencredit.git
+```
+#### Step 6 — Enter in folder :-
+
+
+```bash
+$ cd api
+```
+
+
+#### Step 7 — Install venv :-
+Virtual environments enable you to have an isolated space on your server for Python projects. We’ll use venv, part of the standard Python 3 library, which we can install by typing:
+
+```bash
+$ sudo apt install -y python3-venv
+```
+
+#### Step 8 — Create a Virtual Environment :-
+You can create a new environment with the pyvenv command. Here, we’ll call our new environment my_env, but you should call yours something meaningful to your project.
+
+```bash
+$ python3 -m venv my_env
+```
+#### Step 9 — Activate Virtual Environment :-
+Activate the environment using the command below, where my_env is the name of your programming environment.
+
+```bash
+$ source my_env/bin/activate
+```
+
+#### Step 10 — Install Dependencies :-
+
+```bash
+$ pip install -r requirements
+```
+
+#### Step 11 — Create new database via pgAdmin and map this with  database of settings.py  :-
+
+```bash
+$ DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'YOUR_DB_NAME',             <-------- (CHANGES)
+        'USER': 'YOUR_DB_USER',           <-------- (CHANGES)
+        'PASSWORD': "YOUR_DB_PASSWORD",     <-------- (CHANGES)
+        "HOST": "127.0.0.1",
+        'PORT': '5432',
+        # 'DISABLE_SERVER_SIDE_CURSORS': True,
+    }
+}
+
+```
+
+#### Step 12 — Migrate Database :-
+```bash
+$ python manage.py migrate
+```
+#### Step 13 — Creating Superuser :-
+
+```bash
+$ python manage.py createsuperuser
+```
+
+#### Step 14 — Runserver :-
+
+```bash
+$ python manage.py runserver
+```
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)

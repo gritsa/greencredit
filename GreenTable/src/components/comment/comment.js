@@ -8,7 +8,7 @@ import { ROUTES } from '../../shared/constants/routes';
 import React, { Component, useState } from 'react';
 import {
   StyleSheet,
-  Text,
+  Alert,
   View,
   TouchableOpacity,
   Image,
@@ -20,72 +20,74 @@ import {
 } from 'react-native';
 
 import style from '../../screens/Main/create-post/style';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 
-class CameraScreen extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = { text: '' };
+function CameraScreen({ postId, isShow}) {
+  const user = useSelector((state) => state.user);
+  const [text, setText] = useState('');
+  const submitText = () => { setText('') }
+  async function submitComment() {
+    const comments = {
+      comment_text: text,
+      userId: user.user.id
+    }
+    const data = {
+      activityId: postId,
+      comments: JSON.stringify(comments)
+    }
+    await axios.post(`http://54.148.23.236:805/api/comments/`, data)
+      .then(res => {
+        console.log(res);
+        isShow = false;
+      })
+      .catch(err => {
+        Alert.alert('Some error occured');
+        console.log(err);
+        isShow = false;
+      }
+      );
 
   }
-  submitText = () => {  this.setState({text : ''}) }
+  console.log(postId);
+  return (
+    <View style={styles.containerr}>
+      <View style={styles.content}>
+        <View style={styles.contentHeader}>
+          <Image
+            style={{ width: 30, height: 30, marginTop: 10 }}
+            source={{ uri: user.user.display_picture }}
+          />
+          <TextInput
+            multiline
+            style={styles.input} placeholder="Comment..."
+            placeholderTextColor={'black'}
+            value={text}
+            maxLength={1000}
+            onChangeText={(text) => setText(text)}
+          />
+        </View>
 
-  render() {
-  
+        <View style={styles.container}>
 
-    return (
-      
-      
-      <View style={styles.containerr}>
-     
-          
-          <View style={styles.content}>
-            <View style={styles.contentHeader}>
-              <Text style={styles.name}>Vikram</Text>
-
-            </View>
-
-            <View style={styles.container}>
-              <TextInput 
-              multiline
-              style={styles.input} placeholder="Comment..." 
-                placeholderTextColor={'black'}
-                value={this.state.text}
-                maxLength={1000}
-                numberOfLines={10}
-                onChangeText={(text) => this.setState({text})}
-                />
-            </View>
+        </View>
 
 
-            <View style={{ flexDirection: "row" }}>
-              <View style={styles.buttonStyle}>
-                <Button title={"Submit"} color='black' />
-
-              </View>
-              <View style={styles.buttonStyle}>
-                <Button title={"Cancel"}
-                  color='black'
-                  style={styles.submit}
-                  onPress={() => this.submitText()}
-                  />
-
-              </View>
-            </View>
-
-
-
-
+        <View style={{ flexDirection: "row" }}>
+          <View style={styles.buttonStyle}>
+            <Button title={"Submit"} color='black' onPress={submitComment} />
 
           </View>
-         
+          <View style={styles.buttonStyle}>
+            <Button title={"Cancel"}
+              color='black'
+              style={styles.submit}
+            />
+          </View>
+        </View>
       </View>
-     
-    
-
-    );
-
-  }
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -100,7 +102,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start'
   },
-  containerr :{
+  containerr: {
     flex: 1,
   },
   content: {
@@ -109,7 +111,6 @@ const styles = StyleSheet.create({
   },
   contentHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     marginBottom: 6
   },
   separator: {
@@ -127,16 +128,15 @@ const styles = StyleSheet.create({
     color: "#808080",
   },
   name: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 15,
+    marginLeft: 10,
+    marginTop: 5
   },
   btn: {
     marginRight: 100,
   },
   input: {
-    height: 40,
     margin: 12,
-
     padding: 10,
 
   },
@@ -148,10 +148,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
   },
-  submit :{
+  submit: {
     backgroundColor: '#68a0cf',
     overflow: 'hidden',
- },
+    marginLeft: 10
+  },
+  buttonStyle: {
+    marginLeft: 10,
+  }
 
 });
 

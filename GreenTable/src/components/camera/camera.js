@@ -4,14 +4,26 @@
 
 
 'use strict';
+import { ROUTES } from '../../shared/constants/routes';
 import React from 'react';
 import { AppRegistry, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import { ROUTES } from '../../shared/constants/routes';
+
+import RNFS from 'react-native-fs';
 
 
-
-
+const PendingView = () => (
+  <View
+    style={{
+      flex: 1,
+      backgroundColor: 'lightgreen',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <Text>Waiting</Text>
+  </View>
+);
 
 class CameraScreen extends React.Component {
   render() {
@@ -21,31 +33,46 @@ class CameraScreen extends React.Component {
           style={styles.preview}
           type={RNCamera.Constants.Type.back}
           flashMode={RNCamera.Constants.FlashMode.on}
-          
+          androidCameraPermissionOptions={{
+            title: 'Permission to use camera',
+            message: 'We need your permission to use your camera',
+            buttonPositive: 'Ok',
+            buttonNegative: 'Cancel',
+          }}
+          androidRecordAudioPermissionOptions={{
+            title: 'Permission to use audio recording',
+            message: 'We need your permission to use your audio',
+            buttonPositive: 'Ok',
+            buttonNegative: 'Cancel',
+          }}
         >
-          
+          {({ camera, status, recordAudioPermissionStatus }) => {
+            if (status !== 'READY') return <PendingView />;
+            return (
               <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-                <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
+                <TouchableOpacity onPress={() => this.takePicture(camera)} style={styles.capture}>
                   <Text style={{ fontSize: 14 }}> SNAP </Text>
                 </TouchableOpacity>
               </View>
-            
+            );
+          }}
         </RNCamera>
       </View>
     );
   }
-  takePicture = async () => {
-    if (this.camera) {
-      const options = { quality: 0.5, base64: true };
-      const data = await this.camera.takePictureAsync(options);
-      console.log('base64: ', data.base64);
-      console.log(data.uri);
-    }
 
-    this.props.navigation.goBack();
-    
+  takePicture = async function(camera) {
+    const options = { quality: 0.5, base64: true };
+    const data = await camera.takePictureAsync(options);
+    const filePath = data.uri;
+    const newFilePath = RNFS.ExternalDirectoryPath + '/1656462659522.jpg';
+    RNFS.moveFile(filePath, newFilePath)
+        .then(() => {
+            console.log('IMAGE MOVED', filePath, '-- to --', newFilePath);
+            this.props.navigation.navigate(ROUTES.CREATEPOST, {data : data.base64});
+        })
+       
   };
-  
 }
 
 const styles = StyleSheet.create({

@@ -1,4 +1,7 @@
-api/bin/
+api/my_env
+__pycache__/
 api/obj/
 .vs/
 .vscode/
+.env
+document_photo

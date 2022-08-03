@@ -1,4 +1,4 @@
-import { ActionTypes, authConstants } from "../contants/action-types";
+import { actionTypes, authConstants } from "../contants/action-types";
 
 const initState = {
   token: null,
@@ -12,13 +12,13 @@ const initState = {
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case ActionTypes.SIGNUP_REQUEST:
+    case actionTypes.SIGNUP_REQUEST:
       state = {
         ...state,
         authenticating: true,
       };
       break;
-    case ActionTypes.SIGNUP_SUCESS:
+    case actionTypes.SIGNUP_SUCESS:
       state = {
         ...state,
         user: action.payload.user,
@@ -29,7 +29,7 @@ export default (state = initState, action) => {
         loading: false,
       };
       break;
-    case ActionTypes.SIGNUP_FAILURE:
+    case actionTypes.SIGNUP_FAILURE:
       state = {
         ...state,
         error: action.payload.error,

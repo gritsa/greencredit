@@ -12,18 +12,14 @@ const AvatarComponent = (props) => {
   border = props.border ? props.border : 0;
 
   return (
-    <View style={
-      styles.border, 
-      styles.shadow} >
+    <View style={styles.border} >
 
       {
       props.url ? 
       <Image style={{
         borderRadius: size / 2,
         height: size, width: size, 
-        borderWidth: border,
-        borderColor: 'rgba(255,255,255,.5)'
-      }} source={props.url} />
+      }} source= {props.url} />
       : <View style={{
         borderRadius: size / 2,
         height: size, width: size, 
@@ -50,10 +46,5 @@ const styles = StyleSheet.create({
       width: 0,
     },
     shadowOpacity: .4
-  },
-  border: {
-    borderWidth: 2,
-    borderColor: '#fff',
-    borderStyle: 'solid'
   }
 })
