@@ -5,6 +5,8 @@ import sharedStyles from '../../shared/shared-styles';
 import { Color } from '../../shared/utils/colors-pack';
 import { FontWeight } from '../../shared/utils/typography-pack';
 import { Dimensions } from 'react-native';
+import moment from 'moment';
+import {trimText} from '../../shared/constants/api-urls';
 
 const windowHeight = Dimensions.get('window').width;
 const amountWidth = 120;
@@ -35,9 +37,9 @@ const TransactionItemComponent = (props) => {
         </View>
         <View>
           <Text numberOfLines={1} style={styles.description}>
-            {props.item.description}
+            Earned for "{trimText(props.item.post_text, 25)}"
           </Text>
-          <Text style={{ fontSize: 11, fontWeight: FontWeight.FONT_WEIGHT_THIN }}>12 June 2021</Text>
+          <Text style={{ fontSize: 11, fontWeight: FontWeight.FONT_WEIGHT_THIN }}>{moment(props.item.timestamp).startOf('hour').fromNow()}</Text>
         </View>
       </View>
 

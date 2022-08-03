@@ -26,12 +26,9 @@ function ActivityScreen({ props }) {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
       setInterval(() => {
         getPosts();
-      }, 3000);
-    });
-    return unsubscribe;
+      }, 2000);
   }, []);
 
   const getPosts = async () => {

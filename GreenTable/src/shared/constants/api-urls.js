@@ -16,6 +16,14 @@ export const mediaUrl = (mediaFileNameOrUrl) => {
   return IMAGE_URL + mediaFileNameOrUrl;
 }
 
+export const trimText = (text, charlength) => {
+  if (text && text.length > charlength) {
+      return text.substring(0, charlength - 4) + '...';
+  } else {
+      return text;
+  }
+}
+
 // Api urls
 export const API_URLS = {
   login: () => createApiUrl('/login/'),

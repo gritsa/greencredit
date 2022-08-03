@@ -90,14 +90,14 @@ export default StyleSheet.create({
 		backgroundColor: Color.LIGHT_GREEN,	
 		height : windowHeight - ( headerHeight+tabHeight + 260),				
 		paddingTop: 8,
-		shadowColor: "#000",
-		shadowOffset: {
-			width: 0,
-			height: 1,
-		},
-		shadowOpacity: 0.1,
-		shadowRadius: 3,
-		elevation: 3,
+		// shadowColor: "#000",
+		// shadowOffset: {
+		// 	width: 0,
+		// 	height: 1,
+		// },
+		// shadowOpacity: 0.1,
+		// shadowRadius: 3,
+		// elevation: 3,
 	},
 	couponListScrollContainer : {				
 		height : windowHeight - ( headerHeight+tabHeight + 220),				

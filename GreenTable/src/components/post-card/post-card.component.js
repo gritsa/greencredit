@@ -67,29 +67,35 @@ function PostCardComponent({ post, props }) {
   const [text, setText] = useState('');
   const submitText = () => { setText('') }
   async function submitComment() {
-    const comments = {
-      comment_text: text,
-      userId: user.user.id
-    }
-    const data = {
-      activityId: post.id,
-      comments: JSON.stringify(comments)
-    }
-    setIsShown(false);
-    await axios.post(`http://54.148.23.236:805/api/comments/`, data)
-      .then(res => {
-        console.log(res);
-        setIsShown(false);
-        setText('')
-      })
-      .catch(err => {
-        Alert.alert('Some error occured');
-        console.log(err);
-        setIsShown(false);
-        setText('')
+    if (text.length > 0) {
+      const comments = {
+        comment_text: text,
+        userId: user.user.id
       }
-      );
+      const data = {
+        activityId: post.id,
+        comments: JSON.stringify(comments)
+      }
+      setIsShown(false);
+      await axios.post(`http://54.148.23.236:805/api/comments/`, data)
+        .then(res => {
+          console.log(res);
+          setIsShown(false);
+          setText('')
+        })
+        .catch(err => {
+          Alert.alert('Some error occured');
+          console.log(err);
+          setIsShown(false);
+          setText('')
+        }
+        );
+    }
+  }
 
+  cancelComment = () => {
+    setIsShown(false);
+    setText('')
   }
 
   return (
@@ -99,16 +105,16 @@ function PostCardComponent({ post, props }) {
       <View style={styles.header}>
         <View style={styles.leftSec}>
           <Image
-            style={{ width: 50, height: 50 }}
+            style={{ width: 50, height: 50, borderRadius: 50 }}
             source={{ uri: post.display_image }}
           />
           <View style={styles.userDetails}>
             <View style={styles.nameSec}>
               <Text style={styles.name}>{post.profile_name}</Text>
-              <Text style={styles.timeAgo}>{moment(post.timestamp).startOf('hour').fromNow()} </Text>
+              {/* <Text style={styles.timeAgo}> </Text> */}
             </View>
             <Text style={styles.userName}>
-              hhghj
+              {moment(post.timestamp).startOf('hour').fromNow()}
             </Text>
           </View>
         </View>
@@ -194,6 +200,7 @@ function PostCardComponent({ post, props }) {
               <Button title={"Cancel"}
                 color='black'
                 style={styles.submit}
+                onPress={cancelComment}
               />
             </View>
           </View>
@@ -248,6 +255,8 @@ const styles = StyleSheet.create({
   userName: {
     fontWeight: '300',
     color: Color.GRAY_DARK,
+    fontSize: 10,
+    marginTop: 2
   },
   timeAgo: {
     paddingLeft: 5,

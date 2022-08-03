@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 import React, {useState} from 'react';
 import {Image, View, TouchableOpacity} from 'react-native';
 import SharedStyles from '../../shared/shared-styles';
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   bottomTab: {
-    marginTop: 50,
+    marginTop: Platform.OS === 'ios' ? 0 : 50,
   },
   inactiveIcon: {
     opacity: 0.2,

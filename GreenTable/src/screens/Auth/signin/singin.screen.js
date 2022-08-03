@@ -1,8 +1,8 @@
 //***********************//
 // Signin Screen
 //***********************//
-import React, { useState } from "react";
-import { View, Text, Image, ImageBackground } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, ImageBackground, Platform } from "react-native";
 import styles from './style';
 import SharedStyle from '../../../shared/shared-styles';
 import { ROUTES } from '../../../shared/constants/routes';
@@ -14,6 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { signup } from '../../../core/Redux/actions/UserActions';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Loader from "../../../components/loader/loader";
+import { AppleButton, appleAuth } from '@invertase/react-native-apple-authentication';
 
 // images from assets
 const ICON = require('../../../assets/images/icon.png');
@@ -27,10 +28,18 @@ function SigninScreen(props) {
 
 	const [loader, setLoader] = useState(false)
 
+	useEffect(() => {
+		// onCredentialRevoked returns a function that will remove the event listener. useEffect will call this function when the component unmounts
+		return appleAuth.onCredentialRevoked(async () => {
+		  console.warn('If this function executes, User Credentials have been Revoked');
+		});
+	  }, []);
+
 	signInGoogle = () => {
 		GoogleSignin.signOut();
 		GoogleSignin.configure({
 			androidClientId: '209848220646-2tlf540hpq4lpq2tta9dshq5u14nstpd.apps.googleusercontent.com',
+			iosClientId: '209848220646-juvm203thn1i4555fgo6nq28b06s2mok.apps.googleusercontent.com',
 		});
 		GoogleSignin.hasPlayServices().then((hasPlayService) => {
 			if (hasPlayService) {
@@ -62,6 +71,24 @@ function SigninScreen(props) {
 			console.log("ERROR IS: " + JSON.stringify(e));
 		})
 	}
+
+	async function onAppleButtonPress() {
+		// performs login request
+		const appleAuthRequestResponse = await appleAuth.performRequest({
+		  requestedOperation: appleAuth.Operation.LOGIN,
+		  requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+		});
+	  
+		// get current authentication state for user
+		// /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+		const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
+	  
+		// use credentialState response to ensure the user is authenticated
+		if (credentialState === appleAuth.State.AUTHORIZED) {
+		  // user is authenticated
+		  alert(JSON.stringify(appleAuthRequestResponse))
+		}
+	  }
 
 	signupUser = (data) => {
 		dispatch(signup(data))
@@ -114,6 +141,15 @@ function SigninScreen(props) {
 						<Image style={styles.buttonIcon} source={GOOGLE_ICON} />
 						<Text>Sign in with Google</Text>
 					</View>
+
+					{Platform.OS === 'ios' && (
+						<AppleButton
+							buttonStyle={AppleButton.Style.BLACK}
+							buttonType={AppleButton.Type.SIGN_IN}
+							style={SharedStyle.button}
+							onPress={() => onAppleButtonPress()}
+						/>
+					)}
 
 					{/* <View style={[SharedStyle.shadow, SharedStyle.button, styles.buttonApple]} onTouchEnd={this.signInApple}>
 						<Image style={styles.buttonIcon} source={APPLE_ICON} />
