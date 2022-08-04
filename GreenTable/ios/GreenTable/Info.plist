@@ -20,6 +20,17 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.209848220646-juvm203thn1i4555fgo6nq28b06s2mok</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -35,22 +46,16 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Your message to user when the camera is accessed for the first time</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<string></string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Your message to user when the microphone is accessed for the first time</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Your message to user when the photo library is accessed for the first time</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Your message to user when the photo library is accessed for the first time</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -70,21 +75,19 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
-	<key>NSCameraUsageDescription</key>
-<string>Your message to user when the camera is accessed for the first time</string>
-
-<!-- Required with iOS 11 and higher: include this only if you are planning to use the camera roll -->
-<key>NSPhotoLibraryAddUsageDescription</key>
-<string>Your message to user when the photo library is accessed for the first time</string>
-
-<!-- Include this only if you are planning to use the camera roll -->
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Your message to user when the photo library is accessed for the first time</string>
-
-<!-- Include this only if you are planning to use the microphone for video recording -->
-<key>NSMicrophoneUsageDescription</key>
-<string>Your message to user when the microphone is accessed for the first time</string>
-
-
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

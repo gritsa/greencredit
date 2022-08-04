@@ -225,9 +225,9 @@ function CreatePostScreen(props) {
 						</View>
 					</View>
 
-					<View style={styles.footerContainer}>
+					<View >
 						{/* Input text */}
-						<View style={{ minHeight: 56 }}>
+						<View style={{ minHeight: 56, marginTop: -200 }}>
 							<TextInput
 								placeholder="State your green moment here..."
 								style={{

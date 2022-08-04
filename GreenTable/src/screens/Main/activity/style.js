@@ -1,4 +1,7 @@
 import { StyleSheet } from 'react-native';
+import { Dimensions } from 'react-native';
+
+const windowHeight = Dimensions.get('window').height;
 
 export default StyleSheet.create({
   container: {
@@ -7,6 +10,9 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
-    width: '100%'
+    width: '100%',
+  },
+  containerView : {
+    height: 400
   }
 });

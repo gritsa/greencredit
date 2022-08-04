@@ -22,6 +22,7 @@ const PROFILE_PIC = require('../../../assets/images/avatar-1.png');
 
 function ActivityScreen({ props }) {
   const user = useSelector((state) => state.user);
+  // const userData = JSON.parse(user.user);
   const [view, setView] = useState('Followers');
   const [posts, setPosts] = useState([]);
 
@@ -78,7 +79,7 @@ function ActivityScreen({ props }) {
         <Text style={sharedStyles.headTitle}>Activity</Text>
         <View style={sharedStyles.headRight}>
           <Image
-            style={{ width: 32, height: 32 }}
+            style={{ width: 32, height: 32, borderRadius: 50 }}
             source={{ uri: user.user.display_picture }}
           />
         </View>

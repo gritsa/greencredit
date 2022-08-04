@@ -10,10 +10,10 @@ export const signup = (userform) => {
     const res = await axios.post(`http://54.148.23.236:805/api/register/`, userform);
     if (res.status === 201) {
       const user = res.data;
-      const token = 123456789;
+      const token = 'token';
       try {
         await AsyncStorage.setItem("token", token);
-        await AsyncStorage.setItem("user", JSON.stringify(data));
+        await AsyncStorage.setItem("user", JSON.stringify(user));
       } catch (error) {
         console.log(error + "Local Storage Hanged!!!");
       }
