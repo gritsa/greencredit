@@ -21,7 +21,8 @@ from .views import (
     GoogleSocialAuthView,
     uploadImage,
     AddLikeToActivity,
-    AddCommentToActivity
+    AddCommentToActivity,
+    GetUserById
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -66,4 +67,5 @@ urlpatterns = [
     path("check-ledger-statement/", GetCreditLedgerStatement.as_view()),
     path("uploadimage/", uploadImage.as_view()),
     path("logout/", LogoutAPIView.as_view(), name="logout"),
+    path("getuserbyid/<int:user_id>", GetUserById.as_view()),
 ]

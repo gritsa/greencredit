@@ -29,6 +29,7 @@ from .register import register_social_user
 import os
 from rest_framework.exceptions import AuthenticationFailed
 from decouple import config
+from datetime import datetime
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -37,19 +38,21 @@ class RegisterSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(max_length=255)
     last_name = serializers.CharField(max_length=255)
     title = serializers.CharField(max_length=255)
-    created_at = serializers.DateTimeField()
-    updated_at = serializers.DateTimeField()
+    created_at = serializers.DateTimeField(default=datetime.now())
+    updated_at = serializers.DateTimeField(default=datetime.now())
     display_picture = serializers.CharField()
     is_verified = serializers.BooleanField(default=True)
     is_deleted = serializers.BooleanField(default=False)
     role = serializers.CharField(max_length=20)
     username = serializers.CharField(max_length=255)
     auth_provider = serializers.CharField(max_length=255)
+    followers = serializers.JSONField(default="[]")
+    following = serializers.JSONField(default="[]")
     
 
     class Meta:
         model = GreenCreditUser
-        fields =['id', "email", "first_name", "last_name", "title", "created_at", "updated_at", "display_picture", "is_verified", "is_deleted", "role", "username", "auth_provider","tokens"]
+        fields =['id', "email", "first_name", "last_name", "title", "created_at", "updated_at", "display_picture", "is_verified", "is_deleted", "role", "username", "auth_provider", "followers", "following", "tokens"]
 
     # def validate(self, attrs):
     #     email = attrs.get("email", " ")
@@ -215,6 +218,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             "photo_urls",
             "geo_location",
             "timestamp",
+            "updatedAtTimestamp",
             "tags",
             "md5hash",
             "post_text",

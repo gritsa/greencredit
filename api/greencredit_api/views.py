@@ -78,8 +78,9 @@ class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
     def post(self, request):
-        if GreenCreditUser.objects.filter(email=request.data["email"]).exists():
-            user = GreenCreditUser.objects.get(email=request.data["email"])
+        if GreenCreditUser.objects.filter(auth_provider=request.data["auth_provider"]).exists():
+            user = GreenCreditUser.objects.get(
+                auth_provider=request.data["auth_provider"])
             serializer = RegisterSerializer(
                 instance=user, data=request.data, partial=True)
             if serializer.is_valid():
@@ -90,11 +91,13 @@ class RegisterView(generics.GenericAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             user = request.data
+            user["last_login"] = datetime.now()
             serializer = self.serializer_class(data=user)
             serializer.is_valid(raise_exception=False)
             serializer.save()
             user_data = serializer.data
-            user = GreenCreditUser.objects.get(email=user_data["email"])
+            user = GreenCreditUser.objects.get(
+                auth_provider=user_data["auth_provider"])
             token = RefreshToken.for_user(user).access_token
             # current_site = get_current_site(request).domain
             # relativelink = reverse("email-verify")
@@ -320,23 +323,10 @@ class GetActivity(generics.ListAPIView):
         # return Response(serializer.data, status=status.HTTP_200_OK)
         data = InvokeDBFunction().callRoutine('select * from fngetallposts();')
         if data['status'] == 200:
-            return self.dictfetchall(data['data'], data['columns'])
+            return dictfetchall(data['data'], data['columns'])
         else:
             return Response({'responseStatusCode': data['responseStatusCode'],
                              'description':  data['description']}, status=data['status'])
-
-    def dictfetchall(self, data, columns):
-        if len(data) == 0:
-            return Response({
-                            'responseStatusCode': 400,
-                            'description': 'No data found'
-                            }, status=status.HTTP_200_OK)
-        else:
-            columns = [col[0] for col in columns]
-            return Response([
-                dict(zip(columns, row))
-                for row in data
-            ])
 
         # except Activity.DoesNotExist:
         #     return Response(
@@ -372,23 +362,10 @@ class AddLikeToActivity(generics.UpdateAPIView):
             'select * from fnaddlikes(%s, %s);', postId,  userId)
 
         if data['status'] == 200:
-            return self.dictfetchall(data['data'], data['columns'])
+            return dictfetchall(data['data'], data['columns'])
         else:
             return Response({'responseStatusCode': data['responseStatusCode'],
                              'description':  data['description']}, status=data['status'])
-
-    def dictfetchall(self, data, columns):
-        if len(data) == 0:
-            return Response({
-                            'responseStatusCode': 400,
-                            'description': 'No data found'
-                            }, status=status.HTTP_200_OK)
-        else:
-            columns = [col[0] for col in columns]
-            return Response([
-                dict(zip(columns, row))
-                for row in data
-            ])
 
 
 class AddCommentToActivity(generics.UpdateAPIView):
@@ -401,37 +378,10 @@ class AddCommentToActivity(generics.UpdateAPIView):
             'select * from fnaddcomment(%s, %s);', postId,  comments)
 
         if data['status'] == 200:
-            return self.dictfetchall(data['data'], data['columns'])
+            return dictfetchall(data['data'], data['columns'])
         else:
             return Response({'responseStatusCode': data['responseStatusCode'],
                              'description':  data['description']}, status=data['status'])
-
-    def dictfetchall(self, data, columns):
-        if len(data) == 0:
-            return Response({
-                            'responseStatusCode': 400,
-                            'description': 'No data found'
-                            }, status=status.HTTP_200_OK)
-        else:
-            columns = [col[0] for col in columns]
-            return Response([
-                dict(zip(columns, row))
-                for row in data
-            ])
-
-# class GetComments(generics.ListAPIView):
-#     serializer_class = ActivitySerializer
-#     # permission_classes = (IsAuthenticated,)
-
-#     def get(self, request, id):
-#         try:
-#             activity = Activity.objects.get(id=id)
-#             serializer = self.serializer_class(activity)
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         except Activity.DoesNotExist:
-#             return Response(
-#                 {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
-            # )
 
 
 class GetUpdateActivityByID(generics.UpdateAPIView):
@@ -659,13 +609,41 @@ class CreditLedgerByUserId(generics.RetrieveUpdateAPIView):
   #  lookup_field = "id"
    # queryset = CreditPoint.objects.all()
     serializer_class = CreditPointSerializer
-    
+
+    def get(self, request, user_id):
+        data = InvokeDBFunction().callRoutine(
+            'select * from fngetcreditpoints(%s);', user_id)
+        if data['status'] == 200:
+            return dictfetchall(data['data'], data['columns'])
+        else:
+            return Response({'responseStatusCode': data['responseStatusCode'],
+                             'description':  data['description']}, status=data['status'])
+
+
+class GetUserById(generics.RetrieveUpdateAPIView):
+    serializer_class = RegisterSerializer
+    # permission_classes = (IsAuthenticated,)
+
     def get(self, request, user_id):
         try:
-            creditPoints = CreditPoint.objects.get(user_id=user_id)
-            serializer = self.serializer_class(creditPoints)
+            user = GreenCreditUser.objects.get(id=user_id)
+            serializer = self.serializer_class(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except GreenCreditUser.DoesNotExist:
             return Response(
-                {"Message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+                {"Message": "User Id does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
+
+
+def dictfetchall(data, columns):
+    if len(data) == 0:
+        return Response({
+                        'responseStatusCode': 400,
+                        'description': 'No data found'
+                        }, status=status.HTTP_200_OK)
+    else:
+        columns = [col[0] for col in columns]
+        return Response([
+            dict(zip(columns, row))
+            for row in data
+        ])
