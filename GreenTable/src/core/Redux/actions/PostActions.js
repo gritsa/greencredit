@@ -73,7 +73,7 @@ export const postComment = (commentData) => {
     try {
       dispatch({ type: postTypes.ADD_COMMENT_REQUEST });
       const res = await axios.post(`http://54.148.23.236:805/api/comments/`, commentData);
-      if (res.status === 201) {
+      if (res.status === 200) {
         const post = res.data;
         console.log(res.data);
         dispatch({

@@ -5,14 +5,11 @@ import { Color } from '../../shared/utils/colors-pack';
 import SharedStyles from '../../shared/shared-styles';
 import AvatarComponent from '../../components/avatar/avatar.component';
 import { FontWeight } from '../../shared/utils/typography-pack';
-import { ROUTES } from '../../shared/constants/routes';
-import CommentScreen from '../comment/comment';
-import ViewComment from '../view_comment/view_comment';
 import moment from 'moment';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSelector } from 'react-redux';
 import { mediaUrl } from '../../shared/constants/api-urls';
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { postComment } from '../../core/Redux/actions/PostActions';
 
 const BADGE_ICON = require('../../assets/images/badge-blue.png');
 const LIKE_ICON = require('../../assets/images/thumbs-up-outline.png');
@@ -23,6 +20,7 @@ const windowWidth = Dimensions.get('window').width;
 
 function PostCardComponent({ post, props }) {
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const liked = post.likeData.length;
   const [count, setCount] = useState(LIKE_ICON);
   const [likescount, setLikescount] = useState(liked)
@@ -77,19 +75,17 @@ function PostCardComponent({ post, props }) {
         comments: JSON.stringify(comments)
       }
       setIsShown(false);
-      await axios.post(`http://54.148.23.236:805/api/comments/`, data)
-        .then(res => {
-          console.log(res);
+      dispatch(postComment(data))
+        .then((res) => {
           setIsShown(false);
           setText('')
         })
-        .catch(err => {
+        .catch((error) => {
           Alert.alert('Some error occured');
-          console.log(err);
+          console.log(error);
           setIsShown(false);
           setText('')
-        }
-        );
+        });
     }
   }
 
@@ -173,7 +169,7 @@ function PostCardComponent({ post, props }) {
         <View style={styles.content}>
           <View style={styles.contentHeader}>
             <Image
-              style={{ width: 30, height: 30, marginTop: 10 }}
+              style={{ width: 30, height: 30, marginTop: 10, borderRadius: 50 }}
               source={{ uri: user.user.display_picture }}
             />
             <TextInput
@@ -185,16 +181,11 @@ function PostCardComponent({ post, props }) {
               onChangeText={(text) => setText(text)}
             />
           </View>
-
           <View style={styles.container}>
-
           </View>
-
-
           <View style={{ flexDirection: "row" }}>
             <View style={styles.buttonStyle}>
               <Button title={"Submit"} color='black' onPress={submitComment} />
-
             </View>
             <View style={styles.buttonStyle}>
               <Button title={"Cancel"}

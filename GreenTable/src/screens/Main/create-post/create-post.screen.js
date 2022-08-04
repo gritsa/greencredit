@@ -2,7 +2,7 @@
 // Create Post Screen
 //***********************//
 import React, { useEffect, useState } from "react";
-import { TouchableOpacity, KeyboardAvoidingView, SafeAreaView, StatusBar, View, Text, Image, TextInput, Alert } from "react-native";
+import { TouchableOpacity, Platform, SafeAreaView, StatusBar, View, Text, Image, TextInput, Alert } from "react-native";
 import AvatarComponent from '../../../components/avatar/avatar.component';
 import { ScrollView } from "react-native-gesture-handler";
 import SharedStyles from "../../../shared/shared-styles";
@@ -227,7 +227,7 @@ function CreatePostScreen(props) {
 
 					<View >
 						{/* Input text */}
-						<View style={{ minHeight: 56, marginTop: -200 }}>
+						<View style={{ minHeight: 56, marginTop: Platform.OS === 'ios' ? -200 : 0 }}>
 							<TextInput
 								placeholder="State your green moment here..."
 								style={{
