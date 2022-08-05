@@ -634,6 +634,19 @@ class GetUserById(generics.RetrieveUpdateAPIView):
                 {"Message": "User Id does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
 
+class AddFollowOrUnfollowToUser(generics.UpdateAPIView):
+    def post(self, request):
+        followUserId = request.data["follow_user_id"]
+        userId = request.data["user_id"]
+        data = InvokeDBFunction().callRoutine(
+            'select * from fnadfollowandunfollow(%s, %s);', followUserId,  userId)
+
+        if data['status'] == 200:
+            return dictfetchall(data['data'], data['columns'])
+        else:
+            return Response({'responseStatusCode': data['responseStatusCode'],
+                             'description':  data['description']}, status=data['status'])
+
 
 def dictfetchall(data, columns):
     if len(data) == 0:

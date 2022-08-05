@@ -22,7 +22,8 @@ from .views import (
     uploadImage,
     AddLikeToActivity,
     AddCommentToActivity,
-    GetUserById
+    GetUserById,
+    AddFollowOrUnfollowToUser
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -68,4 +69,5 @@ urlpatterns = [
     path("uploadimage/", uploadImage.as_view()),
     path("logout/", LogoutAPIView.as_view(), name="logout"),
     path("getuserbyid/<int:user_id>", GetUserById.as_view()),
+       path("followorunfollow/", AddFollowOrUnfollowToUser.as_view()),
 ]
