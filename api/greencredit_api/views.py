@@ -317,22 +317,13 @@ class GetActivity(generics.ListAPIView):
     # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        # try:
-        # # activity = Activity.objects.all()
-        # # serializer = self.serializer_class(activity)
-        # return Response(serializer.data, status=status.HTTP_200_OK)
-        data = InvokeDBFunction().callRoutine('select * from fngetallposts();')
+        activityType = request.data["activityType"]
+        data = InvokeDBFunction().callRoutine('select * from fngetallposts(%s);', activityType)
         if data['status'] == 200:
             return dictfetchall(data['data'], data['columns'])
         else:
             return Response({'responseStatusCode': data['responseStatusCode'],
                              'description':  data['description']}, status=data['status'])
-
-        # except Activity.DoesNotExist:
-        #     return Response(
-        #         {"Message": "Activity does not exist"}, status=status.HTTP_404_NOT_FOUND
-        #     )
-
 
 class GetUpdatedActivity(generics.UpdateAPIView):
     serializer_class = ActivitySerializer
@@ -646,6 +637,16 @@ class AddFollowOrUnfollowToUser(generics.UpdateAPIView):
         else:
             return Response({'responseStatusCode': data['responseStatusCode'],
                              'description':  data['description']}, status=data['status'])
+
+class GetPopularUser(generics.ListAPIView):
+  
+    def get(self, request):
+        data = InvokeDBFunction().callRoutine('select * from fngetpopularusers();')
+        if data['status'] == 200:
+            return dictfetchall(data['data'], data['columns'])
+        else:
+            return Response({'responseStatusCode': data['responseStatusCode'],
+                             'description':  data['description']}, status=data['status'])                             
 
 
 def dictfetchall(data, columns):
